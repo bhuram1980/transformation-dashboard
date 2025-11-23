@@ -17,6 +17,7 @@ import tempfile
 
 app = Flask(__name__, 
             static_folder='public/static',  # Use public/static for Vercel compatibility
+            static_url_path='/static',  # Keep /static URL path (Vercel routes will map it)
             template_folder='templates')
 
 # Secret key for sessions (set via environment variable or use default)
