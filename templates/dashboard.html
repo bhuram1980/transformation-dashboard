@@ -18,7 +18,6 @@
             <div class="streak-container">
                 <div class="streak-number" id="streakCount">0</div>
                 <div class="streak-label">Day Streak</div>
-                <div class="fish-counter" id="fishCounter">Total fish demolished: 0.00 kg 🐟</div>
             </div>
         </header>
 
@@ -67,66 +66,42 @@
         </section>
         -->
 
-        <!-- Section 4: Goals (4 cards with circular rings) -->
+        <!-- Section 4: Goals (4 cards) -->
         <section class="goals-section">
             <h2 class="section-title">Goals</h2>
             <div class="goals-grid">
                 <div class="goal-card">
                     <div class="goal-label">Android Fat</div>
-                    <div class="goal-ring-container">
-                        <svg class="goal-ring" viewBox="0 0 120 120">
-                            <circle class="goal-ring-bg" cx="60" cy="60" r="54"></circle>
-                            <circle class="goal-ring-progress" id="androidFatRing" cx="60" cy="60" r="54"></circle>
-                        </svg>
-                        <div class="goal-ring-value" id="androidFatValue">-</div>
-                    </div>
+                    <div class="goal-value" id="androidFatValue">-</div>
                     <div class="goal-target">Target: ≤15%</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="androidFatProgress"></div>
+                    </div>
                 </div>
                 <div class="goal-card">
                     <div class="goal-label">Body Fat</div>
-                    <div class="goal-ring-container">
-                        <svg class="goal-ring" viewBox="0 0 120 120">
-                            <circle class="goal-ring-bg" cx="60" cy="60" r="54"></circle>
-                            <circle class="goal-ring-progress" id="bodyFatRing" cx="60" cy="60" r="54"></circle>
-                        </svg>
-                        <div class="goal-ring-value" id="bodyFatValue">-</div>
-                    </div>
+                    <div class="goal-value" id="bodyFatValue">-</div>
                     <div class="goal-target">Target: ≤13%</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="bodyFatProgress"></div>
+                    </div>
                 </div>
                 <div class="goal-card">
                     <div class="goal-label">ALT</div>
-                    <div class="goal-ring-container">
-                        <svg class="goal-ring" viewBox="0 0 120 120">
-                            <circle class="goal-ring-bg" cx="60" cy="60" r="54"></circle>
-                            <circle class="goal-ring-progress" id="altRing" cx="60" cy="60" r="54"></circle>
-                        </svg>
-                        <div class="goal-ring-value" id="altValue">-</div>
-                    </div>
+                    <div class="goal-value" id="altValue">-</div>
                     <div class="goal-target">Target: <80</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="altProgress"></div>
+                    </div>
                 </div>
                 <div class="goal-card">
                     <div class="goal-label">Glucose</div>
-                    <div class="goal-ring-container">
-                        <svg class="goal-ring" viewBox="0 0 120 120">
-                            <circle class="goal-ring-bg" cx="60" cy="60" r="54"></circle>
-                            <circle class="goal-ring-progress" id="glucoseRing" cx="60" cy="60" r="54"></circle>
-                        </svg>
-                        <div class="goal-ring-value" id="glucoseValue">-</div>
-                    </div>
+                    <div class="goal-value" id="glucoseValue">-</div>
                     <div class="goal-target">Target: <95</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="glucoseProgress"></div>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- ALT Meltdown Countdown -->
-        <section class="alt-countdown-section">
-            <div class="alt-countdown-card">
-                <div class="alt-countdown-header">
-                    <span class="alt-countdown-icon">🔥</span>
-                    <span class="alt-countdown-title">ALT Melting</span>
-                </div>
-                <div class="alt-countdown-value" id="altCountdown">315 → <80</div>
-                <div class="alt-countdown-days" id="altDays">Calculating...</div>
             </div>
         </section>
 
@@ -134,14 +109,10 @@
         <section class="meals-section">
             <h2 class="section-title">What I Ate Today</h2>
             <div class="day-selector">
-                <button class="day-nav-btn" id="prevDayBtn" onclick="navigateDay(-1)">←</button>
-                <div class="day-display-container">
-                    <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()">
-                        <option value="">Loading...</option>
-                    </select>
-                    <div class="day-display" id="dayDisplay">Day 1 - Nov 21, 2025</div>
-                </div>
-                <button class="day-nav-btn" id="nextDayBtn" onclick="navigateDay(1)">→</button>
+                <label for="daySelect" class="day-select-label">Select Day:</label>
+                <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()">
+                    <option value="">Loading...</option>
+                </select>
             </div>
             <div id="dayMeals" class="meals-content">
                 <p class="meals-placeholder">Select a day to view meals</p>
