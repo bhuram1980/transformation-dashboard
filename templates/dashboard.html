@@ -6,229 +6,133 @@
     <title>Transformation Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script>
-        // All features enabled - no authentication
-        window.userRole = 'viewer';
-        window.isAdmin = true;
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Huge Animated Streak Counter -->
-        <header class="fire-header">
-            <div class="streak-hero">
-                <div class="flames-container">
-                    <div class="flame flame-1">🔥</div>
-                    <div class="flame flame-2">🔥</div>
-                    <div class="flame flame-3">🔥</div>
-                    <div class="flame flame-4">🔥</div>
-                    <div class="flame flame-5">🔥</div>
-                </div>
-                <div class="streak-display">
-                    <div class="streak-label">LEGENDARY STREAK</div>
-                    <div class="streak-number" id="streakCount">0</div>
-                    <div class="streak-unit">DAYS</div>
-                </div>
-                <div class="flames-container">
-                    <div class="flame flame-1">🔥</div>
-                    <div class="flame flame-2">🔥</div>
-                    <div class="flame flame-3">🔥</div>
-                    <div class="flame flame-4">🔥</div>
-                    <div class="flame flame-5">🔥</div>
-                </div>
+    <div class="dashboard-container">
+        <!-- Section 1: Header & Streak -->
+        <header class="dashboard-header">
+            <h1 class="dashboard-title">Transformation Dashboard</h1>
+            <div class="streak-container">
+                <div class="streak-number" id="streakCount">0</div>
+                <div class="streak-label">Day Streak</div>
             </div>
         </header>
 
-        <!-- Fire Stats Row -->
-        <section class="fire-stats-row">
-            <div class="fire-stat-card">
-                <div class="fire-stat-icon">🐟</div>
-                <div class="fire-stat-value" id="fishTotal">0</div>
-                <div class="fire-stat-label">KG FISH DEMOLISHED</div>
-            </div>
-            <div class="fire-stat-card alt-countdown">
-                <div class="fire-stat-icon">⚡</div>
-                <div class="fire-stat-value" id="altCountdown">315</div>
-                <div class="fire-stat-label">ALT MELTDOWN → <100</div>
-            </div>
-        </section>
-
-        <!-- Goal Section -->
-        <section class="goal-section">
-            <h2>🎯 Goal</h2>
-            <p id="goalText">Loading...</p>
-        </section>
-
-        <!-- Key Metrics Cards -->
-        <section class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-label">Android Fat %</div>
-                <div class="metric-value" id="androidFat">-</div>
-                <div class="metric-target">Target: ≤15%</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="androidFatProgress"></div>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">Body Fat %</div>
-                <div class="metric-value" id="bodyFat">-</div>
-                <div class="metric-target">Target: ≤13%</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="bodyFatProgress"></div>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">ALT</div>
-                <div class="metric-value" id="alt">-</div>
-                <div class="metric-target">Target: <80</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="altProgress"></div>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">Glucose</div>
-                <div class="metric-value" id="glucose">-</div>
-                <div class="metric-target">Target: <95</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="glucoseProgress"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Weight + Waist Live Graph -->
-        <section class="fire-chart-section">
-            <div class="fire-chart-card">
-                <h3 class="fire-chart-title">⚖️ WEIGHT + WAIST MELTDOWN</h3>
-                <canvas id="weightWaistChart"></canvas>
-            </div>
-        </section>
-
-
-        <!-- Charts Section -->
-        <section class="charts-section">
-            <div class="chart-container">
-                <h3>Daily Macros (Last 7 Days)</h3>
-                <canvas id="macrosChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h3>Protein Intake Trend</h3>
-                <canvas id="proteinChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h3>Seafood Intake (kg)</h3>
-                <canvas id="seafoodChart"></canvas>
-            </div>
-        </section>
-
-        <!-- Recent Days Table -->
-        <section class="recent-days-section">
-            <h2>📊 Recent Days</h2>
-            <div class="table-container">
-                <table id="recentDaysTable">
-                    <thead>
-                        <tr>
-                            <th>Day</th>
-                            <th>Date</th>
-                            <th>Protein (g)</th>
-                            <th>Carbs (g)</th>
-                            <th>Fat (g)</th>
-                            <th>Kcal</th>
-                            <th>Seafood (kg)</th>
-                            <th>Training</th>
-                            <th>Feeling</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recentDaysBody">
-                        <tr><td colspan="9">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-
-        <!-- Macro Calculator Section -->
-        <section class="calculator-section">
-            <h2>🧮 Macro Calculator</h2>
-            <div class="calculator-box">
-                <div class="calc-input-group">
-                    <label>Seafood (kg):</label>
-                    <input type="number" id="fishKg" step="0.1" min="0" placeholder="1.2" oninput="calculateMacros()">
-                </div>
-                <div class="calc-input-group">
-                    <label>Fish Type:</label>
-                    <select id="fishType" onchange="calculateMacros()">
-                        <option value="salmon">Salmon</option>
-                        <option value="tuna">Tuna</option>
-                        <option value="seabass">Seabass</option>
-                        <option value="lobster">Lobster</option>
-                        <option value="mixed">Mixed</option>
-                    </select>
-                </div>
-                <div class="calc-results">
-                    <div class="calc-result-item">
-                        <span class="calc-label">Estimated Protein:</span>
-                        <span class="calc-value" id="calcProtein">0 g</span>
+        <!-- Section 2: Daily Log Input -->
+        <section class="log-input-section">
+            <h2 class="section-title">Log Day</h2>
+            <form id="dailyLogForm" class="log-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="number" id="protein" placeholder="Protein (g)" step="1" required>
                     </div>
-                    <div class="calc-result-item">
-                        <span class="calc-label">Estimated Fat:</span>
-                        <span class="calc-value" id="calcFat">0 g</span>
+                    <div class="form-group">
+                        <input type="number" id="carbs" placeholder="Carbs (g)" step="1" required>
                     </div>
-                    <div class="calc-result-item">
-                        <span class="calc-label">Estimated Calories:</span>
-                        <span class="calc-value" id="calcKcal">0 kcal</span>
+                    <div class="form-group">
+                        <input type="number" id="fat" placeholder="Fat (g)" step="1" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="number" id="kcal" placeholder="Kcal" step="1">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="seafoodKg" placeholder="Seafood (kg)" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="fastedWeight" placeholder="Weight (kg)" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="waist" placeholder="Waist (cm)" step="0.1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <input type="text" id="training" placeholder="Training (e.g., 2hr surfing + gym)">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="slider-label">Feeling</label>
+                        <input type="range" id="feeling" min="1" max="10" value="8" class="feeling-slider">
+                        <span class="slider-value" id="feelingValue">8</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <textarea id="notes" placeholder="Notes (optional)" rows="2"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Log Day</button>
+                <div id="formMessage" class="form-message"></div>
+            </form>
+        </section>
+
+        <!-- Section 3: Progress Graph -->
+        <section class="progress-graph-section">
+            <h2 class="section-title">Progress</h2>
+            <div class="chart-wrapper">
+                <canvas id="progressChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Section 4: Goals (4 cards) -->
+        <section class="goals-section">
+            <h2 class="section-title">Goals</h2>
+            <div class="goals-grid">
+                <div class="goal-card">
+                    <div class="goal-label">Android Fat</div>
+                    <div class="goal-value" id="androidFatValue">-</div>
+                    <div class="goal-target">Target: ≤15%</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="androidFatProgress"></div>
+                    </div>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-label">Body Fat</div>
+                    <div class="goal-value" id="bodyFatValue">-</div>
+                    <div class="goal-target">Target: ≤13%</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="bodyFatProgress"></div>
+                    </div>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-label">ALT</div>
+                    <div class="goal-value" id="altValue">-</div>
+                    <div class="goal-target">Target: <80</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="altProgress"></div>
+                    </div>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-label">Glucose</div>
+                    <div class="goal-value" id="glucoseValue">-</div>
+                    <div class="goal-target">Target: <95</div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" id="glucoseProgress"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Photo Upload Section -->
-        <section class="photo-section">
-            <h2>📸 Progress Photos</h2>
-            <div class="photo-upload-box">
+        <!-- Section 5: Progress Photos -->
+        <section class="photos-section">
+            <h2 class="section-title">Progress Photos</h2>
+            <div class="photo-upload-area">
                 <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handlePhotoUpload(event)">
-                <button class="btn-upload" onclick="document.getElementById('photoInput').click()">
-                    📷 Upload Photo (Fish Plate / Mirror Selfie)
+                <button class="upload-btn" onclick="document.getElementById('photoInput').click()">
+                    <span class="upload-icon">📷</span>
+                    Add Photo
                 </button>
-                <div id="photoPreview" class="photo-preview"></div>
-                <div style="margin-top: 30px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0; color: #667eea; font-size: 1.2em;">📷 Photo Gallery</h3>
-                        <button onclick="loadPhotos()" style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em;">🔄 Refresh</button>
-                    </div>
-                    <div id="photoGallery" class="photo-gallery"></div>
-                </div>
             </div>
-        </section>
-
-        <!-- Stats Summary -->
-        <section class="stats-section">
-            <h2>📈 7-Day Averages</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-label">Avg Protein</span>
-                    <span class="stat-value" id="avgProtein">-</span>
-                    <span class="stat-target">Target: 350-420g</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Avg Carbs</span>
-                    <span class="stat-value" id="avgCarbs">-</span>
-                    <span class="stat-target">Target: <50g</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Avg Fat</span>
-                    <span class="stat-value" id="avgFat">-</span>
-                    <span class="stat-target">Target: 150-200g</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Avg Seafood</span>
-                    <span class="stat-value" id="avgSeafood">-</span>
-                    <span class="stat-target">Target: 1.0-1.5kg</span>
-                </div>
-            </div>
+            <div id="photoGallery" class="photo-gallery-grid"></div>
         </section>
     </div>
 
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>
-

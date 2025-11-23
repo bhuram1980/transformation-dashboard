@@ -1,0 +1,23 @@
+{
+  "date": "2025-11-21",
+  "fastedWeight": null,
+  "waist": null,
+  "protein": 395,
+  "carbs": 50,
+  "fat": 190,
+  "kcal": 3620,
+  "seafoodKg": 1.35,
+  "training": "2.3 hr surfing",
+  "supplements": {
+    "omega3": true,
+    "nacMorning": false,
+    "nacNight": false,
+    "d3k2": true,
+    "zmb": true,
+    "wheyScoops": 0,
+    "creatine": false
+  },
+  "feeling": 10,
+  "notes": "Legendary start"
+}
+

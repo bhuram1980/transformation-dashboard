@@ -305,13 +305,13 @@ def index():
 @app.route('/api/data')
 def get_data():
     """API endpoint to get all transformation data - public access"""
-    parser = TransformationLogParser()
+    loader = TransformationDataLoader()
     
-    baseline = parser.get_baseline()
-    targets = parser.get_targets()
-    daily_logs = parser.get_daily_logs()
-    streak = parser.get_streak()
-    goal_info = parser.get_goal_info()
+    baseline = loader.get_baseline()
+    targets = loader.get_targets()
+    daily_logs = loader.get_daily_logs()
+    streak = loader.get_streak()
+    goal_info = loader.get_goal_info()
     
     return jsonify({
         'baseline': baseline,
@@ -474,11 +474,11 @@ def chat_with_grok():
         ]
         
         # Get full transformation log context
-        parser = TransformationLogParser()
-        baseline = parser.get_baseline()
-        targets = parser.get_targets()
-        daily_logs = parser.get_daily_logs()
-        goal_info = parser.get_goal_info()
+        loader = TransformationDataLoader()
+        baseline = loader.get_baseline()
+        targets = loader.get_targets()
+        daily_logs = loader.get_daily_logs()
+        goal_info = loader.get_goal_info()
         
         # Build comprehensive system prompt with full context
         baseline_text = f"""
@@ -862,63 +862,69 @@ def execute_function(function_name: str, args: dict) -> dict:
     """Execute a function call from Grok"""
     try:
         if function_name == "add_day_entry":
-            # Format day entry in markdown
-            day = args.get('day')
+            # Create JSON file for new day entry
             date = args.get('date')
-            protein = args.get('protein')
-            carbs = args.get('carbs')
-            fat = args.get('fat')
-            kcal = args.get('kcal')
-            seafood_kg = args.get('seafood_kg')
-            training = args.get('training', '')
-            supplements = args.get('supplements', 'All')
-            feeling = args.get('feeling', '')
-            notes = args.get('notes', '')
+            if not date:
+                # Use today's date if not provided
+                date = datetime.now().strftime('%Y-%m-%d')
             
-            # Format seafood
-            seafood_str = f"{seafood_kg} kg" if seafood_kg else ""
+            # Parse date to ensure YYYY-MM-DD format
+            try:
+                date_obj = datetime.strptime(date, '%Y-%m-%d')
+                date_str = date_obj.strftime('%Y-%m-%d')
+            except:
+                # Try other formats
+                try:
+                    date_obj = datetime.strptime(date, '%b %d, %Y')
+                    date_str = date_obj.strftime('%Y-%m-%d')
+                except:
+                    date_str = datetime.now().strftime('%Y-%m-%d')
             
-            # Build markdown entry
-            entry = f"### Day {day} – {date}\n\n"
-            if seafood_str:
-                entry += f"- Seafood: {seafood_str}\n"
-            entry += f"- Protein {protein} g | Carbs {carbs} g | Fat {fat} g"
-            if kcal:
-                entry += f" | {kcal} kcal"
-            entry += "\n"
-            if training:
-                entry += f"- Training: {training}\n"
-            if supplements:
-                entry += f"- Supplements: {supplements}\n"
-            if feeling:
-                entry += f"- Feeling: {feeling}\n"
-            if notes:
-                entry += f"- Notes: {notes}\n"
+            # Build JSON entry
+            entry = {
+                "date": date_str,
+                "fastedWeight": args.get('fastedWeight'),
+                "waist": args.get('waist'),
+                "protein": args.get('protein'),
+                "carbs": args.get('carbs'),
+                "fat": args.get('fat'),
+                "kcal": args.get('kcal'),
+                "seafoodKg": args.get('seafood_kg') or args.get('seafoodKg'),
+                "training": args.get('training', ''),
+                "supplements": {
+                    "omega3": args.get('omega3', True),
+                    "nacMorning": args.get('nacMorning', True),
+                    "nacNight": args.get('nacNight', True),
+                    "d3k2": args.get('d3k2', True),
+                    "zmb": args.get('zmb', True),
+                    "wheyScoops": args.get('wheyScoops', 0),
+                    "creatine": args.get('creatine', True)
+                },
+                "feeling": args.get('feeling', 8),
+                "notes": args.get('notes', '')
+            }
             
-            # Update log file
-            log_file = Path('transformation_log.md')
-            if log_file.exists():
-                current_content = log_file.read_text(encoding='utf-8')
-            else:
-                current_content = "# D – Ripped 2026 Transformation Log\n\n"
-            
-            new_content = current_content + "\n\n" + entry
+            # Save to JSON file
+            daily_logs_dir = Path('public/data/daily-logs')
+            daily_logs_dir.mkdir(parents=True, exist_ok=True)
+            json_file = daily_logs_dir / f"{date_str}.json"
             
             # Write to file (or return for Git commit on Vercel)
             is_vercel = os.getenv('VERCEL') == '1'
             if is_vercel:
                 return {
                     'success': True,
-                    'message': 'Day entry created (Vercel read-only)',
+                    'message': f'Day entry created (Vercel read-only)',
                     'entry': entry,
-                    'updated_content': new_content,
-                    'instructions': 'Entry ready for Git commit'
+                    'file_content': json.dumps(entry, indent=2),
+                    'filename': f"{date_str}.json",
+                    'instructions': f'Save as {date_str}.json in public/data/daily-logs/ folder and commit to Git'
                 }
             else:
-                log_file.write_text(new_content, encoding='utf-8')
+                json_file.write_text(json.dumps(entry, indent=2), encoding='utf-8')
                 return {
                     'success': True,
-                    'message': f'Day {day} entry added successfully',
+                    'message': f'Day entry saved to {date_str}.json',
                     'entry': entry
                 }
         
@@ -1005,14 +1011,14 @@ def get_advice():
 @app.route('/api/stats')
 def get_stats():
     """API endpoint for aggregated statistics - public access"""
-    parser = TransformationLogParser()
-    daily_logs = parser.get_daily_logs()
+    loader = TransformationDataLoader()
+    daily_logs = loader.get_daily_logs()
     
     # Calculate total fish demolished
-    total_fish_kg = sum(day.get('seafood_kg', 0) or 0 for day in daily_logs if day.get('seafood_kg'))
+    total_fish_kg = sum(day.get('seafoodKg', 0) or day.get('seafood_kg', 0) or 0 for day in daily_logs)
     
     # Get baseline ALT for countdown
-    baseline = parser.get_baseline()
+    baseline = loader.get_baseline()
     current_alt = baseline.get('alt', 315)
     target_alt = 100  # Countdown to <100
     alt_remaining = max(0, current_alt - target_alt)
@@ -1038,6 +1044,23 @@ def get_stats():
         'days_tracked': len(daily_logs),
         'recent_days': len(recent_days)
     }
+    
+    # Calculate averages
+    if daily_logs:
+        proteins = [d.get('protein', 0) or 0 for d in daily_logs if d.get('protein')]
+        carbs = [d.get('carbs', 0) or 0 for d in daily_logs if d.get('carbs')]
+        fats = [d.get('fat', 0) or 0 for d in daily_logs if d.get('fat')]
+        seafoods = [d.get('seafoodKg', 0) or 0 for d in daily_logs if d.get('seafoodKg')]
+        
+        stats['avg_protein'] = sum(proteins) / len(proteins) if proteins else 0
+        stats['avg_carbs'] = sum(carbs) / len(carbs) if carbs else 0
+        stats['avg_fat'] = sum(fats) / len(fats) if fats else 0
+        stats['avg_seafood'] = sum(seafoods) / len(seafoods) if seafoods else 0
+    else:
+        stats['avg_protein'] = 0
+        stats['avg_carbs'] = 0
+        stats['avg_fat'] = 0
+        stats['avg_seafood'] = 0
     
     stats['total_fish_kg'] = round(total_fish_kg, 2)
     stats['alt_current'] = current_alt

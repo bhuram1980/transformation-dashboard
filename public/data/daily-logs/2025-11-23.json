@@ -1,0 +1,23 @@
+{
+  "date": "2025-11-23",
+  "fastedWeight": null,
+  "waist": null,
+  "protein": 398,
+  "carbs": 40,
+  "fat": 163,
+  "kcal": 2850,
+  "seafoodKg": 0.95,
+  "training": "1 hr surfing",
+  "supplements": {
+    "omega3": true,
+    "nacMorning": true,
+    "nacNight": true,
+    "d3k2": true,
+    "zmb": true,
+    "wheyScoops": 1,
+    "creatine": true
+  },
+  "feeling": 9,
+  "notes": "Projected final: 386-410g protein | <40g carbs"
+}
+

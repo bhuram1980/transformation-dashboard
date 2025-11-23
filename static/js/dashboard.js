@@ -1,26 +1,27 @@
-// Dashboard JavaScript
+// Dashboard JavaScript - Apple/Stripe Style
 
-let macrosChart, proteinChart, seafoodChart, weightChart, waistChart, weightWaistChart;
+let progressChart;
 
-// Get user role and admin status from window (set by Flask template)
-const userRole = window.userRole || 'viewer';
-const isAdmin = window.isAdmin || false;
-
-// Macro calculation data (per kg of fish, skin on)
-const fishMacros = {
-    salmon: { protein: 200, fat: 120, kcal: 1800 },
-    tuna: { protein: 240, fat: 10, kcal: 1100 },
-    seabass: { protein: 180, fat: 60, kcal: 1000 },
-    lobster: { protein: 200, fat: 20, kcal: 900 },
-    mixed: { protein: 210, fat: 70, kcal: 1200 }
-};
-
-// Load all data on page load
+// Load data on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
     loadStats();
-    // Load photos after a short delay to ensure DOM is ready
-    setTimeout(() => loadPhotos(), 500);
+    loadPhotos();
+    
+    // Feeling slider update
+    const feelingSlider = document.getElementById('feeling');
+    const feelingValue = document.getElementById('feelingValue');
+    if (feelingSlider && feelingValue) {
+        feelingSlider.addEventListener('input', function() {
+            feelingValue.textContent = this.value;
+        });
+    }
+    
+    // Form submission
+    const form = document.getElementById('dailyLogForm');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
+    }
 });
 
 async function loadData() {
@@ -28,333 +29,132 @@ async function loadData() {
         const response = await fetch('/api/data');
         const data = await response.json();
         
-        // Update huge animated streak counter
+        // Update streak with animation
         const streakEl = document.getElementById('streakCount');
         if (streakEl) {
             const current = parseInt(streakEl.textContent) || 0;
             const newStreak = data.streak || 0;
-            if (current !== newStreak) {
-                animateValue(streakEl, current, newStreak, 1000);
+            if (current !== newStreak && newStreak > 0) {
+                animateStreak(streakEl, current, newStreak);
             } else {
                 streakEl.textContent = newStreak;
             }
         }
         
-        // Update goal
-        const goalEl = document.getElementById('goalText');
-        if (goalEl && data.goal) {
-            goalEl.textContent = data.goal.goal || 'Loading...';
+        // Update goals
+        if (data.baseline) {
+            updateGoals(data.baseline, data.targets);
         }
         
-        // Update key metrics
-        if (data.baseline && data.targets) {
-            updateMetrics(data.baseline, data.targets);
-        }
-        
-        // Update charts
+        // Render progress chart
         if (data.daily_logs && data.daily_logs.length > 0) {
-            updateCharts(data.daily_logs);
-            renderWeightWaistChart(data.daily_logs);
-            updateRecentDaysTable(data.daily_logs);
+            renderProgressChart(data.daily_logs);
         }
-        
     } catch (error) {
         console.error('Error loading data:', error);
     }
 }
 
-function updateMetrics(baseline, targets) {
+function animateStreak(element, start, end) {
+    element.classList.add('animate');
+    let current = start;
+    const increment = end > start ? 1 : -1;
+    const duration = 500;
+    const stepTime = duration / Math.abs(end - start);
+    
+    const timer = setInterval(() => {
+        current += increment;
+        element.textContent = current;
+        if (current === end) {
+            clearInterval(timer);
+            setTimeout(() => element.classList.remove('animate'), 300);
+        }
+    }, stepTime);
+}
+
+function updateGoals(baseline, targets) {
     // Android Fat
     const androidFat = baseline.android_fat || 0;
-    const androidTarget = 15;
-    document.getElementById('androidFat').textContent = androidFat.toFixed(1) + '%';
-    const androidProgress = Math.min(100, (androidTarget / androidFat) * 100);
-    document.getElementById('androidFatProgress').style.width = androidProgress + '%';
+    const androidEl = document.getElementById('androidFatValue');
+    const androidProgressEl = document.getElementById('androidFatProgress');
+    if (androidEl) androidEl.textContent = androidFat.toFixed(1) + '%';
+    if (androidProgressEl) {
+        const progress = Math.min(100, (15 / androidFat) * 100);
+        setTimeout(() => {
+            androidProgressEl.style.width = progress + '%';
+        }, 100);
+    }
     
     // Body Fat
     const bodyFat = baseline.body_fat || 0;
-    const bodyTarget = 13;
-    document.getElementById('bodyFat').textContent = bodyFat.toFixed(1) + '%';
-    const bodyProgress = Math.min(100, (bodyTarget / bodyFat) * 100);
-    document.getElementById('bodyFatProgress').style.width = bodyProgress + '%';
+    const bodyFatEl = document.getElementById('bodyFatValue');
+    const bodyProgressEl = document.getElementById('bodyFatProgress');
+    if (bodyFatEl) bodyFatEl.textContent = bodyFat.toFixed(1) + '%';
+    if (bodyProgressEl) {
+        const progress = Math.min(100, (13 / bodyFat) * 100);
+        setTimeout(() => {
+            bodyProgressEl.style.width = progress + '%';
+        }, 200);
+    }
     
     // ALT
     const alt = baseline.alt || 0;
-    const altTarget = 80;
-    document.getElementById('alt').textContent = alt.toFixed(0);
-    const altProgress = Math.min(100, (altTarget / alt) * 100);
-    document.getElementById('altProgress').style.width = altProgress + '%';
+    const altEl = document.getElementById('altValue');
+    const altProgressEl = document.getElementById('altProgress');
+    if (altEl) altEl.textContent = alt.toFixed(0);
+    if (altProgressEl) {
+        const progress = Math.min(100, (80 / alt) * 100);
+        setTimeout(() => {
+            altProgressEl.style.width = progress + '%';
+        }, 300);
+    }
     
     // Glucose
     const glucose = baseline.fasting_glucose || 0;
-    const glucoseTarget = 95;
-    document.getElementById('glucose').textContent = glucose.toFixed(1);
-    const glucoseProgress = Math.min(100, (glucoseTarget / glucose) * 100);
-    document.getElementById('glucoseProgress').style.width = glucoseProgress + '%';
-}
-
-function updateCharts(dailyLogs) {
-    // Get last 7 days
-    const recentDays = dailyLogs.slice(-7);
-    const labels = recentDays.map(d => `Day ${d.day}`);
-    
-    // Macros Chart
-    const macrosCtx = document.getElementById('macrosChart').getContext('2d');
-    if (macrosChart) macrosChart.destroy();
-    
-    macrosChart = new Chart(macrosCtx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Protein (g)',
-                    data: recentDays.map(d => d.protein || 0),
-                    backgroundColor: '#ff6400',
-                },
-                {
-                    label: 'Carbs (g)',
-                    data: recentDays.map(d => d.carbs || 0),
-                    backgroundColor: '#8a2be2',
-                },
-                {
-                    label: 'Fat (g)',
-                    data: recentDays.map(d => d.fat || 0),
-                    backgroundColor: '#ff00ff',
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    labels: { color: '#fff', font: { weight: 'bold' } }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: { color: '#8a2be2' },
-                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
-                },
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: '#ff6400' },
-                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
-                }
-            }
-        }
-    });
-    
-    // Protein Trend Chart
-    const proteinCtx = document.getElementById('proteinChart').getContext('2d');
-    if (proteinChart) proteinChart.destroy();
-    
-    proteinChart = new Chart(proteinCtx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Protein (g)',
-                data: recentDays.map(d => d.protein || 0),
-                borderColor: '#ff6400',
-                backgroundColor: 'rgba(255, 100, 0, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 5,
-                pointBackgroundColor: '#ff6400',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    labels: { color: '#fff', font: { weight: 'bold' } }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: { color: '#8a2be2' },
-                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
-                },
-                y: {
-                    beginAtZero: false,
-                    min: 300,
-                    ticks: { color: '#ff6400' },
-                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
-                }
-            }
-        }
-    });
-    
-    // Seafood Chart
-    const seafoodCtx = document.getElementById('seafoodChart').getContext('2d');
-    if (seafoodChart) seafoodChart.destroy();
-    
-    seafoodChart = new Chart(seafoodCtx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Seafood (kg)',
-                data: recentDays.map(d => d.seafood_kg || 0),
-                backgroundColor: '#8a2be2',
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    labels: { color: '#fff', font: { weight: 'bold' } }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: { color: '#8a2be2' },
-                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
-                },
-                y: {
-                    beginAtZero: true,
-                    max: 2.0,
-                    ticks: { color: '#ff6400' },
-                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
-                }
-            }
-        }
-    });
-}
-
-function updateRecentDaysTable(dailyLogs) {
-    const tbody = document.getElementById('recentDaysBody');
-    const recentDays = dailyLogs.slice(-10).reverse(); // Last 10 days, newest first
-    
-    tbody.innerHTML = recentDays.map(day => `
-        <tr>
-            <td>${day.day}</td>
-            <td>${day.date}</td>
-            <td>${day.protein ? day.protein.toFixed(0) : '-'}</td>
-            <td>${day.carbs ? day.carbs.toFixed(0) : '-'}</td>
-            <td>${day.fat ? day.fat.toFixed(0) : '-'}</td>
-            <td>${day.kcal ? day.kcal.toFixed(0) : '-'}</td>
-            <td>${day.seafood_kg ? day.seafood_kg.toFixed(2) : '-'}</td>
-            <td>${day.training || '-'}</td>
-            <td>${day.feeling || '-'}</td>
-        </tr>
-    `).join('');
-}
-
-
-async function loadStats() {
-    try {
-        const response = await fetch('/api/stats');
-        const stats = await response.json();
-        
-        // Update fire stats
-        const fishEl = document.getElementById('fishTotal');
-        if (fishEl && stats.total_fish_kg !== undefined) {
-            const current = parseFloat(fishEl.textContent) || 0;
-            const newTotal = stats.total_fish_kg;
-            if (Math.abs(current - newTotal) > 0.1) {
-                animateValue(fishEl, current, newTotal, 1000, 1);
-            } else {
-                fishEl.textContent = newTotal.toFixed(1);
-            }
-        }
-        
-        const altEl = document.getElementById('altCountdown');
-        if (altEl && stats.alt_remaining !== undefined) {
-            const current = parseInt(altEl.textContent) || 315;
-            const newAlt = stats.alt_remaining;
-            if (current !== newAlt) {
-                animateValue(altEl, current, newAlt, 1000);
-            } else {
-                altEl.textContent = newAlt;
-            }
-        }
-        
-        // Update averages if elements exist
-        const avgProtein = document.getElementById('avgProtein');
-        const avgCarbs = document.getElementById('avgCarbs');
-        const avgFat = document.getElementById('avgFat');
-        const avgSeafood = document.getElementById('avgSeafood');
-        
-        if (avgProtein) avgProtein.textContent = stats.avg_protein ? stats.avg_protein.toFixed(0) + 'g' : '-';
-        if (avgCarbs) avgCarbs.textContent = stats.avg_carbs ? stats.avg_carbs.toFixed(0) + 'g' : '-';
-        if (avgFat) avgFat.textContent = stats.avg_fat ? stats.avg_fat.toFixed(0) + 'g' : '-';
-        if (avgSeafood) avgSeafood.textContent = stats.avg_seafood ? stats.avg_seafood.toFixed(2) + 'kg' : '-';
-        
-    } catch (error) {
-        console.error('Error loading stats:', error);
+    const glucoseEl = document.getElementById('glucoseValue');
+    const glucoseProgressEl = document.getElementById('glucoseProgress');
+    if (glucoseEl) glucoseEl.textContent = glucose.toFixed(1);
+    if (glucoseProgressEl) {
+        const progress = Math.min(100, (95 / glucose) * 100);
+        setTimeout(() => {
+            glucoseProgressEl.style.width = progress + '%';
+        }, 400);
     }
 }
 
-function animateValue(element, start, end, duration, decimals = 0) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const value = progress * (end - start) + start;
-        element.textContent = decimals > 0 ? value.toFixed(decimals) : Math.floor(value);
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        } else {
-            element.textContent = decimals > 0 ? end.toFixed(decimals) : end;
-        }
-    };
-    window.requestAnimationFrame(step);
-}
-
-function renderWeightWaistChart(dailyLogs) {
-    const ctx = document.getElementById('weightWaistChart');
+function renderProgressChart(dailyLogs) {
+    const ctx = document.getElementById('progressChart');
     if (!ctx) return;
     
-    // Extract weight and waist data from logs
-    const labels = dailyLogs.map(day => `Day ${day.day}`);
-    const weightData = dailyLogs.map(day => {
-        // Try to extract weight from content
-        const weightMatch = day.content?.match(/weight[:\s]+(\d+\.?\d*)\s*kg/i) || 
-                           day.content?.match(/Fasted weight[:\s]+(\d+\.?\d*)\s*kg/i);
-        return weightMatch ? parseFloat(weightMatch[1]) : null;
-    });
-    
-    const waistData = dailyLogs.map(day => {
-        // Try to extract waist from content
-        const waistMatch = day.content?.match(/waist[:\s]+(\d+\.?\d*)\s*cm/i) || 
-                          day.content?.match(/Waist[:\s]+(\d+\.?\d*)\s*cm/i);
-        return waistMatch ? parseFloat(waistMatch[1]) : null;
-    });
-    
-    // Destroy existing chart if it exists
-    if (weightWaistChart) {
-        weightWaistChart.destroy();
+    // Destroy existing chart
+    if (progressChart) {
+        progressChart.destroy();
     }
     
-    // Filter out null values and create corresponding labels
-    const validIndices = [];
-    const validWeights = [];
-    const validWaists = [];
-    const validLabels = [];
+    const labels = dailyLogs.map(d => `Day ${d.day}`);
+    const weights = dailyLogs.map(d => d.fastedWeight || null);
+    const waists = dailyLogs.map(d => d.waist || null);
+    const proteins = dailyLogs.map(d => d.protein || null);
     
-    for (let i = 0; i < weightData.length; i++) {
-        if (weightData[i] !== null || waistData[i] !== null) {
-            validIndices.push(i);
-            validWeights.push(weightData[i]);
-            validWaists.push(waistData[i]);
-            validLabels.push(labels[i]);
-        }
-    }
+    // Filter out null values
+    const validData = labels.map((label, i) => ({
+        label,
+        weight: weights[i],
+        waist: waists[i],
+        protein: proteins[i]
+    })).filter(d => d.weight !== null || d.waist !== null || d.protein !== null);
     
-    if (validIndices.length === 0) {
-        ctx.parentElement.innerHTML = '<p style="text-align: center; color: #8a2be2; padding: 40px; font-size: 1.2em;">Add weight & waist data to your daily logs to see the meltdown 🔥</p>';
+    if (validData.length === 0) {
+        ctx.parentElement.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Add data to see progress</p>';
         return;
     }
     
-    weightWaistChart = new Chart(ctx, {
+    const validLabels = validData.map(d => d.label);
+    const validWeights = validData.map(d => d.weight);
+    const validWaists = validData.map(d => d.waist);
+    const validProteins = validData.map(d => d.protein);
+    
+    progressChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: validLabels,
@@ -362,78 +162,107 @@ function renderWeightWaistChart(dailyLogs) {
                 {
                     label: 'Weight (kg)',
                     data: validWeights,
-                    borderColor: '#ff6400',
-                    backgroundColor: 'rgba(255, 100, 0, 0.1)',
-                    borderWidth: 3,
+                    borderColor: '#0066ff',
+                    backgroundColor: 'rgba(0, 102, 255, 0.1)',
+                    borderWidth: 2,
                     tension: 0.4,
-                    fill: true,
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    pointBackgroundColor: '#ff6400',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2
+                    fill: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 },
                 {
                     label: 'Waist (cm)',
                     data: validWaists,
-                    borderColor: '#8a2be2',
-                    backgroundColor: 'rgba(138, 43, 226, 0.1)',
-                    borderWidth: 3,
+                    borderColor: '#00a3ff',
+                    backgroundColor: 'rgba(0, 163, 255, 0.1)',
+                    borderWidth: 2,
                     tension: 0.4,
-                    fill: true,
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    pointBackgroundColor: '#8a2be2',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2
+                    fill: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Protein (g)',
+                    data: validProteins,
+                    borderColor: '#ff6b00',
+                    backgroundColor: 'rgba(255, 107, 0, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    yAxisID: 'y1'
                 }
             ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
+            },
             plugins: {
                 legend: {
+                    display: true,
+                    position: 'top',
                     labels: {
-                        color: '#fff',
+                        usePointStyle: true,
+                        padding: 15,
                         font: {
-                            size: 14,
-                            weight: 'bold'
+                            size: 13,
+                            weight: '500'
                         }
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                    titleColor: '#ff6400',
-                    bodyColor: '#fff',
-                    borderColor: '#ff6400',
-                    borderWidth: 2,
-                    padding: 12
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: '600'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    borderColor: '#0066ff',
+                    borderWidth: 1
                 }
             },
             scales: {
                 x: {
-                    ticks: {
-                        color: '#8a2be2',
-                        font: {
-                            size: 12,
-                            weight: 'bold'
-                        }
-                    },
                     grid: {
-                        color: 'rgba(255, 100, 0, 0.1)'
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 12
+                        },
+                        color: '#666'
                     }
                 },
                 y: {
-                    ticks: {
-                        color: '#ff6400',
-                        font: {
-                            size: 12,
-                            weight: 'bold'
-                        }
-                    },
+                    position: 'left',
                     grid: {
-                        color: 'rgba(255, 100, 0, 0.1)'
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        font: {
+                            size: 12
+                        },
+                        color: '#666'
+                    }
+                },
+                y1: {
+                    position: 'right',
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 12
+                        },
+                        color: '#666'
                     }
                 }
             }
@@ -441,138 +270,137 @@ function renderWeightWaistChart(dailyLogs) {
     });
 }
 
-// Macro Calculator
-function calculateMacros() {
-    const fishKg = parseFloat(document.getElementById('fishKg').value) || 0;
-    const fishType = document.getElementById('fishType').value;
-    const macros = fishMacros[fishType];
-    
-    if (fishKg > 0 && macros) {
-        const protein = Math.round(fishKg * macros.protein);
-        const fat = Math.round(fishKg * macros.fat);
-        const kcal = Math.round(fishKg * macros.kcal);
-        
-        document.getElementById('calcProtein').textContent = protein + ' g';
-        document.getElementById('calcFat').textContent = fat + ' g';
-        document.getElementById('calcKcal').textContent = kcal + ' kcal';
-    } else {
-        document.getElementById('calcProtein').textContent = '0 g';
-        document.getElementById('calcFat').textContent = '0 g';
-        document.getElementById('calcKcal').textContent = '0 kcal';
+async function loadStats() {
+    try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+        // Stats are used for calculations, no UI elements to update in new design
+    } catch (error) {
+        console.error('Error loading stats:', error);
     }
 }
 
-// Progress Charts (Weight & Waist)
-function updateProgressCharts(dailyLogs) {
-    // Extract weight and waist data (if available in logs)
-    // For now, we'll create placeholder charts that can be populated when data is available
-    const labels = dailyLogs.map(d => `Day ${d.day}`);
+async function handleFormSubmit(e) {
+    e.preventDefault();
     
-    // Weight Chart
-    const weightCtx = document.getElementById('weightChart');
-    if (weightCtx) {
-        if (weightChart) weightChart.destroy();
+    const form = e.target;
+    const submitBtn = form.querySelector('.submit-btn');
+    const messageEl = document.getElementById('formMessage');
+    
+    // Get form values
+    const today = new Date().toISOString().split('T')[0];
+    const formData = {
+        date: today,
+        protein: parseFloat(document.getElementById('protein').value),
+        carbs: parseFloat(document.getElementById('carbs').value),
+        fat: parseFloat(document.getElementById('fat').value),
+        kcal: parseFloat(document.getElementById('kcal').value) || null,
+        seafoodKg: parseFloat(document.getElementById('seafoodKg').value) || null,
+        fastedWeight: parseFloat(document.getElementById('fastedWeight').value) || null,
+        waist: parseFloat(document.getElementById('waist').value) || null,
+        training: document.getElementById('training').value || '',
+        feeling: parseInt(document.getElementById('feeling').value),
+        notes: document.getElementById('notes').value || ''
+    };
+    
+    // Disable submit button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging...';
+    
+    try {
+        // Call Grok API to add day entry
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Add Day ${formData.date}: ${formData.protein}g protein, ${formData.carbs}g carbs, ${formData.fat}g fat, ${formData.seafoodKg || 0}kg seafood, ${formData.training || 'no training'}, feeling ${formData.feeling}/10`,
+                history: []
+            })
+        });
         
-        // Extract weight from logs (if available in content)
-        const weights = dailyLogs.map(d => {
-            const weightMatch = d.content.match(/weight[:\s]+(\d+\.?\d*)\s*kg/i);
-            return weightMatch ? parseFloat(weightMatch[1]) : null;
-        }).filter(w => w !== null);
+        const data = await response.json();
         
-        if (weights.length > 0) {
-            weightChart = new Chart(weightCtx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: labels.slice(-weights.length),
-                    datasets: [{
-                        label: 'Weight (kg)',
-                        data: weights,
-                        borderColor: 'rgb(102, 126, 234)',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
-        } else {
-            weightCtx.parentElement.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Add weight data to your daily logs to see progress</p>';
+        if (data.error) {
+            throw new Error(data.error);
         }
-    }
-    
-    // Waist Chart
-    const waistCtx = document.getElementById('waistChart');
-    if (waistCtx) {
-        if (waistChart) waistChart.destroy();
         
-        // Extract waist from logs (if available in content)
-        const waists = dailyLogs.map(d => {
-            const waistMatch = d.content.match(/waist[:\s]+(\d+\.?\d*)\s*cm/i);
-            return waistMatch ? parseFloat(waistMatch[1]) : null;
-        }).filter(w => w !== null);
-        
-        if (waists.length > 0) {
-            waistChart = new Chart(waistCtx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: labels.slice(-waists.length),
-                    datasets: [{
-                        label: 'Waist (cm)',
-                        data: waists,
-                        borderColor: 'rgb(245, 87, 108)',
-                        backgroundColor: 'rgba(245, 87, 108, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            reverse: true // Lower is better for waist
-                        }
-                    }
-                }
-            });
-        } else {
-            waistCtx.parentElement.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Add waist measurements to your daily logs to see progress</p>';
+        // Show success message
+        if (messageEl) {
+            messageEl.textContent = `Day logged successfully! ${data.function_result?.message || ''}`;
+            messageEl.className = 'form-message success';
+            messageEl.style.display = 'block';
         }
+        
+        // Reset form
+        form.reset();
+        document.getElementById('feelingValue').textContent = '8';
+        
+        // Reload data after a delay
+        setTimeout(() => {
+            loadData();
+            loadStats();
+            if (messageEl) {
+                messageEl.style.display = 'none';
+            }
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        if (messageEl) {
+            messageEl.textContent = `Error: ${error.message}`;
+            messageEl.className = 'form-message error';
+            messageEl.style.display = 'block';
+        }
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log Day';
     }
 }
 
-// Glowing Streak Badge (when hitting 350g+ protein)
-function checkStreakGlow(dailyLogs) {
-    if (dailyLogs.length === 0) return;
+async function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
     
-    const lastDay = dailyLogs[dailyLogs.length - 1];
-    const protein = lastDay.protein || 0;
-    const streakBadge = document.getElementById('streakBadge');
+    // Compress image
+    const compressedBlob = await compressImage(file);
+    if (!compressedBlob) return;
     
-    if (protein >= 350 && streakBadge) {
-        streakBadge.classList.add('glowing');
-    } else {
-        streakBadge.classList.remove('glowing');
+    // Upload
+    const formData = new FormData();
+    formData.append('photo', compressedBlob, file.name);
+    
+    try {
+        const response = await fetch('/api/upload-photo', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Reload photos
+            loadPhotos();
+        } else {
+            alert('Upload failed: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert('Upload failed: ' + error.message);
     }
+    
+    // Reset input
+    event.target.value = '';
 }
 
-// Image Compression Function
-function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8, maxSizeMB = 1.5) {
-    return new Promise((resolve, reject) => {
+function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8) {
+    return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
-                // Calculate new dimensions
+                const canvas = document.createElement('canvas');
                 let width = img.width;
                 let height = img.height;
                 
@@ -586,286 +414,56 @@ function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8, m
                     }
                 }
                 
-                // Create canvas and compress
-                const canvas = document.createElement('canvas');
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 
-                // Convert to blob with compression
-                canvas.toBlob(function(blob) {
-                    // Check file size and reduce quality if needed
-                    const fileSizeMB = blob.size / (1024 * 1024);
-                    
-                    if (fileSizeMB > maxSizeMB && quality > 0.5) {
-                        // Recursively compress with lower quality
-                        canvas.toBlob(function(compressedBlob) {
-                            resolve(compressedBlob);
-                        }, 'image/jpeg', quality * 0.8);
-                    } else {
-                        resolve(blob);
-                    }
-                }, 'image/jpeg', quality);
+                canvas.toBlob(resolve, 'image/jpeg', quality);
             };
-            img.onerror = reject;
             img.src = e.target.result;
         };
-        reader.onerror = reject;
         reader.readAsDataURL(file);
     });
 }
 
-// Photo Upload Handler with Compression
-async function handlePhotoUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    // Check file size first
-    const fileSizeMB = file.size / (1024 * 1024);
-    const maxSizeMB = 10; // Allow up to 10MB original, will compress
-    
-    if (fileSizeMB > maxSizeMB) {
-        alert(`File is too large (${fileSizeMB.toFixed(1)}MB). Please select a smaller image.`);
-        return;
-    }
-    
-    // Show loading state
-    const preview = document.getElementById('photoPreview');
-    preview.innerHTML = '<p style="text-align: center; color: #666;">Compressing image... ⏳</p>';
-    
-    try {
-        // Compress image
-        const compressedBlob = await compressImage(file, 1920, 1920, 0.8, 1.5);
-        
-        const compressedSizeMB = compressedBlob.size / (1024 * 1024);
-        const compressionRatio = ((1 - compressedBlob.size / file.size) * 100).toFixed(0);
-        
-        console.log(`Original: ${fileSizeMB.toFixed(2)}MB → Compressed: ${compressedSizeMB.toFixed(2)}MB (${compressionRatio}% reduction)`);
-        
-        // Show preview of compressed image
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 8px;">
-                <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 10px;">
-                    Compressed: ${compressedSizeMB.toFixed(2)}MB (${compressionRatio}% smaller) - Uploading...
-                </p>`;
-        };
-        reader.readAsDataURL(compressedBlob);
-        
-        // Create a File object from the compressed blob
-        const compressedFile = new File([compressedBlob], file.name, {
-            type: 'image/jpeg',
-            lastModified: Date.now()
-        });
-        
-        // Upload compressed file
-        const formData = new FormData();
-        formData.append('photo', compressedFile);
-        
-        const response = await fetch('/api/upload-photo', {
-            method: 'POST',
-            body: formData
-        });
-        
-        // Check if response is JSON
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            const text = await response.text();
-            throw new Error(`Server returned non-JSON: ${text.substring(0, 100)}`);
-        }
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            // Store the uploaded photo URL
-            const uploadedUrl = result.url;
-            
-            // Store in localStorage (PRIMARY storage - most reliable)
-            try {
-                const storedStr = localStorage.getItem('uploadedPhotos') || '[]';
-                const storedPhotos = JSON.parse(storedStr);
-                if (!Array.isArray(storedPhotos)) {
-                    console.warn('localStorage photos was not an array, resetting');
-                    localStorage.setItem('uploadedPhotos', JSON.stringify([]));
-                }
-                
-                // Check if URL already exists (avoid duplicates)
-                if (!storedPhotos.find(p => p.url === uploadedUrl)) {
-                    storedPhotos.push({
-                        url: uploadedUrl,
-                        date: new Date().toISOString()
-                    });
-                    localStorage.setItem('uploadedPhotos', JSON.stringify(storedPhotos));
-                    console.log('Photo saved to localStorage:', uploadedUrl);
-                    console.log('Total photos in localStorage:', storedPhotos.length);
-                } else {
-                    console.log('Photo already in localStorage, skipping duplicate');
-                }
-            } catch (e) {
-                console.error('Error storing photo in localStorage:', e);
-                // Try to recover by resetting
-                try {
-                    localStorage.setItem('uploadedPhotos', JSON.stringify([{
-                        url: uploadedUrl,
-                        date: new Date().toISOString()
-                    }]));
-                    console.log('Reset localStorage and saved photo');
-                } catch (e2) {
-                    console.error('Failed to reset localStorage:', e2);
-                }
-            }
-            
-            // Add to gallery immediately (optimistic update)
-            const gallery = document.getElementById('photoGallery');
-            if (!gallery) {
-                console.error('Gallery element not found!');
-                alert('Photo uploaded but gallery not found. URL: ' + uploadedUrl);
-                return;
-            }
-            
-            // Clear "no photos" message
-            if (gallery.innerHTML.includes('No photos yet') || gallery.innerHTML.includes('no photos')) {
-                gallery.innerHTML = '';
-            }
-            
-            // Create photo item
-            const photoDiv = document.createElement('div');
-            photoDiv.className = 'photo-item';
-            const img = document.createElement('img');
-            img.src = uploadedUrl;
-            img.alt = 'Progress photo';
-            img.onclick = () => window.open(uploadedUrl, '_blank');
-            img.style.cssText = 'width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;';
-            img.onmouseover = () => img.style.transform = 'scale(1.05)';
-            img.onmouseout = () => img.style.transform = 'scale(1)';
-            img.onerror = function() {
-                console.error('Failed to load image:', uploadedUrl);
-                this.style.border = '2px solid #f5576c';
-                this.alt = 'Failed to load - click to open URL';
-            };
-            photoDiv.appendChild(img);
-            gallery.insertBefore(photoDiv, gallery.firstChild);
-            
-            // Also reload from server to get all photos
-            setTimeout(() => loadPhotos(), 1000);
-            
-            preview.innerHTML = '';
-            document.getElementById('photoInput').value = '';
-            alert(`Photo uploaded successfully! 📸\n\nSaved ${compressionRatio}% storage space!`);
-        } else {
-            alert('Upload failed: ' + (result.error || 'Unknown error'));
-        }
-    } catch (error) {
-        console.error('Upload error:', error);
-        preview.innerHTML = '<p style="text-align: center; color: #f5576c;">Error: ' + error.message + '</p>';
-        alert('Error uploading photo: ' + error.message);
-    }
-}
-
-// Load Photos
 async function loadPhotos() {
     try {
+        const response = await fetch('/api/photos');
+        const data = await response.json();
+        const photos = data.photos || [];
+        
         const gallery = document.getElementById('photoGallery');
-        if (!gallery) {
-            console.error('Photo gallery element not found!');
-            return;
-        }
+        if (!gallery) return;
         
-        // PRIMARY: Load from localStorage (most reliable)
-        let photos = [];
+        // Also check localStorage
         try {
-            const storedStr = localStorage.getItem('uploadedPhotos');
-            console.log('localStorage raw:', storedStr);
-            if (storedStr) {
-                const storedPhotos = JSON.parse(storedStr);
-                console.log('Photos from localStorage:', storedPhotos);
-                photos = Array.isArray(storedPhotos) ? storedPhotos : [];
-            }
-        } catch (error) {
-            console.error('Error reading localStorage:', error);
-        }
-        
-        // SECONDARY: Try to load from server (may not work with Vercel Blob)
-        try {
-            const response = await fetch('/api/photos');
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Photos from server:', data);
-                if (data.photos && Array.isArray(data.photos)) {
-                    // Merge with localStorage, avoiding duplicates
-                    for (const serverPhoto of data.photos) {
-                        if (!photos.find(p => p.url === serverPhoto.url)) {
-                            photos.push(serverPhoto);
-                        }
+            const stored = localStorage.getItem('uploadedPhotos');
+            if (stored) {
+                const storedPhotos = JSON.parse(stored);
+                storedPhotos.forEach(stored => {
+                    if (!photos.find(p => p.url === stored.url)) {
+                        photos.push(stored);
                     }
-                }
+                });
             }
-        } catch (error) {
-            console.error('Error fetching from server:', error);
-            // Not critical - localStorage is primary source
+        } catch (e) {
+            console.error('Error reading localStorage:', e);
         }
-        
-        // Sort by date, newest first
-        photos.sort((a, b) => {
-            const dateA = new Date(a.date || 0);
-            const dateB = new Date(b.date || 0);
-            return dateB - dateA;
-        });
-        
-        console.log(`Displaying ${photos.length} photos:`, photos);
         
         if (photos.length > 0) {
-            gallery.innerHTML = photos.map((photo, index) => {
+            gallery.innerHTML = photos.map(photo => {
                 const url = photo.url;
-                // Escape URL for HTML
-                const safeUrl = url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 return `
-                    <div class="photo-item" style="position: relative;">
-                        <img src="${safeUrl}" 
-                             alt="Progress photo ${index + 1}" 
-                             onclick="window.open('${safeUrl}', '_blank')"
-                             style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; display: block;"
-                             onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
-                             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';"
-                             onerror="console.error('Failed to load image:', '${safeUrl}'); this.style.border='2px solid #f5576c'; this.alt='Failed to load - click to open';">
+                    <div class="photo-item">
+                        <img src="${url}" alt="Progress photo" onclick="window.open('${url}', '_blank')">
                     </div>
                 `;
             }).join('');
         } else {
-            gallery.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1; padding: 40px 20px;">No photos yet. Upload your first progress photo!</p>';
+            gallery.innerHTML = '<p style="text-align: center; color: #999; grid-column: 1 / -1; padding: 40px;">No photos yet</p>';
         }
     } catch (error) {
         console.error('Error loading photos:', error);
-        const gallery = document.getElementById('photoGallery');
-        if (gallery) {
-            gallery.innerHTML = `<p style="text-align: center; color: #f5576c; grid-column: 1 / -1;">Error loading photos. Check console (F12) for details.</p>`;
-        }
     }
 }
-
-// Debug function - can be called from console
-window.debugPhotos = function() {
-    const stored = localStorage.getItem('uploadedPhotos');
-    console.log('=== PHOTO DEBUG ===');
-    console.log('localStorage key "uploadedPhotos":', stored);
-    if (stored) {
-        try {
-            const parsed = JSON.parse(stored);
-            console.log('Parsed photos:', parsed);
-            console.log('Number of photos:', parsed.length);
-            parsed.forEach((p, i) => {
-                console.log(`Photo ${i + 1}:`, p.url);
-            });
-        } catch (e) {
-            console.error('Failed to parse:', e);
-        }
-    } else {
-        console.log('No photos in localStorage');
-    }
-    console.log('==================');
-    return stored;
-};
-
-// Chat functionality removed - kept private between user and Grok
-

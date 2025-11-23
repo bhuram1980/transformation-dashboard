@@ -1,0 +1,23 @@
+{
+  "date": "2025-11-22",
+  "fastedWeight": null,
+  "waist": null,
+  "protein": 395,
+  "carbs": 36,
+  "fat": 136,
+  "kcal": 2450,
+  "seafoodKg": 0.9,
+  "training": "2.3 hr surfing + chest press 4×8 @ 178 lbs + Smith squats",
+  "supplements": {
+    "omega3": true,
+    "nacMorning": true,
+    "nacNight": true,
+    "d3k2": true,
+    "zmb": true,
+    "wheyScoops": 0,
+    "creatine": true
+  },
+  "feeling": 9,
+  "notes": "Empty plates, great bowel movements, sharp energy"
+}
+
