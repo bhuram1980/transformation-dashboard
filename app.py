@@ -1235,12 +1235,18 @@ def get_stats():
         loader = TransformationDataLoader()
         daily_logs = loader.get_daily_logs()
         
-        # Calculate total fish demolished (handle both field names)
+        # Calculate total fish demolished (handle both old and new schema)
         total_fish_kg = 0
-        for day in daily_logs:
-            fish = day.get('seafoodKg') or day.get('seafood_kg') or 0
-            if fish:
-                total_fish_kg += float(fish)
+        try:
+            for day in daily_logs:
+                # Handle both old and new schema
+                total_obj = day.get('total', {})
+                fish = total_obj.get('seafoodKg') or total_obj.get('seafood_kg') or day.get('seafoodKg') or day.get('seafood_kg') or 0
+                if fish:
+                    total_fish_kg += float(fish)
+        except Exception as e:
+            print(f"Error calculating total fish: {e}")
+            total_fish_kg = 0
         
         # Get baseline ALT for countdown
         baseline = loader.get_baseline()
@@ -1251,21 +1257,48 @@ def get_stats():
         # Initialize stats dict
         stats = {}
         
-        # Calculate averages
+        # Calculate averages (handle both old and new schema)
         if daily_logs:
-            proteins = [float(d.get('protein', 0) or 0) for d in daily_logs if d.get('protein')]
-            carbs = [float(d.get('carbs', 0) or 0) for d in daily_logs if d.get('carbs')]
-            fats = [float(d.get('fat', 0) or 0) for d in daily_logs if d.get('fat')]
-            seafoods = []
-            for d in daily_logs:
-                fish = d.get('seafoodKg') or d.get('seafood_kg')
-                if fish:
-                    seafoods.append(float(fish))
-            
-            stats['avg_protein'] = sum(proteins) / len(proteins) if proteins else 0
-            stats['avg_carbs'] = sum(carbs) / len(carbs) if carbs else 0
-            stats['avg_fat'] = sum(fats) / len(fats) if fats else 0
-            stats['avg_seafood'] = sum(seafoods) / len(seafoods) if seafoods else 0
+            try:
+                proteins = []
+                carbs = []
+                fats = []
+                for d in daily_logs:
+                    # Handle both old and new schema
+                    total_obj = d.get('total', {})
+                    if total_obj:
+                        p = total_obj.get('protein') or d.get('protein')
+                        c = total_obj.get('carbs') or d.get('carbs')
+                        f = total_obj.get('fat') or d.get('fat')
+                    else:
+                        p = d.get('protein')
+                        c = d.get('carbs')
+                        f = d.get('fat')
+                    
+                    if p:
+                        proteins.append(float(p))
+                    if c:
+                        carbs.append(float(c))
+                    if f:
+                        fats.append(float(f))
+                
+                seafoods = []
+                for d in daily_logs:
+                    total_obj = d.get('total', {})
+                    fish = total_obj.get('seafoodKg') or total_obj.get('seafood_kg') or d.get('seafoodKg') or d.get('seafood_kg')
+                    if fish:
+                        seafoods.append(float(fish))
+                
+                stats['avg_protein'] = round(sum(proteins) / len(proteins), 1) if proteins else 0
+                stats['avg_carbs'] = round(sum(carbs) / len(carbs), 1) if carbs else 0
+                stats['avg_fat'] = round(sum(fats) / len(fats), 1) if fats else 0
+                stats['avg_seafood'] = round(sum(seafoods) / len(seafoods), 2) if seafoods else 0
+            except Exception as e:
+                print(f"Error calculating averages: {e}")
+                stats['avg_protein'] = 0
+                stats['avg_carbs'] = 0
+                stats['avg_fat'] = 0
+                stats['avg_seafood'] = 0
         else:
             stats['avg_protein'] = 0
             stats['avg_carbs'] = 0
