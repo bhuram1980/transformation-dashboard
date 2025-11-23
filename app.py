@@ -369,31 +369,42 @@ def upload_photo():
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
                 file_data = file.read()
                 
-                # Vercel Blob API endpoint
+                # Vercel Blob API: POST to /put endpoint
+                # Documentation: https://vercel.com/docs/storage/vercel-blob/using-blob-sdk
                 headers = {
                     'Authorization': f'Bearer {blob_token}',
-                    'x-content-type': file.content_type or 'image/jpeg'
+                    'Content-Type': file.content_type or 'application/octet-stream'
                 }
                 
-                # Upload to Vercel Blob
-                response = requests.put(
-                    f'https://blob.vercel-storage.com/{filename}',
+                # Use POST to /put endpoint with pathname and access as query params
+                response = requests.post(
+                    'https://blob.vercel-storage.com/put',
                     data=file_data,
                     headers=headers,
-                    params={'access': 'public'},
+                    params={
+                        'pathname': filename,
+                        'access': 'public'
+                    },
                     timeout=30
                 )
                 
                 if response.status_code == 200:
                     result = response.json()
-                    return jsonify({'success': True, 'url': result.get('url', result.get('downloadUrl'))})
+                    # Vercel Blob returns url in the response
+                    blob_url = result.get('url') or result.get('downloadUrl') or result.get('pathname')
+                    if blob_url:
+                        return jsonify({'success': True, 'url': blob_url})
+                    else:
+                        raise Exception(f"Unexpected response format: {result}")
                 else:
-                    # Fallback to local if Blob upload fails
-                    raise Exception(f"Blob upload failed: {response.status_code}")
+                    # Log the error for debugging
+                    error_msg = response.text or f"Status {response.status_code}"
+                    raise Exception(f"Blob upload failed: {response.status_code} - {error_msg}")
                     
             except Exception as e:
                 # Fallback: save locally if Blob fails
-                print(f"Blob upload error: {e}, falling back to local storage")
+                error_msg = str(e)
+                print(f"Blob upload error: {error_msg}, falling back to local storage")
                 upload_folder = Path('static/uploads')
                 upload_folder.mkdir(exist_ok=True)
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
@@ -401,7 +412,7 @@ def upload_photo():
                 file.seek(0)  # Reset file pointer
                 file.save(filepath)
                 url = f"/static/uploads/{filename}"
-                return jsonify({'success': True, 'url': url})
+                return jsonify({'success': True, 'url': url, 'note': 'Saved locally (Blob error: ' + error_msg + ')'})
         else:
             # Fallback: save locally (for development)
             upload_folder = Path('static/uploads')
@@ -427,8 +438,9 @@ def get_photos():
         if blob_token:
             try:
                 import requests
+                # Vercel Blob list endpoint
                 response = requests.get(
-                    'https://blob.vercel-storage.com',
+                    'https://blob.vercel-storage.com/list',
                     headers={'Authorization': f'Bearer {blob_token}'},
                     params={'limit': 100},
                     timeout=10
@@ -438,7 +450,7 @@ def get_photos():
                     if 'blobs' in blob_data:
                         photos = [
                             {
-                                'url': blob.get('url', blob.get('downloadUrl')),
+                                'url': blob.get('url', blob.get('downloadUrl', blob.get('pathname'))),
                                 'date': blob.get('uploadedAt', blob.get('createdAt', datetime.now().isoformat()))
                             }
                             for blob in blob_data['blobs']
