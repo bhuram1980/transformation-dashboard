@@ -18,27 +18,47 @@ os.chdir(str(parent_dir))
 try:
     from app import app
     
-    # Vercel expects a handler function
+    # Vercel expects a handler function that returns a response
     def handler(request):
-        """Vercel WSGI handler"""
+        """Vercel WSGI handler for Flask"""
         try:
-            return app(request.environ, lambda status, headers: None)
+            # Get the WSGI environment and start_response callable
+            environ = request.environ if hasattr(request, 'environ') else {}
+            start_response = lambda status, headers: None
+            
+            # Call the Flask app
+            response = app(environ, start_response)
+            
+            # Convert WSGI response to Vercel format
+            if isinstance(response, list):
+                body = b''.join(response).decode('utf-8')
+            else:
+                body = str(response)
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'text/html'},
+                'body': body
+            }
         except Exception as e:
             import traceback
-            traceback.print_exc()
-            # Return a basic error response
+            error_msg = traceback.format_exc()
+            print(f"Handler error: {error_msg}")
             return {
                 'statusCode': 500,
                 'headers': {'Content-Type': 'text/html'},
-                'body': f'<h1>Server Error</h1><p>{str(e)}</p>'
+                'body': f'<h1>Server Error</h1><pre>{error_msg}</pre>'
             }
+            
 except Exception as e:
     import traceback
-    traceback.print_exc()
+    error_msg = traceback.format_exc()
+    print(f"Import error: {error_msg}")
+    
     # Fallback handler if app import fails
     def handler(request):
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'text/html'},
-            'body': f'<h1>Import Error</h1><p>{str(e)}</p><pre>{traceback.format_exc()}</pre>'
+            'body': f'<h1>Import Error</h1><pre>{error_msg}</pre>'
         }
