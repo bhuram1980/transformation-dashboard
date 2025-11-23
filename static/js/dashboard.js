@@ -725,9 +725,4 @@ function toggleMealsDetail(button) {
         }, 300);
         icon.textContent = '▼';
     }
-})
-        .catch(error => {
-            console.error('Error loading day meals:', error);
-            mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
-        });
 }
