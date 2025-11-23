@@ -6,7 +6,7 @@ let progressChart;
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
     loadStats();
-    loadPhotos();
+    populateDaySelector();
     
     // Feeling slider update
     const feelingSlider = document.getElementById('feeling');
@@ -432,43 +432,130 @@ function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8) {
     });
 }
 
-async function loadPhotos() {
-    try {
-        const response = await fetch('/api/photos');
-        const data = await response.json();
-        const photos = data.photos || [];
-        
-        const gallery = document.getElementById('photoGallery');
-        if (!gallery) return;
-        
-        // Also check localStorage
-        try {
-            const stored = localStorage.getItem('uploadedPhotos');
-            if (stored) {
-                const storedPhotos = JSON.parse(stored);
-                storedPhotos.forEach(stored => {
-                    if (!photos.find(p => p.url === stored.url)) {
-                        photos.push(stored);
-                    }
-                });
+function populateDaySelector() {
+    const selector = document.getElementById('daySelect');
+    if (!selector) return;
+    
+    // Load data and populate dropdown
+    fetch('/api/data')
+        .then(response => response.json())
+        .then(data => {
+            const dailyLogs = data.daily_logs || [];
+            
+            // Clear existing options
+            selector.innerHTML = '';
+            
+            if (dailyLogs.length === 0) {
+                selector.innerHTML = '<option value="">No days logged yet</option>';
+                return;
             }
-        } catch (e) {
-            console.error('Error reading localStorage:', e);
-        }
-        
-        if (photos.length > 0) {
-            gallery.innerHTML = photos.map(photo => {
-                const url = photo.url;
-                return `
-                    <div class="photo-item">
-                        <img src="${url}" alt="Progress photo" onclick="window.open('${url}', '_blank')">
+            
+            // Add "Today" option (most recent day)
+            const today = dailyLogs[dailyLogs.length - 1];
+            selector.innerHTML = `<option value="${today.day}" selected>Today (Day ${today.day})</option>`;
+            
+            // Add previous days in reverse order
+            for (let i = dailyLogs.length - 2; i >= 0; i--) {
+                const day = dailyLogs[i];
+                const option = document.createElement('option');
+                option.value = day.day;
+                option.textContent = `Day ${day.day} - ${day.date_display || day.date}`;
+                selector.appendChild(option);
+            }
+            
+            // Load today's meals by default
+            loadDayMeals();
+        })
+        .catch(error => {
+            console.error('Error loading days:', error);
+            selector.innerHTML = '<option value="">Error loading days</option>';
+        });
+}
+
+function loadDayMeals() {
+    const selector = document.getElementById('daySelect');
+    const mealsContainer = document.getElementById('dayMeals');
+    
+    if (!selector || !mealsContainer) return;
+    
+    const selectedDay = selector.value;
+    if (!selectedDay) {
+        mealsContainer.innerHTML = '<p class="meals-placeholder">Select a day to view meals</p>';
+        return;
+    }
+    
+    // Load data
+    fetch('/api/data')
+        .then(response => response.json())
+        .then(data => {
+            const dailyLogs = data.daily_logs || [];
+            const selectedDayData = dailyLogs.find(d => d.day == selectedDay);
+            
+            if (!selectedDayData) {
+                mealsContainer.innerHTML = '<p class="meals-placeholder">Day not found</p>';
+                return;
+            }
+            
+            // Build meals display
+            let mealsHTML = `
+                <div class="meals-day-header">
+                    <h3>Day ${selectedDayData.day} - ${selectedDayData.date_display || selectedDayData.date}</h3>
+                </div>
+                <div class="meals-macros">
+                    <div class="macro-item">
+                        <span class="macro-label">Protein:</span>
+                        <span class="macro-value">${selectedDayData.protein || 0}g</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Carbs:</span>
+                        <span class="macro-value">${selectedDayData.carbs || 0}g</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Fat:</span>
+                        <span class="macro-value">${selectedDayData.fat || 0}g</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Kcal:</span>
+                        <span class="macro-value">${selectedDayData.kcal || 0}</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Seafood:</span>
+                        <span class="macro-value">${selectedDayData.seafoodKg || selectedDayData.seafood_kg || 0}kg</span>
+                    </div>
+                </div>
+            `;
+            
+            if (selectedDayData.training) {
+                mealsHTML += `
+                    <div class="meals-training">
+                        <span class="training-label">Training:</span>
+                        <span class="training-value">${selectedDayData.training}</span>
                     </div>
                 `;
-            }).join('');
-        } else {
-            gallery.innerHTML = '<p style="text-align: center; color: #999; grid-column: 1 / -1; padding: 40px;">No photos yet</p>';
-        }
-    } catch (error) {
-        console.error('Error loading photos:', error);
-    }
+            }
+            
+            if (selectedDayData.feeling !== undefined && selectedDayData.feeling !== null) {
+                mealsHTML += `
+                    <div class="meals-feeling">
+                        <span class="feeling-label">Feeling:</span>
+                        <span class="feeling-value">${selectedDayData.feeling}/10</span>
+                    </div>
+                `;
+            }
+            
+            if (selectedDayData.notes) {
+                mealsHTML += `
+                    <div class="meals-notes">
+                        <span class="notes-label">Notes:</span>
+                        <p class="notes-value">${selectedDayData.notes}</p>
+                    </div>
+                `;
+            }
+            
+            mealsContainer.innerHTML = mealsHTML;
+        })
+        .catch(error => {
+            console.error('Error loading day meals:', error);
+            mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
+        });
 }

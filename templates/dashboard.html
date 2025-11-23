@@ -69,17 +69,18 @@
             </div>
         </section>
 
-        <!-- Section 5: Progress Photos -->
-        <section class="photos-section">
-            <h2 class="section-title">Progress Photos</h2>
-            <div class="photo-upload-area">
-                <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handlePhotoUpload(event)">
-                <button class="upload-btn" onclick="document.getElementById('photoInput').click()">
-                    <span class="upload-icon">📷</span>
-                    Add Photo
-                </button>
+        <!-- Section 5: What I Ate Today -->
+        <section class="meals-section">
+            <h2 class="section-title">What I Ate Today</h2>
+            <div class="day-selector">
+                <label for="daySelect" class="day-select-label">Select Day:</label>
+                <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()">
+                    <option value="">Loading...</option>
+                </select>
             </div>
-            <div id="photoGallery" class="photo-gallery-grid"></div>
+            <div id="dayMeals" class="meals-content">
+                <p class="meals-placeholder">Select a day to view meals</p>
+            </div>
         </section>
     </div>
 
