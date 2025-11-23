@@ -406,36 +406,45 @@ async function loadStats() {
 
 // Form submission and photo upload removed - view-only dashboard
 
+let currentDayIndex = 0;
+let dailyLogsList = [];
+
 function populateDaySelector() {
     const selector = document.getElementById('daySelect');
+    const dayDisplay = document.getElementById('dayDisplay');
     if (!selector) return;
     
     // Load data and populate dropdown
     fetch('/api/data')
         .then(response => response.json())
         .then(data => {
-            const dailyLogs = data.daily_logs || [];
+            dailyLogsList = data.daily_logs || [];
             
             // Clear existing options
             selector.innerHTML = '';
             
-            if (dailyLogs.length === 0) {
+            if (dailyLogsList.length === 0) {
                 selector.innerHTML = '<option value="">No days logged yet</option>';
+                if (dayDisplay) dayDisplay.textContent = 'No days logged yet';
                 return;
             }
             
-            // Add "Today" option (most recent day)
-            const today = dailyLogs[dailyLogs.length - 1];
-            selector.innerHTML = `<option value="${today.day}" selected>Today (Day ${today.day})</option>`;
+            // Set current day to most recent
+            currentDayIndex = dailyLogsList.length - 1;
             
-            // Add previous days in reverse order
-            for (let i = dailyLogs.length - 2; i >= 0; i--) {
-                const day = dailyLogs[i];
+            // Populate dropdown
+            dailyLogsList.forEach((day, index) => {
                 const option = document.createElement('option');
                 option.value = day.day;
                 option.textContent = `Day ${day.day} - ${day.date_display || day.date}`;
+                if (index === currentDayIndex) {
+                    option.selected = true;
+                }
                 selector.appendChild(option);
-            }
+            });
+            
+            // Update day display
+            updateDayDisplay();
             
             // Load today's meals by default
             loadDayMeals();
@@ -443,7 +452,39 @@ function populateDaySelector() {
         .catch(error => {
             console.error('Error loading days:', error);
             selector.innerHTML = '<option value="">Error loading days</option>';
+            if (dayDisplay) dayDisplay.textContent = 'Error loading days';
         });
+}
+
+function updateDayDisplay() {
+    const dayDisplay = document.getElementById('dayDisplay');
+    const selector = document.getElementById('daySelect');
+    
+    if (dailyLogsList.length > 0 && currentDayIndex >= 0 && currentDayIndex < dailyLogsList.length) {
+        const currentDay = dailyLogsList[currentDayIndex];
+        if (dayDisplay) {
+            dayDisplay.textContent = `Day ${currentDay.day} - ${currentDay.date_display || currentDay.date}`;
+        }
+        if (selector) {
+            selector.value = currentDay.day;
+        }
+    }
+}
+
+function navigateDay(direction) {
+    if (dailyLogsList.length === 0) return;
+    
+    currentDayIndex += direction;
+    
+    // Wrap around
+    if (currentDayIndex < 0) {
+        currentDayIndex = dailyLogsList.length - 1;
+    } else if (currentDayIndex >= dailyLogsList.length) {
+        currentDayIndex = 0;
+    }
+    
+    updateDayDisplay();
+    loadDayMeals();
 }
 
 function loadDayMeals() {
@@ -492,13 +533,12 @@ function loadDayMeals() {
 }
 
 function renderDayMeals(selectedDayData, mealsContainer) {
-            
-            if (!selectedDayData) {
-                mealsContainer.innerHTML = '<p class="meals-placeholder">Day not found</p>';
-                return;
-            }
-            
-            // Get daily totals (from total object or top-level fields)
+    if (!selectedDayData) {
+        mealsContainer.innerHTML = '<p class="meals-placeholder">Day not found</p>';
+        return;
+    }
+    
+    // Get daily totals (from total object or top-level fields)
             const dailyTotal = selectedDayData.total || {
                 protein: selectedDayData.protein || 0,
                 carbs: selectedDayData.carbs || 0,
@@ -507,21 +547,21 @@ function renderDayMeals(selectedDayData, mealsContainer) {
                 seafoodKg: selectedDayData.seafoodKg || selectedDayData.seafood_kg || 0
             };
             
-            // Build meals display
-            let mealsHTML = `
-                <div class="meals-day-header">
-                    <h3>Day ${selectedDayData.day} - ${selectedDayData.date_display || selectedDayData.date}</h3>
-                </div>
-                
-                <div class="meals-macros">
-                    <div class="macro-item">
-                        <span class="macro-label">Protein:</span>
-                        <span class="macro-value">${dailyTotal.protein || 0}g</span>
-                    </div>
-                    <div class="macro-item">
-                        <span class="macro-label">Carbs:</span>
-                        <span class="macro-value">${dailyTotal.carbs || 0}g</span>
-                    </div>
+    // Build meals display
+    let mealsHTML = `
+        <div class="meals-day-header">
+            <h3>Day ${selectedDayData.day} - ${selectedDayData.date_display || selectedDayData.date}</h3>
+        </div>
+        
+        <div class="meals-macros">
+            <div class="macro-item">
+                <span class="macro-label">Protein:</span>
+                <span class="macro-value">${dailyTotal.protein || 0}g</span>
+            </div>
+            <div class="macro-item">
+                <span class="macro-label">Carbs:</span>
+                <span class="macro-value">${dailyTotal.carbs || 0}g</span>
+            </div>
                     <div class="macro-item">
                         <span class="macro-label">Fat:</span>
                         <span class="macro-value">${dailyTotal.fat || 0}g</span>
@@ -791,29 +831,24 @@ function renderDayMeals(selectedDayData, mealsContainer) {
                 `;
             }
             
-            mealsContainer.innerHTML = mealsHTML;
-            
-            // Fade in animation
-            mealsContainer.style.opacity = '0';
-            setTimeout(() => {
-                mealsContainer.style.transition = 'opacity 0.4s ease';
-                mealsContainer.style.opacity = '1';
-            }, 10);
-            
-            // Auto-expand meals detail if it exists
-            const mealsToggle = mealsContainer.querySelector('.meals-toggle');
-            if (mealsToggle) {
-                const mealsContent = mealsToggle.nextElementSibling;
-                if (mealsContent) {
-                    mealsContent.style.display = 'block';
-                    mealsToggle.querySelector('.meals-toggle-icon').textContent = '▲';
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Error loading day meals:', error);
-            mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
-        });
+    mealsContainer.innerHTML = mealsHTML;
+    
+    // Fade in animation
+    mealsContainer.style.opacity = '0';
+    setTimeout(() => {
+        mealsContainer.style.transition = 'opacity 0.4s ease';
+        mealsContainer.style.opacity = '1';
+    }, 10);
+    
+    // Auto-expand meals detail if it exists
+    const mealsToggle = mealsContainer.querySelector('.meals-toggle');
+    if (mealsToggle) {
+        const mealsContent = mealsToggle.nextElementSibling;
+        if (mealsContent) {
+            mealsContent.style.display = 'block';
+            mealsToggle.querySelector('.meals-toggle-icon').textContent = '▲';
+        }
+    }
 }
 
 function toggleMealsDetail(button) {
