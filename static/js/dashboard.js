@@ -18,8 +18,6 @@ const fishMacros = {
 // Load all data on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
-    // Load Grok advice (public access)
-    loadAdvice();
     loadStats();
     // Load photos after a short delay to ensure DOM is ready
     setTimeout(() => loadPhotos(), 500);
