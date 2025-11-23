@@ -2,22 +2,41 @@
   "date": "2025-11-23",
   "fastedWeight": null,
   "waist": null,
-  "protein": 398,
-  "carbs": 40,
-  "fat": 163,
-  "kcal": 2850,
-  "seafoodKg": 0.95,
-  "training": "1 hr surfing",
-  "supplements": {
-    "omega3": true,
-    "nacMorning": true,
-    "nacNight": true,
-    "d3k2": true,
-    "zmb": true,
-    "wheyScoops": 1,
-    "creatine": true
-  },
-  "feeling": 9,
-  "notes": "Projected final: 386-410g protein | <40g carbs"
-}
+  "total": { "protein": 395, "carbs": 38, "fat": 152, "kcal": 2680, "seafoodKg": 1.1 },
 
+  "meals": {
+    "breakfast": {
+      "description": "4 whole eggs + spinach + tomatoes",
+      "protein": 28, "carbs": 8,  "fat": 24, "kcal": 340
+    },
+    "midMorning": {
+      "description": "3 whole boiled eggs + lime soda",
+      "protein": 21, "carbs": 4,  "fat": 18, "kcal": 250
+    },
+    "lunch": {
+      "description": "450 g salmon steak (skin on) + grilled veggies",
+      "protein": 108, "carbs": 12, "fat": 81, "kcal": 1215
+    },
+    "snacks": {
+      "description": "1 scoop Critical Whey + 5 g creatine shake",
+      "protein": 27, "carbs": 6,  "fat": 7,  "kcal": 185
+    },
+    "dinner": {
+      "description": "600–700 g fish (pending – will update tonight)",
+      "protein": 211, "carbs": 8,  "fat": 22, "kcal": 690
+    }
+  },
+
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps with lunch salmon" },
+    "nac":      { "taken": true,  "dose": "1 morning + 1 night" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs with lunch" },
+    "zmb":      { "taken": false, "dose": "3 caps before bed tonight" },
+    "whey":     { "taken": true,  "scoops": 1 },
+    "creatine": { "taken": true,  "dose": "5 g" }
+  },
+
+  "training": "1 hr surfing",
+  "feeling": 10,
+  "notes": "Dinner will lock 395–410 g protein and >1.1 kg fish"
+}

@@ -403,6 +403,15 @@ function loadDayMeals() {
                 return;
             }
             
+            // Get daily totals (from total object or top-level fields)
+            const dailyTotal = selectedDayData.total || {
+                protein: selectedDayData.protein || 0,
+                carbs: selectedDayData.carbs || 0,
+                fat: selectedDayData.fat || 0,
+                kcal: selectedDayData.kcal || 0,
+                seafoodKg: selectedDayData.seafoodKg || selectedDayData.seafood_kg || 0
+            };
+            
             // Build meals display
             let mealsHTML = `
                 <div class="meals-day-header">
@@ -412,29 +421,110 @@ function loadDayMeals() {
                 <div class="meals-macros">
                     <div class="macro-item">
                         <span class="macro-label">Protein:</span>
-                        <span class="macro-value">${selectedDayData.protein || 0}g</span>
+                        <span class="macro-value">${dailyTotal.protein || 0}g</span>
                     </div>
                     <div class="macro-item">
                         <span class="macro-label">Carbs:</span>
-                        <span class="macro-value">${selectedDayData.carbs || 0}g</span>
+                        <span class="macro-value">${dailyTotal.carbs || 0}g</span>
                     </div>
                     <div class="macro-item">
                         <span class="macro-label">Fat:</span>
-                        <span class="macro-value">${selectedDayData.fat || 0}g</span>
+                        <span class="macro-value">${dailyTotal.fat || 0}g</span>
                     </div>
                     <div class="macro-item">
                         <span class="macro-label">Kcal:</span>
-                        <span class="macro-value">${selectedDayData.kcal || 0}</span>
+                        <span class="macro-value">${dailyTotal.kcal || 0}</span>
                     </div>
                     <div class="macro-item">
                         <span class="macro-label">Seafood:</span>
-                        <span class="macro-value">${selectedDayData.seafoodKg || selectedDayData.seafood_kg || 0}kg</span>
+                        <span class="macro-value">${dailyTotal.seafoodKg || 0}kg</span>
                     </div>
                 </div>
             `;
             
-            // Display meals if available
-            if (selectedDayData.meals && typeof selectedDayData.meals === 'object') {
+            // Check if meals have detailed breakdown (new schema with per-meal macros)
+            const hasDetailedMeals = selectedDayData.meals && typeof selectedDayData.meals === 'object' &&
+                Object.values(selectedDayData.meals).some(meal => 
+                    typeof meal === 'object' && meal !== null && 'protein' in meal
+                );
+            
+            // Display detailed meals if available (new schema)
+            if (hasDetailedMeals) {
+                mealsHTML += `
+                    <div class="meals-detail-card">
+                        <button class="meals-toggle" onclick="toggleMealsDetail(this)">
+                            <span class="meals-toggle-icon">▼</span>
+                            <span class="meals-toggle-text">Meals</span>
+                        </button>
+                        <div class="meals-detail-content" style="display: none;">
+                            <div class="meals-detail-list">
+                `;
+                
+                const mealLabels = {
+                    breakfast: 'Breakfast',
+                    midMorning: 'Mid Morning',
+                    lunch: 'Lunch',
+                    dinner: 'Dinner',
+                    snacks: 'Snacks'
+                };
+                
+                const mealOrder = ['breakfast', 'midMorning', 'lunch', 'dinner', 'snacks'];
+                
+                mealOrder.forEach(mealKey => {
+                    const meal = selectedDayData.meals[mealKey];
+                    if (meal && typeof meal === 'object' && meal !== null && meal.description) {
+                        const desc = meal.description;
+                        if (desc && desc.toLowerCase() !== 'none') {
+                            mealsHTML += `
+                                <div class="meal-detail-item">
+                                    <div class="meal-detail-header">
+                                        <span class="meal-detail-name">${mealLabels[mealKey] || mealKey}</span>
+                                    </div>
+                                    <div class="meal-detail-description">${desc}</div>
+                                    <div class="meal-detail-macros">
+                                        <span class="meal-macro">Protein ${meal.protein || 0}g</span>
+                                        <span class="meal-macro-sep">·</span>
+                                        <span class="meal-macro">Carbs ${meal.carbs || 0}g</span>
+                                        <span class="meal-macro-sep">·</span>
+                                        <span class="meal-macro">Fat ${meal.fat || 0}g</span>
+                                        <span class="meal-macro-sep">·</span>
+                                        <span class="meal-macro">${meal.kcal || 0} kcal</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+                
+                mealsHTML += `
+                            </div>
+                            <div class="meals-detail-totals">
+                                <div class="meals-total-item">
+                                    <span class="meals-total-label">Protein</span>
+                                    <span class="meals-total-value">${dailyTotal.protein || 0}g</span>
+                                </div>
+                                <div class="meals-total-item">
+                                    <span class="meals-total-label">Carbs</span>
+                                    <span class="meals-total-value">${dailyTotal.carbs || 0}g</span>
+                                </div>
+                                <div class="meals-total-item">
+                                    <span class="meals-total-label">Fat</span>
+                                    <span class="meals-total-value">${dailyTotal.fat || 0}g</span>
+                                </div>
+                                <div class="meals-total-item">
+                                    <span class="meals-total-label">Kcal</span>
+                                    <span class="meals-total-value">${dailyTotal.kcal || 0}</span>
+                                </div>
+                                <div class="meals-total-item">
+                                    <span class="meals-total-label">Seafood</span>
+                                    <span class="meals-total-value">${dailyTotal.seafoodKg || 0}kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (selectedDayData.meals && typeof selectedDayData.meals === 'object') {
+                // Fallback: old schema with just descriptions (no per-meal macros)
                 mealsHTML += `
                     <div class="meals-section-card">
                         <h4 class="meals-section-title">Meals</h4>
@@ -452,7 +542,7 @@ function loadDayMeals() {
                 let hasMeals = false;
                 Object.keys(mealLabels).forEach(mealKey => {
                     const mealValue = selectedDayData.meals[mealKey];
-                    if (mealValue && mealValue.trim() && mealValue.toLowerCase() !== 'none') {
+                    if (typeof mealValue === 'string' && mealValue.trim() && mealValue.toLowerCase() !== 'none') {
                         hasMeals = true;
                         mealsHTML += `
                             <div class="meal-item">
@@ -596,6 +686,23 @@ function loadDayMeals() {
             }
             
             mealsContainer.innerHTML = mealsHTML;
+            
+            // Fade in animation
+            mealsContainer.style.opacity = '0';
+            setTimeout(() => {
+                mealsContainer.style.transition = 'opacity 0.4s ease';
+                mealsContainer.style.opacity = '1';
+            }, 10);
+            
+            // Auto-expand meals detail if it exists
+            const mealsToggle = mealsContainer.querySelector('.meals-toggle');
+            if (mealsToggle) {
+                const mealsContent = mealsToggle.nextElementSibling;
+                if (mealsContent) {
+                    mealsContent.style.display = 'block';
+                    mealsToggle.querySelector('.meals-toggle-icon').textContent = '▲';
+                }
+            }
         })
         .catch(error => {
             console.error('Error loading day meals:', error);
