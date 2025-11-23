@@ -994,11 +994,11 @@ def execute_function(function_name: str, args: dict) -> dict:
 def get_advice():
     """API endpoint to get Grok advice - Public access"""
     
-    parser = TransformationLogParser()
+    loader = TransformationDataLoader()
     
-    baseline = parser.get_baseline()
-    targets = parser.get_targets()
-    daily_logs = parser.get_daily_logs()
+    baseline = loader.get_baseline()
+    targets = loader.get_targets()
+    daily_logs = loader.get_daily_logs()
     
     advice = get_grok_advice(parser.log_content, daily_logs, baseline, targets)
     
