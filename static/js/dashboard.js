@@ -74,70 +74,59 @@ function animateStreak(element, start, end) {
 }
 
 function updateGoals(baseline, targets) {
-    // Android Fat - Circular Ring
+    // Android Fat
     const androidFat = baseline.android_fat || baseline.androidFat || 0;
     const androidFatTarget = parseFloat(targets.android_fat?.replace(/[^0-9.]/g, '') || '15');
     const androidFatProgress = Math.min(100, (androidFat / androidFatTarget) * 100);
     
     const androidFatEl = document.getElementById('androidFatValue');
-    const androidFatRing = document.getElementById('androidFatRing');
+    const androidFatProgressEl = document.getElementById('androidFatProgress');
     if (androidFatEl) androidFatEl.textContent = `${androidFat.toFixed(1)}%`;
-    if (androidFatRing) {
-        const circumference = 2 * Math.PI * 54;
-        const offset = circumference - (androidFatProgress / 100) * circumference;
+    if (androidFatProgressEl) {
         setTimeout(() => {
-            androidFatRing.style.strokeDashoffset = offset;
+            androidFatProgressEl.style.width = `${androidFatProgress}%`;
         }, 100);
     }
     
-    // Body Fat - Circular Ring
+    // Body Fat
     const bodyFat = baseline.body_fat || baseline.bodyFat || 0;
     const bodyFatTarget = parseFloat(targets.body_fat?.replace(/[^0-9.]/g, '') || '13');
     const bodyFatProgress = Math.min(100, (bodyFat / bodyFatTarget) * 100);
     
     const bodyFatEl = document.getElementById('bodyFatValue');
-    const bodyFatRing = document.getElementById('bodyFatRing');
+    const bodyFatProgressEl = document.getElementById('bodyFatProgress');
     if (bodyFatEl) bodyFatEl.textContent = `${bodyFat.toFixed(1)}%`;
-    if (bodyFatRing) {
-        const circumference = 2 * Math.PI * 54;
-        const offset = circumference - (bodyFatProgress / 100) * circumference;
+    if (bodyFatProgressEl) {
         setTimeout(() => {
-            bodyFatRing.style.strokeDashoffset = offset;
+            bodyFatProgressEl.style.width = `${bodyFatProgress}%`;
         }, 200);
     }
     
-    // ALT - Circular Ring (inverse - lower is better, so we calculate progress from target)
+    // ALT
     const alt = baseline.alt || 0;
     const altTarget = parseFloat(targets.alt?.replace(/[^0-9.]/g, '') || '80');
-    // Progress = how much we've reduced from baseline (315) towards target (80)
-    const altBaseline = 315;
-    const altProgress = Math.min(100, Math.max(0, ((altBaseline - alt) / (altBaseline - altTarget)) * 100));
+    const altProgress = Math.min(100, (alt / altTarget) * 100);
     
     const altEl = document.getElementById('altValue');
-    const altRing = document.getElementById('altRing');
+    const altProgressEl = document.getElementById('altProgress');
     if (altEl) altEl.textContent = alt.toFixed(0);
-    if (altRing) {
-        const circumference = 2 * Math.PI * 54;
-        const offset = circumference - (altProgress / 100) * circumference;
+    if (altProgressEl) {
         setTimeout(() => {
-            altRing.style.strokeDashoffset = offset;
+            altProgressEl.style.width = `${altProgress}%`;
         }, 300);
     }
     
-    // Glucose - Circular Ring (inverse - lower is better)
+    // Glucose
     const glucose = baseline.fasting_glucose || 0;
     const glucoseTarget = parseFloat(targets.glucose?.replace(/[^0-9.]/g, '') || '95');
-    const glucoseBaseline = 106.8;
-    const glucoseProgress = Math.min(100, Math.max(0, ((glucoseBaseline - glucose) / (glucoseBaseline - glucoseTarget)) * 100));
+    const glucoseProgress = Math.min(100, (glucose / glucoseTarget) * 100);
     
     const glucoseEl = document.getElementById('glucoseValue');
-    const glucoseRing = document.getElementById('glucoseRing');
+    const glucoseProgressEl = document.getElementById('glucoseProgress');
     if (glucoseEl) glucoseEl.textContent = `${glucose.toFixed(1)} mg/dL`;
-    if (glucoseRing) {
-        const circumference = 2 * Math.PI * 54;
-        const offset = circumference - (glucoseProgress / 100) * circumference;
+    if (glucoseProgressEl) {
         setTimeout(() => {
-            glucoseRing.style.strokeDashoffset = offset;
+            glucoseProgressEl.style.width = `${glucoseProgress}%`;
         }, 400);
     }
 }
