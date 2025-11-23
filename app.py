@@ -304,6 +304,42 @@ Keep it concise, actionable, and motivating."""
         return f"⚠️ Error getting Grok advice: {str(e)}\n\nKeep following your protocol - consistency is key! 🔥"
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Admin login page - public can view without login"""
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        
+        # Check if admin credentials are configured
+        if not ADMIN_PASSWORD:
+            # No admin password set - allow any login as admin (development mode)
+            session['user_role'] = 'admin'
+            session['username'] = username or 'admin'
+            session.permanent = True
+            return redirect(url_for('index'))
+        
+        # Check admin credentials (username must match ADMIN_USERNAME)
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['user_role'] = 'admin'
+            session['username'] = username
+            session.permanent = True
+            return redirect(url_for('index'))
+        
+        # Invalid credentials
+        return render_template('login.html', error='Invalid username or password. Only admin login is available.')
+    
+    # GET request - show login page
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    """Logout and clear session"""
+    session.clear()
+    return redirect(url_for('index'))
+
+
 @app.route('/')
 def index():
     """Main dashboard - public access (viewer mode by default)"""
