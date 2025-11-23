@@ -951,9 +951,9 @@ def execute_function(function_name: str, args: dict) -> dict:
             }
         
         elif function_name == "get_current_data":
-            parser = TransformationLogParser()
-            baseline = parser.get_baseline()
-            daily_logs = parser.get_daily_logs()
+            loader = TransformationDataLoader()
+            baseline = loader.get_baseline()
+            daily_logs = loader.get_daily_logs()
             recent_days = daily_logs[-3:] if daily_logs else []
             
             return {
