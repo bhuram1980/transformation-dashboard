@@ -203,11 +203,14 @@ class TransformationDataLoader:
         cwd = Path.cwd()
         
         # Strategy 4: Try to find public/ directory
+        # On Vercel, files are in /var/task or /var/runtime
         possible_roots = [
             app_root,
             cwd,
             app_root.parent if app_root.name == 'api' else app_root,
             cwd.parent if cwd.name == 'api' else cwd,
+            Path('/var/task'),  # Vercel serverless function directory
+            Path('/var/runtime'),  # Alternative Vercel location
         ]
         
         # Try multiple possible paths for master file
@@ -216,8 +219,13 @@ class TransformationDataLoader:
             possible_master.extend([
                 root / master_file,
                 root / "public" / "data" / "master-health-file.json",
+                root / "public" / "data" / "master-health-file.json",
             ])
-        possible_master.append(Path(master_file))
+        # Also try relative to current working directory
+        possible_master.extend([
+            Path(master_file),
+            Path("public/data/master-health-file.json"),
+        ])
         
         # Try multiple possible paths for daily logs
         possible_logs = []
@@ -226,7 +234,11 @@ class TransformationDataLoader:
                 root / daily_logs_dir,
                 root / "public" / "data" / "daily-logs",
             ])
-        possible_logs.append(Path(daily_logs_dir))
+        # Also try relative to current working directory
+        possible_logs.extend([
+            Path(daily_logs_dir),
+            Path("public/data/daily-logs"),
+        ])
         
         # Find the first existing path
         self.master_file = None
