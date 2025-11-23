@@ -434,6 +434,7 @@ tbody tr:hover {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 15px;
     margin-top: 20px;
+    min-height: 100px;
 }
 
 .photo-gallery img {
@@ -444,10 +445,20 @@ tbody tr:hover {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     cursor: pointer;
     transition: transform 0.2s;
+    background: #f0f0f0;
 }
 
 .photo-gallery img:hover {
     transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.photo-gallery p {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #666;
+    padding: 40px 20px;
+    font-style: italic;
 }
 
 @media (max-width: 768px) {

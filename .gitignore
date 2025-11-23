@@ -13,6 +13,7 @@ daily_advice.txt
 server.log
 nohup.out
 .env
+uploaded_photos.txt
 
 # Uploads (use Vercel Blob in production)
 static/uploads/*

@@ -414,6 +414,15 @@ def upload_photo():
                 if not blob_url.startswith('http'):
                     blob_url = f'https://blob.vercel-storage.com/{blob_url}'
                 
+                # Store the uploaded photo URL in a simple text file for retrieval
+                # This is a fallback if Blob list API doesn't work
+                try:
+                    photos_file = Path('uploaded_photos.txt')
+                    with open(photos_file, 'a') as f:
+                        f.write(f"{blob_url}|{datetime.now().isoformat()}\n")
+                except Exception as e:
+                    print(f"Could not save photo URL to file: {e}")
+                
                 # Log for debugging
                 print(f"Upload successful: {blob_url}")
                 return jsonify({'success': True, 'url': blob_url})

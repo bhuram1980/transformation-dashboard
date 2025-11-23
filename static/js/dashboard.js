@@ -532,16 +532,35 @@ async function loadPhotos() {
         const response = await fetch('/api/photos');
         const data = await response.json();
         
+        console.log('Photos data:', data);
+        
         const gallery = document.getElementById('photoGallery');
+        if (!gallery) {
+            console.error('Photo gallery element not found!');
+            return;
+        }
+        
         if (data.photos && data.photos.length > 0) {
-            gallery.innerHTML = data.photos.map(photo => `
-                <img src="${photo.url}" alt="Progress photo" onclick="window.open('${photo.url}', '_blank')">
-            `).join('');
+            gallery.innerHTML = data.photos.map(photo => {
+                const url = photo.url;
+                return `
+                    <div class="photo-item">
+                        <img src="${url}" 
+                             alt="Progress photo" 
+                             onclick="window.open('${url}', '_blank')"
+                             onerror="this.style.display='none'; console.error('Failed to load image: ${url}');">
+                    </div>
+                `;
+            }).join('');
         } else {
-            gallery.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1;">No photos yet. Upload your first progress photo!</p>';
+            gallery.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1; padding: 40px 20px;">No photos yet. Upload your first progress photo!</p>';
         }
     } catch (error) {
         console.error('Error loading photos:', error);
+        const gallery = document.getElementById('photoGallery');
+        if (gallery) {
+            gallery.innerHTML = `<p style="text-align: center; color: #f5576c; grid-column: 1 / -1;">Error loading photos. Check console for details.</p>`;
+        }
     }
 }
 
