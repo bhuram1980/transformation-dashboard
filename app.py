@@ -435,26 +435,51 @@ def get_photos():
         if blob_token:
             try:
                 import requests
-                # Vercel Blob list endpoint
+                # Vercel Blob list endpoint - try different possible formats
+                # First try: GET /list
                 response = requests.get(
                     'https://blob.vercel-storage.com/list',
                     headers={'Authorization': f'Bearer {blob_token}'},
                     params={'limit': 100},
                     timeout=10
                 )
+                
                 if response.status_code == 200:
                     blob_data = response.json()
-                    if 'blobs' in blob_data:
-                        photos = [
-                            {
-                                'url': blob.get('url', blob.get('downloadUrl', blob.get('pathname'))),
-                                'date': blob.get('uploadedAt', blob.get('createdAt', datetime.now().isoformat()))
-                            }
-                            for blob in blob_data['blobs']
-                            if blob.get('pathname', '').startswith('20')  # Filter for our date-prefixed files
-                        ]
+                    # Handle different response formats
+                    blobs_list = []
+                    if isinstance(blob_data, list):
+                        blobs_list = blob_data
+                    elif 'blobs' in blob_data:
+                        blobs_list = blob_data['blobs']
+                    elif 'data' in blob_data:
+                        blobs_list = blob_data['data']
+                    
+                    for blob in blobs_list:
+                        # Get URL - try different possible fields
+                        url = (blob.get('url') or 
+                               blob.get('downloadUrl') or 
+                               blob.get('pathname') or
+                               blob.get('key'))
+                        
+                        if url:
+                            # Construct full URL if it's just a pathname
+                            if not url.startswith('http'):
+                                url = f'https://blob.vercel-storage.com/{url}'
+                            
+                            photos.append({
+                                'url': url,
+                                'date': (blob.get('uploadedAt') or 
+                                        blob.get('createdAt') or 
+                                        blob.get('uploaded') or
+                                        datetime.now().isoformat())
+                            })
+                else:
+                    print(f"Blob list API returned {response.status_code}: {response.text}")
             except Exception as e:
                 print(f"Error fetching from Blob: {e}")
+                import traceback
+                traceback.print_exc()
         
         # Also check local uploads folder (development/fallback)
         upload_folder = Path('static/uploads')

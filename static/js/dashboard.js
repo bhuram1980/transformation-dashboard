@@ -413,8 +413,26 @@ async function handlePhotoUpload(event) {
         const result = await response.json();
         
         if (result.success) {
-            // Add to gallery
+            // Store the uploaded photo URL temporarily
+            const uploadedUrl = result.url;
+            
+            // Add to gallery immediately (optimistic update)
+            const gallery = document.getElementById('photoGallery');
+            if (gallery.innerHTML.includes('No photos yet')) {
+                gallery.innerHTML = '';
+            }
+            const img = document.createElement('img');
+            img.src = uploadedUrl;
+            img.alt = 'Progress photo';
+            img.onclick = () => window.open(uploadedUrl, '_blank');
+            img.style.cssText = 'width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;';
+            img.onmouseover = () => img.style.transform = 'scale(1.05)';
+            img.onmouseout = () => img.style.transform = 'scale(1)';
+            gallery.insertBefore(img, gallery.firstChild);
+            
+            // Also reload from server to get all photos
             loadPhotos();
+            
             document.getElementById('photoPreview').innerHTML = '';
             document.getElementById('photoInput').value = '';
             alert('Photo uploaded successfully! 📸');
