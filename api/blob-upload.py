@@ -1,77 +1,107 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import os
-import requests
+import sys
 
-class handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        """Handle file upload to Vercel Blob"""
-        try:
-            # Get content length
-            content_length = int(self.headers.get('Content-Length', 0))
-            if content_length == 0:
-                self.send_response(400)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(json.dumps({'error': 'No file data'}).encode())
-                return
-            
-            # Read file data
-            file_data = self.rfile.read(content_length)
-            
-            # Get blob token
-            blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
-            if not blob_token:
-                self.send_response(500)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(json.dumps({'error': 'BLOB_READ_WRITE_TOKEN not set'}).encode())
-                return
-            
-            # Get filename from headers or generate one
-            filename = self.headers.get('X-Filename', 'upload.jpg')
-            
-            # Upload to Vercel Blob using the correct API
-            # Based on Vercel Blob docs, use PUT with the filename in the path
-            response = requests.put(
-                f'https://blob.vercel-storage.com/{filename}',
-                data=file_data,
-                headers={
-                    'Authorization': f'Bearer {blob_token}',
-                    'Content-Type': self.headers.get('Content-Type', 'image/jpeg')
+def handler(req):
+    """Vercel serverless function handler for blob upload"""
+    try:
+        # Get blob token
+        blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
+        if not blob_token:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
                 },
-                params={'access': 'public'},
-                timeout=30
-            )
+                'body': json.dumps({'error': 'BLOB_READ_WRITE_TOKEN not set'})
+            }
+        
+        # Get request body
+        if hasattr(req, 'body'):
+            body = req.body
+        elif hasattr(req, 'get_body'):
+            body = req.get_body()
+        else:
+            body = b''
+        
+        if not body:
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'No file data'})
+            }
+        
+        # Get filename from headers
+        filename = req.headers.get('x-filename') or req.headers.get('X-Filename', 'upload.jpg')
+        
+        # Import requests here to avoid issues if not available
+        try:
+            import requests
+        except ImportError:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'requests library not available'})
+            }
+        
+        # Upload to Vercel Blob
+        response = requests.put(
+            f'https://blob.vercel-storage.com/{filename}',
+            data=body,
+            headers={
+                'Authorization': f'Bearer {blob_token}',
+                'Content-Type': req.headers.get('content-type', 'image/jpeg')
+            },
+            params={'access': 'public'},
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            blob_url = result.get('url') or result.get('downloadUrl') or f'https://blob.vercel-storage.com/{filename}'
             
-            if response.status_code == 200:
-                result = response.json()
-                blob_url = result.get('url') or result.get('downloadUrl') or f'https://blob.vercel-storage.com/{filename}'
-                
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(json.dumps({
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
                     'success': True,
                     'url': blob_url
-                }).encode())
-            else:
-                error_text = response.text
-                self.send_response(response.status_code)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(json.dumps({
+                })
+            }
+        else:
+            error_text = response.text
+            return {
+                'statusCode': response.status_code,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
                     'error': f'Upload failed: {response.status_code} - {error_text}'
-                }).encode())
-                
-        except Exception as e:
-            self.send_response(500)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps({'error': str(e)}).encode())
+                })
+            }
+            
+    except Exception as e:
+        import traceback
+        error_msg = str(e)
+        traceback.print_exc()
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': f'Server error: {error_msg}'})
+        }
 

@@ -349,7 +349,7 @@ def get_stats():
 
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
-    """Upload photo to Vercel Blob storage"""
+    """Upload photo to Vercel Blob storage - Flask fallback endpoint"""
     try:
         if 'photo' not in request.files:
             return jsonify({'success': False, 'error': 'No file provided'}), 400
@@ -361,78 +361,14 @@ def upload_photo():
         # Try to use Vercel Blob if available
         blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
         
-        if blob_token:
-            try:
-                import requests
-                
-                # Upload to Vercel Blob using HTTP API
-                filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
-                file_data = file.read()
-                
-                # Vercel Blob API: Use the correct endpoint format
-                # The API requires store ID and uses POST with multipart or JSON
-                # Try using the store ID from environment or use the token directly
-                store_id = os.getenv('BLOB_STORE_ID', 'store_hAVpOQsDOW14w1w5')
-                
-                headers = {
-                    'Authorization': f'Bearer {blob_token}',
-                    'Content-Type': file.content_type or 'application/octet-stream'
-                }
-                
-                # Vercel Blob API format: POST to /put with JSON body
-                # Alternative: Try direct upload with store ID
-                payload = {
-                    'pathname': filename,
-                    'access': 'public',
-                    'contentType': file.content_type or 'image/jpeg'
-                }
-                
-                # Try multipart form data approach
-                files = {
-                    'file': (filename, file_data, file.content_type or 'image/jpeg')
-                }
-                
-                response = requests.post(
-                    'https://blob.vercel-storage.com/put',
-                    files=files,
-                    headers={'Authorization': f'Bearer {blob_token}'},
-                    data={'pathname': filename, 'access': 'public'},
-                    timeout=30
-                )
-                
-                if response.status_code == 200:
-                    result = response.json()
-                    # Vercel Blob returns url in the response
-                    blob_url = result.get('url') or result.get('downloadUrl') or result.get('pathname')
-                    if blob_url:
-                        return jsonify({'success': True, 'url': blob_url})
-                    else:
-                        raise Exception(f"Unexpected response format: {result}")
-                else:
-                    # Log the error for debugging
-                    error_msg = response.text or f"Status {response.status_code}"
-                    raise Exception(f"Blob upload failed: {response.status_code} - {error_msg}")
-                    
-            except Exception as e:
-                # On Vercel, file system is read-only, so we can't fall back to local storage
-                # Return error with helpful message
-                error_msg = str(e)
-                print(f"Blob upload error: {error_msg}")
-                return jsonify({
-                    'success': False, 
-                    'error': f'Vercel Blob upload failed: {error_msg}. Please check BLOB_READ_WRITE_TOKEN is set correctly in Vercel environment variables.'
-                }), 500
-        else:
-            # No token - check if we're on Vercel (read-only filesystem)
+        if not blob_token:
             is_vercel = os.getenv('VERCEL') == '1'
-            
             if is_vercel:
                 return jsonify({
                     'success': False,
                     'error': 'BLOB_READ_WRITE_TOKEN not set. Please add it in Vercel project settings → Environment Variables.'
                 }), 500
-            
-            # Local development: save to static/uploads
+            # Local dev fallback
             try:
                 upload_folder = Path('static/uploads')
                 upload_folder.mkdir(exist_ok=True)
@@ -446,16 +382,45 @@ def upload_photo():
                     'success': False,
                     'error': f'Failed to save file locally: {str(e)}'
                 }), 500
+        
+        # Try uploading to Vercel Blob
+        try:
+            import requests
+            
+            filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+            file_data = file.read()
+            
+            # Use PUT method with filename in URL
+            response = requests.put(
+                f'https://blob.vercel-storage.com/{filename}',
+                data=file_data,
+                headers={
+                    'Authorization': f'Bearer {blob_token}',
+                    'Content-Type': file.content_type or 'image/jpeg'
+                },
+                params={'access': 'public'},
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                blob_url = result.get('url') or result.get('downloadUrl') or f'https://blob.vercel-storage.com/{filename}'
+                return jsonify({'success': True, 'url': blob_url})
+            else:
+                error_msg = response.text or f"Status {response.status_code}"
+                raise Exception(f"Blob upload failed: {response.status_code} - {error_msg}")
+                
+        except Exception as e:
+            error_msg = str(e)
+            print(f"Blob upload error: {error_msg}")
+            return jsonify({
+                'success': False, 
+                'error': f'Vercel Blob upload failed: {error_msg}. Please check BLOB_READ_WRITE_TOKEN is set correctly.'
+            }), 500
             
     except Exception as e:
         error_msg = str(e)
         print(f"Upload error: {error_msg}")
-        # Return more helpful error message
-        if 'Blob' in error_msg or 'blob' in error_msg.lower():
-            return jsonify({
-                'success': False, 
-                'error': f'Blob upload failed: {error_msg}. Check BLOB_READ_WRITE_TOKEN is set correctly.'
-            }), 500
         return jsonify({'success': False, 'error': error_msg}), 500
 
 
