@@ -2,6 +2,9 @@
 
 let macrosChart, proteinChart, seafoodChart, weightChart, waistChart;
 
+// Get user role from window (set by Flask template)
+const userRole = window.userRole || 'viewer';
+
 // Macro calculation data (per kg of fish, skin on)
 const fishMacros = {
     salmon: { protein: 200, fat: 120, kcal: 1800 },
@@ -14,9 +17,19 @@ const fishMacros = {
 // Load all data on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
-    loadAdvice();
+    // Only load Grok advice if admin
+    if (userRole === 'admin') {
+        loadAdvice();
+    } else {
+        // Hide or disable advice section for viewers
+        const adviceBox = document.getElementById('adviceBox');
+        if (adviceBox && !adviceBox.innerHTML.includes('Viewer Mode')) {
+            adviceBox.innerHTML = '<p style="text-align: center; color: #666;">👁️ Viewer Mode: Grok AI advice is only available to admin users.</p>';
+        }
+    }
     loadStats();
-    loadPhotos();
+    // Load photos after a short delay to ensure DOM is ready
+    setTimeout(() => loadPhotos(), 500);
 });
 
 async function loadData() {
