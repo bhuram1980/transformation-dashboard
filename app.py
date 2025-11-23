@@ -189,6 +189,25 @@ class TransformationLogParser:
         }
 
 
+# Authentication helpers
+def get_user_role():
+    """Get current user role - defaults to 'viewer' for public access"""
+    return session.get('user_role', 'viewer')
+
+def is_admin():
+    """Check if current user is admin"""
+    return session.get('user_role') == 'admin' and session.get('username') == ADMIN_USERNAME
+
+def admin_required(f):
+    """Require admin role for API endpoints"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_admin():
+            return jsonify({'error': 'Admin access required. Please login as admin.'}), 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 def get_grok_advice(log_content: str, recent_days: List[Dict], baseline: Dict, targets: Dict) -> str:
     """Get advice from Grok API"""
     if not GROK_API_KEY:
@@ -287,8 +306,9 @@ Keep it concise, actionable, and motivating."""
 
 @app.route('/')
 def index():
-    """Main dashboard"""
-    return render_template('dashboard.html')
+    """Main dashboard - public access (viewer mode by default)"""
+    user_role = get_user_role()
+    return render_template('dashboard.html', user_role=user_role, is_admin=is_admin())
 
 
 @app.route('/api/data')
