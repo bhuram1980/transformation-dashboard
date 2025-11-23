@@ -59,8 +59,9 @@ class handler(BaseHTTPRequestHandler):
             path = path_parts[0]
             query_string = path_parts[1] if len(path_parts) > 1 else ''
             
-            # On Vercel, static files in public/ are served automatically
-            # But if they reach here, let Flask serve them
+            # On Vercel, static files in public/ should be served automatically
+            # But if they reach here (shouldn't happen), let Flask serve them
+            # Flask's static_folder is set to 'public/static' so it can serve them
             
             # Read request body if present
             content_length = int(self.headers.get('Content-Length', 0))
