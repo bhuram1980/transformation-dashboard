@@ -171,7 +171,10 @@
                 </button>
                 <div id="photoPreview" class="photo-preview"></div>
                 <div style="margin-top: 30px;">
-                    <h3 style="margin-bottom: 15px; color: #667eea; font-size: 1.2em;">📷 Photo Gallery</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: #667eea; font-size: 1.2em;">📷 Photo Gallery</h3>
+                        <button onclick="loadPhotos()" style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em;">🔄 Refresh</button>
+                    </div>
                     <div id="photoGallery" class="photo-gallery"></div>
                 </div>
             </div>
