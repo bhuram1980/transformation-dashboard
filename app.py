@@ -500,7 +500,7 @@ def get_data():
         print(f"Error in /api/data: {e}")
         import traceback
         traceback.print_exc()
-        # Return empty data instead of 500 to prevent crashes
+        # Return empty data with 200 status instead of 500 to prevent crashes
         return jsonify({
             'error': str(e),
             'baseline': {'body_fat': 25.2, 'android_fat': 37.8, 'alt': 315, 'fasting_glucose': 106.8},
@@ -509,7 +509,7 @@ def get_data():
             'streak': 0,
             'goal': {},
             'total_days': 0
-        })
+        }), 200
 
 
 @app.route('/api/chat', methods=['POST'])
