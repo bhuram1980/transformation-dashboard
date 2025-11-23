@@ -17,17 +17,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Form submission
-    const form = document.getElementById('dailyLogForm');
-    if (form) {
-        form.addEventListener('submit', handleFormSubmit);
-    }
+    // Form removed - view-only dashboard
 });
 
 async function loadData() {
     try {
         const response = await fetch('/api/data');
         const data = await response.json();
+        
+        console.log('Loaded data:', {
+            streak: data.streak,
+            daily_logs_count: data.daily_logs?.length || 0,
+            baseline: data.baseline,
+            daily_logs: data.daily_logs
+        });
         
         // Update streak with animation
         const streakEl = document.getElementById('streakCount');
@@ -49,6 +52,8 @@ async function loadData() {
         // Render progress chart
         if (data.daily_logs && data.daily_logs.length > 0) {
             renderProgressChart(data.daily_logs);
+        } else {
+            console.warn('No daily logs found');
         }
     } catch (error) {
         console.error('Error loading data:', error);

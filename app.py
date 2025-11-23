@@ -305,22 +305,38 @@ def index():
 @app.route('/api/data')
 def get_data():
     """API endpoint to get all transformation data - public access"""
-    loader = TransformationDataLoader()
-    
-    baseline = loader.get_baseline()
-    targets = loader.get_targets()
-    daily_logs = loader.get_daily_logs()
-    streak = loader.get_streak()
-    goal_info = loader.get_goal_info()
-    
-    return jsonify({
-        'baseline': baseline,
-        'targets': targets,
-        'daily_logs': daily_logs,
-        'streak': streak,
-        'goal': goal_info,
-        'total_days': len(daily_logs)
-    })
+    try:
+        loader = TransformationDataLoader()
+        
+        baseline = loader.get_baseline()
+        targets = loader.get_targets()
+        daily_logs = loader.get_daily_logs()
+        streak = loader.get_streak()
+        goal_info = loader.get_goal_info()
+        
+        print(f"API /api/data: Returning {len(daily_logs)} daily logs, streak: {streak}")
+        
+        return jsonify({
+            'baseline': baseline,
+            'targets': targets,
+            'daily_logs': daily_logs,
+            'streak': streak,
+            'goal': goal_info,
+            'total_days': len(daily_logs)
+        })
+    except Exception as e:
+        print(f"Error in /api/data: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': str(e),
+            'baseline': {},
+            'targets': {},
+            'daily_logs': [],
+            'streak': 0,
+            'goal': {},
+            'total_days': 0
+        }), 500
 
 
 @app.route('/api/chat', methods=['POST'])
