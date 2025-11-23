@@ -9,10 +9,7 @@
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/static/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
+      "dest": "/static/$1"
     },
     {
       "src": "/public/(.*)",
@@ -21,6 +18,12 @@
     {
       "src": "/(.*)",
       "dest": "api/index.py"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/static/(.*)",
+      "destination": "/static/$1"
     }
   ]
 }
