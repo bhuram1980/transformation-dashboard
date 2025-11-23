@@ -25,7 +25,7 @@
     "nac":      { "taken": false, "note": "started Day 2" },
     "d3k2":     { "taken": true,  "dose": "5 tabs with lunch" },
     "zmb":      { "taken": true,  "dose": "3 caps before bed" },
-    "whey":     { "taken": false, "scoops": 0 },
+    "whey":     { "taken": true, "scoops": 1 },
     "creatine": { "taken": false }
   },
 

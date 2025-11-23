@@ -470,31 +470,44 @@ function loadDayMeals() {
                 
                 const mealOrder = ['breakfast', 'midMorning', 'lunch', 'dinner', 'snacks'];
                 
+                mealsHTML += `
+                    <table class="meals-table">
+                        <thead>
+                            <tr>
+                                <th class="meal-col-name">Meal</th>
+                                <th class="meal-col-desc">Description</th>
+                                <th class="meal-col-macro">Protein</th>
+                                <th class="meal-col-macro">Carbs</th>
+                                <th class="meal-col-macro">Fat</th>
+                                <th class="meal-col-macro">Kcal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
                 mealOrder.forEach(mealKey => {
                     const meal = selectedDayData.meals[mealKey];
                     if (meal && typeof meal === 'object' && meal !== null && meal.description) {
                         const desc = meal.description;
                         if (desc && desc.toLowerCase() !== 'none') {
                             mealsHTML += `
-                                <div class="meal-detail-item">
-                                    <div class="meal-detail-header">
-                                        <span class="meal-detail-name">${mealLabels[mealKey] || mealKey}</span>
-                                    </div>
-                                    <div class="meal-detail-description">${desc}</div>
-                                    <div class="meal-detail-macros">
-                                        <span class="meal-macro">Protein ${meal.protein || 0}g</span>
-                                        <span class="meal-macro-sep">·</span>
-                                        <span class="meal-macro">Carbs ${meal.carbs || 0}g</span>
-                                        <span class="meal-macro-sep">·</span>
-                                        <span class="meal-macro">Fat ${meal.fat || 0}g</span>
-                                        <span class="meal-macro-sep">·</span>
-                                        <span class="meal-macro">${meal.kcal || 0} kcal</span>
-                                    </div>
-                                </div>
+                                <tr class="meal-table-row">
+                                    <td class="meal-col-name">${mealLabels[mealKey] || mealKey}</td>
+                                    <td class="meal-col-desc">${desc}</td>
+                                    <td class="meal-col-macro">${meal.protein || 0}g</td>
+                                    <td class="meal-col-macro">${meal.carbs || 0}g</td>
+                                    <td class="meal-col-macro">${meal.fat || 0}g</td>
+                                    <td class="meal-col-macro">${meal.kcal || 0}</td>
+                                </tr>
                             `;
                         }
                     }
                 });
+                
+                mealsHTML += `
+                        </tbody>
+                    </table>
+                `;
                 
                 mealsHTML += `
                             </div>
