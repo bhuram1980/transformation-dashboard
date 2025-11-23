@@ -1137,43 +1137,25 @@ def get_advice():
 @app.route('/api/stats')
 def get_stats():
     """API endpoint for aggregated statistics - public access"""
-    loader = TransformationDataLoader()
-    daily_logs = loader.get_daily_logs()
+    try:
+        loader = TransformationDataLoader()
+        daily_logs = loader.get_daily_logs()
+        
+        # Calculate total fish demolished (handle both field names)
+        total_fish_kg = 0
+        for day in daily_logs:
+            fish = day.get('seafoodKg') or day.get('seafood_kg') or 0
+            if fish:
+                total_fish_kg += float(fish)
+        
+        # Get baseline ALT for countdown
+        baseline = loader.get_baseline()
+        current_alt = baseline.get('alt', 315) or 315
+        target_alt = 100  # Countdown to <100
+        alt_remaining = max(0, current_alt - target_alt)
     
-    # Calculate total fish demolished (handle both field names)
-    total_fish_kg = 0
-    for day in daily_logs:
-        fish = day.get('seafoodKg') or day.get('seafood_kg') or 0
-        if fish:
-            total_fish_kg += float(fish)
-    
-    # Get baseline ALT for countdown
-    baseline = loader.get_baseline()
-    current_alt = baseline.get('alt', 315)
-    target_alt = 100  # Countdown to <100
-    alt_remaining = max(0, current_alt - target_alt)
-    
-    if not daily_logs:
-        return jsonify({'error': 'No data available'})
-    
-    recent_days = daily_logs[-7:] if len(daily_logs) >= 7 else daily_logs
-    
-    # Calculate averages
-    proteins = [d['protein'] for d in recent_days if d['protein']]
-    carbs = [d['carbs'] for d in recent_days if d['carbs']]
-    fats = [d['fat'] for d in recent_days if d['fat']]
-    kcals = [d['kcal'] for d in recent_days if d['kcal']]
-    seafoods = [d['seafood_kg'] for d in recent_days if d['seafood_kg']]
-    
-    stats = {
-        'avg_protein': sum(proteins) / len(proteins) if proteins else 0,
-        'avg_carbs': sum(carbs) / len(carbs) if carbs else 0,
-        'avg_fat': sum(fats) / len(fats) if fats else 0,
-        'avg_kcal': sum(kcals) / len(kcals) if kcals else 0,
-        'avg_seafood': sum(seafoods) / len(seafoods) if seafoods else 0,
-        'days_tracked': len(daily_logs),
-        'recent_days': len(recent_days)
-    }
+    # Initialize stats dict
+    stats = {}
     
     # Calculate averages
     if daily_logs:
@@ -1196,12 +1178,27 @@ def get_stats():
         stats['avg_fat'] = 0
         stats['avg_seafood'] = 0
     
-    stats['total_fish_kg'] = round(total_fish_kg, 2)
-    stats['alt_current'] = current_alt
-    stats['alt_target'] = target_alt
-    stats['alt_remaining'] = alt_remaining
-    
-    return jsonify(stats)
+        stats['total_fish_kg'] = round(total_fish_kg, 2)
+        stats['alt_current'] = current_alt
+        stats['alt_target'] = target_alt
+        stats['alt_remaining'] = alt_remaining
+        
+        return jsonify(stats)
+    except Exception as e:
+        print(f"Error in /api/stats: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': str(e),
+            'avg_protein': 0,
+            'avg_carbs': 0,
+            'avg_fat': 0,
+            'avg_seafood': 0,
+            'total_fish_kg': 0,
+            'alt_current': 315,
+            'alt_target': 100,
+            'alt_remaining': 215
+        }), 500
 
 
 @app.route('/api/update-log', methods=['POST'])
