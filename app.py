@@ -16,7 +16,7 @@ from functools import wraps
 import tempfile
 
 app = Flask(__name__, 
-            static_folder='static',
+            static_folder='public/static',  # Use public/static for Vercel compatibility
             template_folder='templates')
 
 # Secret key for sessions (set via environment variable or use default)

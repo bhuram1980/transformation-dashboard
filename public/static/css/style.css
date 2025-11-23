@@ -1,0 +1,915 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: #fafafa;
+    color: #000;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Section 1: Header & Streak */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.dashboard-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
+}
+
+.streak-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.streak-number {
+    font-size: 72px;
+    font-weight: 800;
+    color: #0066ff;
+    line-height: 1;
+    transition: transform 0.3s ease;
+}
+
+.streak-number.animate {
+    animation: pulse-scale 0.5s ease;
+}
+
+@keyframes pulse-scale {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.streak-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Section 2: Daily Log Input */
+.log-input-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e5e5;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 24px;
+    letter-spacing: -0.3px;
+}
+
+.log-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 12px 16px;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    background: #fff;
+    color: #000;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #0066ff;
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #999;
+}
+
+.slider-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.feeling-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #e5e5e5;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.feeling-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0066ff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.feeling-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0066ff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.slider-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0066ff;
+    margin-top: 8px;
+    text-align: center;
+}
+
+.submit-btn {
+    padding: 14px 32px;
+    background: #0066ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+.submit-btn:hover {
+    background: #0052cc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.form-message {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    animation: slide-in 0.3s ease;
+}
+
+.form-message.success {
+    display: block;
+    background: #e6f7ff;
+    color: #0066ff;
+    border: 1px solid #0066ff;
+}
+
+.form-message.error {
+    display: block;
+    background: #fff2f0;
+    color: #ff4d4f;
+    border: 1px solid #ff4d4f;
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Section 2: Main Goal & Baseline Metrics */
+.goal-baseline-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e5e5;
+    margin-bottom: 32px;
+}
+
+.goal-description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #000;
+    margin-bottom: 32px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #0066ff;
+}
+
+.baseline-metrics {
+    margin-top: 24px;
+}
+
+.baseline-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.baseline-date {
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+}
+
+.baseline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.baseline-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.baseline-metric .metric-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.baseline-metric .metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+/* Section 3: Progress Graph (COMMENTED OUT - may add later) */
+/*
+.progress-graph-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e5e5;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 400px;
+}
+*/
+
+/* Section 4: Goals */
+.goals-section {
+    margin-bottom: 40px;
+}
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.goal-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e5e5;
+    transition: all 0.2s ease;
+}
+
+.goal-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.goal-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.goal-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.goal-target {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 16px;
+}
+
+.goal-progress-bar {
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.goal-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0066ff 0%, #00a3ff 100%);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+/* Section 5: What I Ate Today */
+.meals-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e5e5;
+}
+
+.day-selector {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.day-select-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #000;
+}
+
+.day-select-dropdown {
+    padding: 10px 16px;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 200px;
+}
+
+.day-select-dropdown:focus {
+    outline: none;
+    border-color: #0066ff;
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.meals-content {
+    margin-top: 24px;
+}
+
+.meals-placeholder {
+    text-align: center;
+    color: #999;
+    padding: 40px;
+    font-size: 15px;
+}
+
+.meals-day-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.meals-day-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+}
+
+.meals-macros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.macro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.macro-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.macro-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+.meals-training,
+.meals-feeling {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.training-label,
+.feeling-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.training-value,
+.feeling-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+}
+
+.meals-notes {
+    margin-top: 20px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.notes-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.notes-value {
+    font-size: 15px;
+    color: #000;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Meals Detail Card (New Schema) */
+.meals-detail-card {
+    margin-top: 32px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.meals-toggle {
+    width: 100%;
+    padding: 20px 24px;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    text-align: left;
+    transition: background 0.2s ease;
+}
+
+.meals-toggle:hover {
+    background: #f8f9fa;
+}
+
+.meals-toggle-icon {
+    font-size: 14px;
+    color: #0066ff;
+    transition: transform 0.3s ease;
+}
+
+.meals-toggle-text {
+    letter-spacing: -0.3px;
+}
+
+.meals-detail-content {
+    padding: 0 24px 24px 24px;
+}
+
+.meals-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.meals-table thead {
+    background: #f8f9fa;
+}
+
+.meals-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.meals-table th.meal-col-name {
+    width: 15%;
+    min-width: 120px;
+}
+
+.meals-table th.meal-col-desc {
+    width: 40%;
+}
+
+.meals-table th.meal-col-macro {
+    width: 11%;
+    text-align: right;
+    font-size: 11px;
+}
+
+.meals-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s ease;
+}
+
+.meals-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.meals-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.meals-table td {
+    padding: 18px 20px;
+    font-size: 15px;
+    color: #000;
+    vertical-align: top;
+}
+
+.meals-table td.meal-col-name {
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -0.2px;
+}
+
+.meals-table td.meal-col-desc {
+    color: #333;
+    line-height: 1.5;
+}
+
+.meals-table td.meal-col-macro {
+    text-align: right;
+    font-weight: 500;
+    color: #0066ff;
+    font-size: 14px;
+}
+
+.meals-table tfoot {
+    border-top: 2px solid #e5e5e5;
+    background: #f8f9fa;
+}
+
+.meals-table tfoot tr.meal-table-totals {
+    border-bottom: none;
+}
+
+.meals-table tfoot tr.meal-table-totals:hover {
+    background: #f8f9fa;
+}
+
+.meals-table tfoot td {
+    padding: 20px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #000;
+}
+
+.meals-table tfoot td.meal-col-macro {
+    color: #0066ff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.meals-detail-totals {
+    padding-top: 24px;
+    border-top: 1px solid #e5e5e5;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+}
+
+.meals-total-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meals-total-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meals-total-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0066ff;
+    letter-spacing: -0.5px;
+}
+
+/* Meals Section Card (Fallback for old schema) */
+.meals-section-card {
+    margin-top: 24px;
+    padding: 24px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.meals-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+
+.meals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meal-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.meal-item:hover {
+    background: #f0f4f8;
+    transform: translateY(-1px);
+}
+
+.meal-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meal-content {
+    font-size: 15px;
+    color: #000;
+    line-height: 1.5;
+}
+
+/* Supplements Section Card */
+.supplements-section-card {
+    margin-top: 24px;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+}
+
+.supplements-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 16px;
+    letter-spacing: -0.2px;
+}
+
+.supplements-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.supplement-item {
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1.5px solid #e5e5e5;
+    transition: all 0.2s ease;
+}
+
+.supplement-item.taken {
+    border-color: #00c853;
+    background: #f1f8f4;
+}
+
+.supplement-item.not-taken {
+    border-color: #ff9800;
+    background: #fff8f0;
+    opacity: 0.7;
+}
+
+.supplement-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.supplement-check {
+    font-size: 18px;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.supplement-item.taken .supplement-check {
+    color: #00c853;
+    background: #e8f5e9;
+}
+
+.supplement-item.not-taken .supplement-check {
+    color: #ff9800;
+    background: #fff3e0;
+}
+
+.supplement-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+}
+
+.supplement-details {
+    margin-top: 8px;
+    padding-left: 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.supplement-dose,
+.supplement-scoops {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.supplement-scoops {
+    font-weight: 500;
+    color: #0066ff;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 20px 16px;
+    }
+    
+    .dashboard-title {
+        font-size: 24px;
+    }
+    
+    .streak-number {
+        font-size: 56px;
+    }
+    
+    .log-input-section,
+    .goal-baseline-section,
+    .meals-section {
+        padding: 24px 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .goals-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Chart wrapper commented out
+    .chart-wrapper {
+        height: 300px;
+    }
+    */
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #000;
+        color: #fff;
+    }
+    
+    .log-input-section,
+    .goal-baseline-section,
+    .goal-card,
+    .meals-section {
+        background: #1a1a1a;
+        border-color: #333;
+    }
+    
+    .dashboard-header {
+        border-bottom-color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        background: #1a1a1a;
+        border-color: #333;
+        color: #fff;
+    }
+    
+    .goal-value {
+        color: #fff;
+    }
+}
