@@ -204,7 +204,6 @@ class TransformationDataLoader:
                 print(f"Using Vercel api/data logs dir: {daily_logs_dir}")
         
         try:
-        try:
             # Use absolute paths from app root
             # On Vercel, we need to find the project root
             # Try multiple strategies to find the correct path
