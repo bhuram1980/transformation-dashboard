@@ -380,23 +380,103 @@ function checkStreakGlow(dailyLogs) {
     }
 }
 
-// Photo Upload Handler
+// Image Compression Function
+function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8, maxSizeMB = 1.5) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                // Calculate new dimensions
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > maxWidth || height > maxHeight) {
+                    if (width > height) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    } else {
+                        width = (width * maxHeight) / height;
+                        height = maxHeight;
+                    }
+                }
+                
+                // Create canvas and compress
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Convert to blob with compression
+                canvas.toBlob(function(blob) {
+                    // Check file size and reduce quality if needed
+                    const fileSizeMB = blob.size / (1024 * 1024);
+                    
+                    if (fileSizeMB > maxSizeMB && quality > 0.5) {
+                        // Recursively compress with lower quality
+                        canvas.toBlob(function(compressedBlob) {
+                            resolve(compressedBlob);
+                        }, 'image/jpeg', quality * 0.8);
+                    } else {
+                        resolve(blob);
+                    }
+                }, 'image/jpeg', quality);
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Photo Upload Handler with Compression
 async function handlePhotoUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
     
-    // Show preview
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const preview = document.getElementById('photoPreview');
-        preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 8px;">`;
-    };
-    reader.readAsDataURL(file);
+    // Check file size first
+    const fileSizeMB = file.size / (1024 * 1024);
+    const maxSizeMB = 10; // Allow up to 10MB original, will compress
     
-    // Upload via Flask endpoint (simpler and more reliable)
+    if (fileSizeMB > maxSizeMB) {
+        alert(`File is too large (${fileSizeMB.toFixed(1)}MB). Please select a smaller image.`);
+        return;
+    }
+    
+    // Show loading state
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = '<p style="text-align: center; color: #666;">Compressing image... ⏳</p>';
+    
     try {
+        // Compress image
+        const compressedBlob = await compressImage(file, 1920, 1920, 0.8, 1.5);
+        
+        const compressedSizeMB = compressedBlob.size / (1024 * 1024);
+        const compressionRatio = ((1 - compressedBlob.size / file.size) * 100).toFixed(0);
+        
+        console.log(`Original: ${fileSizeMB.toFixed(2)}MB → Compressed: ${compressedSizeMB.toFixed(2)}MB (${compressionRatio}% reduction)`);
+        
+        // Show preview of compressed image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 8px;">
+                <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 10px;">
+                    Compressed: ${compressedSizeMB.toFixed(2)}MB (${compressionRatio}% smaller) - Uploading...
+                </p>`;
+        };
+        reader.readAsDataURL(compressedBlob);
+        
+        // Create a File object from the compressed blob
+        const compressedFile = new File([compressedBlob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+        });
+        
+        // Upload compressed file
         const formData = new FormData();
-        formData.append('photo', file);
+        formData.append('photo', compressedFile);
         
         const response = await fetch('/api/upload-photo', {
             method: 'POST',
@@ -433,14 +513,15 @@ async function handlePhotoUpload(event) {
             // Also reload from server to get all photos
             loadPhotos();
             
-            document.getElementById('photoPreview').innerHTML = '';
+            preview.innerHTML = '';
             document.getElementById('photoInput').value = '';
-            alert('Photo uploaded successfully! 📸');
+            alert(`Photo uploaded successfully! 📸\n\nSaved ${compressionRatio}% storage space!`);
         } else {
             alert('Upload failed: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Upload error:', error);
+        preview.innerHTML = '<p style="text-align: center; color: #f5576c;">Error: ' + error.message + '</p>';
         alert('Error uploading photo: ' + error.message);
     }
 }
