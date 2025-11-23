@@ -347,6 +347,77 @@ def get_stats():
     return jsonify(stats)
 
 
+@app.route('/api/upload-photo', methods=['POST'])
+def upload_photo():
+    """Upload photo to Vercel Blob storage"""
+    try:
+        if 'photo' not in request.files:
+            return jsonify({'success': False, 'error': 'No file provided'}), 400
+        
+        file = request.files['photo']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
+        
+        # Try to use Vercel Blob if available
+        try:
+            from vercel_blob import put
+            import os
+            
+            blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
+            if not blob_token:
+                # Fallback: save locally (for development)
+                upload_folder = Path('static/uploads')
+                upload_folder.mkdir(exist_ok=True)
+                filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+                filepath = upload_folder / filename
+                file.save(filepath)
+                url = f"/static/uploads/{filename}"
+                return jsonify({'success': True, 'url': url})
+            
+            # Upload to Vercel Blob
+            result = put(file.filename, file.read(), {
+                'access': 'public',
+                'token': blob_token
+            })
+            return jsonify({'success': True, 'url': result.url})
+            
+        except ImportError:
+            # Fallback: save locally
+            upload_folder = Path('static/uploads')
+            upload_folder.mkdir(exist_ok=True)
+            filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+            filepath = upload_folder / filename
+            file.save(filepath)
+            url = f"/static/uploads/{filename}"
+            return jsonify({'success': True, 'url': url})
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/photos')
+def get_photos():
+    """Get list of uploaded photos"""
+    try:
+        # For now, return empty list (can be enhanced to read from Vercel Blob or local storage)
+        # In production, you'd list files from Vercel Blob
+        photos = []
+        
+        # Check local uploads folder (development)
+        upload_folder = Path('static/uploads')
+        if upload_folder.exists():
+            for file in upload_folder.glob('*'):
+                if file.suffix.lower() in ['.jpg', '.jpeg', '.png', '.gif', '.webp']:
+                    photos.append({
+                        'url': f"/static/uploads/{file.name}",
+                        'date': datetime.fromtimestamp(file.stat().st_mtime).isoformat()
+                    })
+        
+        return jsonify({'photos': sorted(photos, key=lambda x: x['date'], reverse=True)})
+    except Exception as e:
+        return jsonify({'photos': [], 'error': str(e)})
+
+
 if __name__ == '__main__':
     # Use PORT from environment (for production) or default to 5001 (local dev)
     port = int(os.getenv('PORT', 5001))

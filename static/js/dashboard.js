@@ -1,12 +1,22 @@
 // Dashboard JavaScript
 
-let macrosChart, proteinChart, seafoodChart;
+let macrosChart, proteinChart, seafoodChart, weightChart, waistChart;
+
+// Macro calculation data (per kg of fish, skin on)
+const fishMacros = {
+    salmon: { protein: 200, fat: 120, kcal: 1800 },
+    tuna: { protein: 240, fat: 10, kcal: 1100 },
+    seabass: { protein: 180, fat: 60, kcal: 1000 },
+    lobster: { protein: 200, fat: 20, kcal: 900 },
+    mixed: { protein: 210, fat: 70, kcal: 1200 }
+};
 
 // Load all data on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
     loadAdvice();
     loadStats();
+    loadPhotos();
 });
 
 async function loadData() {
@@ -25,9 +35,13 @@ async function loadData() {
         
         // Update charts
         updateCharts(data.daily_logs);
+        updateProgressCharts(data.daily_logs);
         
         // Update recent days table
         updateRecentDaysTable(data.daily_logs);
+        
+        // Check for glowing streak badge (350g+ protein)
+        checkStreakGlow(data.daily_logs);
         
     } catch (error) {
         console.error('Error loading data:', error);
@@ -239,6 +253,187 @@ async function loadStats() {
         
     } catch (error) {
         console.error('Error loading stats:', error);
+    }
+}
+
+// Macro Calculator
+function calculateMacros() {
+    const fishKg = parseFloat(document.getElementById('fishKg').value) || 0;
+    const fishType = document.getElementById('fishType').value;
+    const macros = fishMacros[fishType];
+    
+    if (fishKg > 0 && macros) {
+        const protein = Math.round(fishKg * macros.protein);
+        const fat = Math.round(fishKg * macros.fat);
+        const kcal = Math.round(fishKg * macros.kcal);
+        
+        document.getElementById('calcProtein').textContent = protein + ' g';
+        document.getElementById('calcFat').textContent = fat + ' g';
+        document.getElementById('calcKcal').textContent = kcal + ' kcal';
+    } else {
+        document.getElementById('calcProtein').textContent = '0 g';
+        document.getElementById('calcFat').textContent = '0 g';
+        document.getElementById('calcKcal').textContent = '0 kcal';
+    }
+}
+
+// Progress Charts (Weight & Waist)
+function updateProgressCharts(dailyLogs) {
+    // Extract weight and waist data (if available in logs)
+    // For now, we'll create placeholder charts that can be populated when data is available
+    const labels = dailyLogs.map(d => `Day ${d.day}`);
+    
+    // Weight Chart
+    const weightCtx = document.getElementById('weightChart');
+    if (weightCtx) {
+        if (weightChart) weightChart.destroy();
+        
+        // Extract weight from logs (if available in content)
+        const weights = dailyLogs.map(d => {
+            const weightMatch = d.content.match(/weight[:\s]+(\d+\.?\d*)\s*kg/i);
+            return weightMatch ? parseFloat(weightMatch[1]) : null;
+        }).filter(w => w !== null);
+        
+        if (weights.length > 0) {
+            weightChart = new Chart(weightCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels.slice(-weights.length),
+                    datasets: [{
+                        label: 'Weight (kg)',
+                        data: weights,
+                        borderColor: 'rgb(102, 126, 234)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        } else {
+            weightCtx.parentElement.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Add weight data to your daily logs to see progress</p>';
+        }
+    }
+    
+    // Waist Chart
+    const waistCtx = document.getElementById('waistChart');
+    if (waistCtx) {
+        if (waistChart) waistChart.destroy();
+        
+        // Extract waist from logs (if available in content)
+        const waists = dailyLogs.map(d => {
+            const waistMatch = d.content.match(/waist[:\s]+(\d+\.?\d*)\s*cm/i);
+            return waistMatch ? parseFloat(waistMatch[1]) : null;
+        }).filter(w => w !== null);
+        
+        if (waists.length > 0) {
+            waistChart = new Chart(waistCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels.slice(-waists.length),
+                    datasets: [{
+                        label: 'Waist (cm)',
+                        data: waists,
+                        borderColor: 'rgb(245, 87, 108)',
+                        backgroundColor: 'rgba(245, 87, 108, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            reverse: true // Lower is better for waist
+                        }
+                    }
+                }
+            });
+        } else {
+            waistCtx.parentElement.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Add waist measurements to your daily logs to see progress</p>';
+        }
+    }
+}
+
+// Glowing Streak Badge (when hitting 350g+ protein)
+function checkStreakGlow(dailyLogs) {
+    if (dailyLogs.length === 0) return;
+    
+    const lastDay = dailyLogs[dailyLogs.length - 1];
+    const protein = lastDay.protein || 0;
+    const streakBadge = document.getElementById('streakBadge');
+    
+    if (protein >= 350 && streakBadge) {
+        streakBadge.classList.add('glowing');
+    } else {
+        streakBadge.classList.remove('glowing');
+    }
+}
+
+// Photo Upload Handler
+async function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 8px;">`;
+    };
+    reader.readAsDataURL(file);
+    
+    // Upload to server
+    try {
+        const formData = new FormData();
+        formData.append('photo', file);
+        
+        const response = await fetch('/api/upload-photo', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Add to gallery
+            loadPhotos();
+            alert('Photo uploaded successfully! 📸');
+        } else {
+            alert('Upload failed: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert('Error uploading photo. Make sure Vercel Blob is configured.');
+    }
+}
+
+// Load Photos
+async function loadPhotos() {
+    try {
+        const response = await fetch('/api/photos');
+        const data = await response.json();
+        
+        const gallery = document.getElementById('photoGallery');
+        if (data.photos && data.photos.length > 0) {
+            gallery.innerHTML = data.photos.map(photo => `
+                <img src="${photo.url}" alt="Progress photo" onclick="window.open('${photo.url}', '_blank')">
+            `).join('');
+        } else {
+            gallery.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1;">No photos yet. Upload your first progress photo!</p>';
+        }
+    } catch (error) {
+        console.error('Error loading photos:', error);
     }
 }
 

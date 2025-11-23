@@ -44,6 +44,53 @@ h1 {
     font-size: 1.2em;
     font-weight: bold;
     box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    position: relative;
+    overflow: visible;
+    transition: all 0.3s ease;
+}
+
+.streak-badge.glowing {
+    animation: glow-pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(245, 87, 108, 0.8), 0 0 40px rgba(245, 87, 108, 0.6), 0 0 60px rgba(245, 87, 108, 0.4);
+}
+
+.streak-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50px;
+    background: radial-gradient(circle, rgba(245, 87, 108, 0.6) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.streak-badge.glowing .streak-glow {
+    opacity: 1;
+    animation: glow-expand 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glow-expand {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.3;
+    }
 }
 
 section {
@@ -263,6 +310,146 @@ tbody tr:hover {
     color: #888;
 }
 
+/* Progress Charts Section */
+.progress-charts-section {
+    margin-bottom: 30px;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+}
+
+/* Macro Calculator Section */
+.calculator-section {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+.calculator-box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.calc-input-group {
+    margin-bottom: 20px;
+}
+
+.calc-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.calc-input-group input,
+.calc-input-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.calc-input-group input:focus,
+.calc-input-group select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.calc-results {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.calc-result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.calc-result-item:last-child {
+    border-bottom: none;
+}
+
+.calc-label {
+    font-weight: 600;
+    color: #666;
+}
+
+.calc-value {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #667eea;
+}
+
+/* Photo Upload Section */
+.photo-section {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.photo-upload-box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-upload {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.btn-upload:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.photo-preview {
+    margin-bottom: 20px;
+}
+
+.photo-preview img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.photo-gallery img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.photo-gallery img:hover {
+    transform: scale(1.05);
+}
+
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -278,8 +465,16 @@ tbody tr:hover {
         grid-template-columns: 1fr;
     }
     
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
     .metrics-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .photo-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     }
 }
 
