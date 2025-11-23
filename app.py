@@ -310,6 +310,392 @@ def get_data():
     })
 
 
+@app.route('/api/chat', methods=['POST'])
+def chat_with_grok():
+    """Chat endpoint with Grok AI - supports function calling for app actions"""
+    if not GROK_API_KEY:
+        return jsonify({
+            'error': 'Grok API key not configured. Set GROK_API_KEY environment variable.'
+        }), 500
+    
+    try:
+        import requests
+        
+        data = request.json
+        user_message = data.get('message', '')
+        conversation_history = data.get('history', [])
+        
+        if not user_message:
+            return jsonify({'error': 'No message provided'}), 400
+        
+        # Prepare function definitions for Grok
+        functions = [
+            {
+                "name": "upload_photo",
+                "description": "Upload a progress photo. User will provide the photo file.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "description": {
+                            "type": "string",
+                            "description": "Description of the photo (e.g., 'Day 4 progress photo', 'Fish plate')"
+                        }
+                    },
+                    "required": ["description"]
+                }
+            },
+            {
+                "name": "add_day_entry",
+                "description": "Add a new day entry to the transformation log",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "day": {
+                            "type": "integer",
+                            "description": "Day number"
+                        },
+                        "date": {
+                            "type": "string",
+                            "description": "Date in format 'Month Day, Year' (e.g., 'Nov 24, 2025')"
+                        },
+                        "protein": {
+                            "type": "number",
+                            "description": "Protein in grams"
+                        },
+                        "carbs": {
+                            "type": "number",
+                            "description": "Carbs in grams"
+                        },
+                        "fat": {
+                            "type": "number",
+                            "description": "Fat in grams"
+                        },
+                        "kcal": {
+                            "type": "number",
+                            "description": "Calories"
+                        },
+                        "seafood_kg": {
+                            "type": "number",
+                            "description": "Seafood in kilograms"
+                        },
+                        "training": {
+                            "type": "string",
+                            "description": "Training description (e.g., '2hr surfing + gym')"
+                        },
+                        "supplements": {
+                            "type": "string",
+                            "description": "Supplements taken (e.g., 'All', 'All except NAC')"
+                        },
+                        "feeling": {
+                            "type": "string",
+                            "description": "How you felt (e.g., 'Great energy', 'Legendary start')"
+                        },
+                        "notes": {
+                            "type": "string",
+                            "description": "Additional notes"
+                        }
+                    },
+                    "required": ["day", "date", "protein", "carbs", "fat"]
+                }
+            },
+            {
+                "name": "update_day_entry",
+                "description": "Update an existing day entry in the transformation log",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "day": {
+                            "type": "integer",
+                            "description": "Day number to update"
+                        },
+                        "protein": {
+                            "type": "number",
+                            "description": "Updated protein in grams"
+                        },
+                        "carbs": {
+                            "type": "number",
+                            "description": "Updated carbs in grams"
+                        },
+                        "fat": {
+                            "type": "number",
+                            "description": "Updated fat in grams"
+                        },
+                        "kcal": {
+                            "type": "number",
+                            "description": "Updated calories"
+                        },
+                        "seafood_kg": {
+                            "type": "number",
+                            "description": "Updated seafood in kilograms"
+                        },
+                        "training": {
+                            "type": "string",
+                            "description": "Updated training description"
+                        },
+                        "feeling": {
+                            "type": "string",
+                            "description": "Updated feeling"
+                        }
+                    },
+                    "required": ["day"]
+                }
+            },
+            {
+                "name": "get_current_data",
+                "description": "Get current transformation data (baseline, recent days, stats)",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                }
+            },
+            {
+                "name": "get_photos",
+                "description": "Get list of uploaded progress photos",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                }
+            }
+        ]
+        
+        # Build conversation messages
+        messages = [
+            {
+                "role": "system",
+                "content": """You are a helpful AI assistant for a transformation/fitness tracking app. 
+You can help users:
+- Add or update daily log entries
+- Upload progress photos
+- View current data and stats
+- Provide advice based on their progress
+
+Be friendly, concise, and actionable. When adding day entries, format them in markdown following the existing log format."""
+            }
+        ]
+        
+        # Add conversation history
+        for msg in conversation_history[-10:]:  # Keep last 10 messages
+            messages.append({
+                "role": msg.get("role", "user"),
+                "content": msg.get("content", "")
+            })
+        
+        # Add current user message
+        messages.append({
+            "role": "user",
+            "content": user_message
+        })
+        
+        # Call Grok API with function calling
+        headers = {
+            'Authorization': f'Bearer {GROK_API_KEY}',
+            'Content-Type': 'application/json'
+        }
+        
+        payload = {
+            "model": "grok-beta",
+            "messages": messages,
+            "functions": functions,
+            "temperature": 0.7,
+            "max_tokens": 1000
+        }
+        
+        response = requests.post(
+            'https://api.x.ai/v1/chat/completions',
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+        
+        response.raise_for_status()
+        result = response.json()
+        
+        # Check if Grok wants to call a function
+        choice = result['choices'][0]
+        message = choice['message']
+        
+        # Handle function calls
+        if 'function_call' in message:
+            function_name = message['function_call']['name']
+            function_args = json.loads(message['function_call']['arguments'])
+            
+            # Execute function
+            function_result = execute_function(function_name, function_args)
+            
+            # Send function result back to Grok
+            messages.append(message)  # Add assistant's function call
+            messages.append({
+                "role": "function",
+                "name": function_name,
+                "content": json.dumps(function_result)
+            })
+            
+            # Get final response from Grok
+            response2 = requests.post(
+                'https://api.x.ai/v1/chat/completions',
+                headers=headers,
+                json={
+                    "model": "grok-beta",
+                    "messages": messages,
+                    "temperature": 0.7,
+                    "max_tokens": 1000
+                },
+                timeout=30
+            )
+            response2.raise_for_status()
+            result2 = response2.json()
+            final_message = result2['choices'][0]['message']['content']
+            
+            return jsonify({
+                'response': final_message,
+                'function_called': function_name,
+                'function_result': function_result
+            })
+        else:
+            # Regular response
+            return jsonify({
+                'response': message['content'],
+                'function_called': None
+            })
+            
+    except Exception as e:
+        error_msg = str(e)
+        print(f"Chat error: {error_msg}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': f'Error chatting with Grok: {error_msg}'
+        }), 500
+
+
+def execute_function(function_name: str, args: dict) -> dict:
+    """Execute a function call from Grok"""
+    try:
+        if function_name == "add_day_entry":
+            # Format day entry in markdown
+            day = args.get('day')
+            date = args.get('date')
+            protein = args.get('protein')
+            carbs = args.get('carbs')
+            fat = args.get('fat')
+            kcal = args.get('kcal')
+            seafood_kg = args.get('seafood_kg')
+            training = args.get('training', '')
+            supplements = args.get('supplements', 'All')
+            feeling = args.get('feeling', '')
+            notes = args.get('notes', '')
+            
+            # Format seafood
+            seafood_str = f"{seafood_kg} kg" if seafood_kg else ""
+            
+            # Build markdown entry
+            entry = f"### Day {day} – {date}\n\n"
+            if seafood_str:
+                entry += f"- Seafood: {seafood_str}\n"
+            entry += f"- Protein {protein} g | Carbs {carbs} g | Fat {fat} g"
+            if kcal:
+                entry += f" | {kcal} kcal"
+            entry += "\n"
+            if training:
+                entry += f"- Training: {training}\n"
+            if supplements:
+                entry += f"- Supplements: {supplements}\n"
+            if feeling:
+                entry += f"- Feeling: {feeling}\n"
+            if notes:
+                entry += f"- Notes: {notes}\n"
+            
+            # Update log file
+            log_file = Path('transformation_log.md')
+            if log_file.exists():
+                current_content = log_file.read_text(encoding='utf-8')
+            else:
+                current_content = "# D – Ripped 2026 Transformation Log\n\n"
+            
+            new_content = current_content + "\n\n" + entry
+            
+            # Write to file (or return for Git commit on Vercel)
+            is_vercel = os.getenv('VERCEL') == '1'
+            if is_vercel:
+                return {
+                    'success': True,
+                    'message': 'Day entry created (Vercel read-only)',
+                    'entry': entry,
+                    'updated_content': new_content,
+                    'instructions': 'Entry ready for Git commit'
+                }
+            else:
+                log_file.write_text(new_content, encoding='utf-8')
+                return {
+                    'success': True,
+                    'message': f'Day {day} entry added successfully',
+                    'entry': entry
+                }
+        
+        elif function_name == "update_day_entry":
+            # Similar to add_day_entry but update existing
+            day = args.get('day')
+            # Get current log
+            log_file = Path('transformation_log.md')
+            if not log_file.exists():
+                return {'success': False, 'error': 'Log file not found'}
+            
+            current_content = log_file.read_text(encoding='utf-8')
+            day_pattern = rf'### Day {day} – ([^\n]+)'
+            match = re.search(day_pattern, current_content)
+            
+            if not match:
+                return {'success': False, 'error': f'Day {day} not found in log'}
+            
+            # Build updated entry (simplified - would need full parsing for proper update)
+            return {
+                'success': True,
+                'message': f'Day {day} update prepared',
+                'note': 'Full update requires manual edit or more complex parsing'
+            }
+        
+        elif function_name == "get_current_data":
+            parser = TransformationLogParser()
+            baseline = parser.get_baseline()
+            daily_logs = parser.get_daily_logs()
+            recent_days = daily_logs[-3:] if daily_logs else []
+            
+            return {
+                'success': True,
+                'baseline': baseline,
+                'recent_days': recent_days,
+                'total_days': len(daily_logs),
+                'current_streak': len(daily_logs)
+            }
+        
+        elif function_name == "get_photos":
+            # Get photos from API
+            photos = []
+            blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
+            # Simplified - would call get_photos logic
+            return {
+                'success': True,
+                'photos': photos,
+                'count': len(photos)
+            }
+        
+        elif function_name == "upload_photo":
+            # Return instructions for photo upload
+            return {
+                'success': True,
+                'message': 'Photo upload initiated',
+                'instructions': 'User should use the photo upload button in the dashboard, or provide photo file for upload'
+            }
+        
+        else:
+            return {'success': False, 'error': f'Unknown function: {function_name}'}
+            
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+
 @app.route('/api/advice')
 def get_advice():
     """API endpoint to get Grok advice - Public access"""

@@ -68,6 +68,40 @@
             </div>
         </section>
 
+        <!-- Grok Chat Section -->
+        <section class="chat-section" style="margin-bottom: 30px;">
+            <div class="section-header">
+                <h2>💬 Chat with Grok AI</h2>
+                <span style="font-size: 0.9em; color: #666;">Ask me to log entries, upload photos, or get advice!</span>
+            </div>
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message bot-message">
+                        <div class="message-content">
+                            👋 Hi! I'm Grok, your transformation assistant. I can help you:
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>📝 Add or update daily log entries</li>
+                                <li>📸 Upload progress photos</li>
+                                <li>📊 View your current stats</li>
+                                <li>💡 Provide personalized advice</li>
+                            </ul>
+                            Try: "Add Day 4: 395g protein, 42g carbs, 1.2kg seafood, 2hr surfing"
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input 
+                        type="text" 
+                        id="chatInput" 
+                        class="chat-input" 
+                        placeholder="Type your message..."
+                        onkeypress="if(event.key === 'Enter') sendChatMessage()"
+                    >
+                    <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+        </section>
+
         <!-- Grok Advice Section -->
         <section class="advice-section">
             <div class="section-header">

@@ -698,3 +698,116 @@ window.debugPhotos = function() {
     return stored;
 };
 
+// Chat with Grok
+let chatHistory = [];
+
+async function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Disable input while processing
+    input.disabled = true;
+    const sendBtn = document.querySelector('.chat-send-btn');
+    sendBtn.disabled = true;
+    
+    // Add user message to chat
+    addChatMessage('user', message);
+    input.value = '';
+    
+    // Show loading indicator
+    const loadingId = addChatMessage('bot', 'Thinking...', true);
+    
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                history: chatHistory
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Remove loading message
+        removeChatMessage(loadingId);
+        
+        if (data.error) {
+            addChatMessage('bot', `❌ Error: ${data.error}`);
+        } else {
+            // Add bot response
+            addChatMessage('bot', data.response);
+            
+            // Update chat history
+            chatHistory.push({ role: 'user', content: message });
+            chatHistory.push({ role: 'assistant', content: data.response });
+            
+            // Handle function calls
+            if (data.function_called) {
+                const funcResult = data.function_result;
+                if (funcResult && funcResult.success) {
+                    // Show success message
+                    if (data.function_called === 'add_day_entry') {
+                        addChatMessage('bot', `✅ Day entry added! ${funcResult.message}`);
+                        if (funcResult.updated_content) {
+                            addChatMessage('bot', `📝 Ready for Git commit. The updated log content has been prepared.`);
+                        }
+                        // Reload data to show new entry
+                        setTimeout(() => {
+                            loadData();
+                            loadStats();
+                        }, 1000);
+                    } else if (data.function_called === 'get_current_data') {
+                        const stats = funcResult;
+                        addChatMessage('bot', `📊 Current stats: ${stats.total_days} days tracked, current streak: ${stats.current_streak} days`);
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Chat error:', error);
+        removeChatMessage(loadingId);
+        addChatMessage('bot', `❌ Error: ${error.message}`);
+    } finally {
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
+    }
+}
+
+function addChatMessage(role, content, isLoading = false) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    const messageId = 'msg-' + Date.now() + '-' + Math.random();
+    messageDiv.id = messageId;
+    messageDiv.className = `chat-message ${role}-message`;
+    
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'message-content';
+    contentDiv.textContent = content;
+    
+    if (isLoading) {
+        contentDiv.style.fontStyle = 'italic';
+        contentDiv.style.color = '#666';
+    }
+    
+    messageDiv.appendChild(contentDiv);
+    messagesContainer.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    return messageId;
+}
+
+function removeChatMessage(messageId) {
+    const message = document.getElementById(messageId);
+    if (message) {
+        message.remove();
+    }
+}
+
