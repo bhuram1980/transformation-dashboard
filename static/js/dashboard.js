@@ -80,51 +80,70 @@ function animateStreak(element, start, end) {
 }
 
 function updateGoals(baseline, targets) {
-    // Android Fat
-    const androidFat = baseline.android_fat || 0;
-    const androidEl = document.getElementById('androidFatValue');
-    const androidProgressEl = document.getElementById('androidFatProgress');
-    if (androidEl) androidEl.textContent = androidFat.toFixed(1) + '%';
-    if (androidProgressEl) {
-        const progress = Math.min(100, (15 / androidFat) * 100);
+    // Android Fat - Circular Ring
+    const androidFat = baseline.android_fat || baseline.androidFat || 0;
+    const androidFatTarget = parseFloat(targets.android_fat?.replace(/[^0-9.]/g, '') || '15');
+    const androidFatProgress = Math.min(100, (androidFat / androidFatTarget) * 100);
+    
+    const androidFatEl = document.getElementById('androidFatValue');
+    const androidFatRing = document.getElementById('androidFatRing');
+    if (androidFatEl) androidFatEl.textContent = `${androidFat.toFixed(1)}%`;
+    if (androidFatRing) {
+        const circumference = 2 * Math.PI * 54;
+        const offset = circumference - (androidFatProgress / 100) * circumference;
         setTimeout(() => {
-            androidProgressEl.style.width = progress + '%';
+            androidFatRing.style.strokeDashoffset = offset;
         }, 100);
     }
     
-    // Body Fat
-    const bodyFat = baseline.body_fat || 0;
+    // Body Fat - Circular Ring
+    const bodyFat = baseline.body_fat || baseline.bodyFat || 0;
+    const bodyFatTarget = parseFloat(targets.body_fat?.replace(/[^0-9.]/g, '') || '13');
+    const bodyFatProgress = Math.min(100, (bodyFat / bodyFatTarget) * 100);
+    
     const bodyFatEl = document.getElementById('bodyFatValue');
-    const bodyProgressEl = document.getElementById('bodyFatProgress');
-    if (bodyFatEl) bodyFatEl.textContent = bodyFat.toFixed(1) + '%';
-    if (bodyProgressEl) {
-        const progress = Math.min(100, (13 / bodyFat) * 100);
+    const bodyFatRing = document.getElementById('bodyFatRing');
+    if (bodyFatEl) bodyFatEl.textContent = `${bodyFat.toFixed(1)}%`;
+    if (bodyFatRing) {
+        const circumference = 2 * Math.PI * 54;
+        const offset = circumference - (bodyFatProgress / 100) * circumference;
         setTimeout(() => {
-            bodyProgressEl.style.width = progress + '%';
+            bodyFatRing.style.strokeDashoffset = offset;
         }, 200);
     }
     
-    // ALT
+    // ALT - Circular Ring (inverse - lower is better, so we calculate progress from target)
     const alt = baseline.alt || 0;
+    const altTarget = parseFloat(targets.alt?.replace(/[^0-9.]/g, '') || '80');
+    // Progress = how much we've reduced from baseline (315) towards target (80)
+    const altBaseline = 315;
+    const altProgress = Math.min(100, Math.max(0, ((altBaseline - alt) / (altBaseline - altTarget)) * 100));
+    
     const altEl = document.getElementById('altValue');
-    const altProgressEl = document.getElementById('altProgress');
+    const altRing = document.getElementById('altRing');
     if (altEl) altEl.textContent = alt.toFixed(0);
-    if (altProgressEl) {
-        const progress = Math.min(100, (80 / alt) * 100);
+    if (altRing) {
+        const circumference = 2 * Math.PI * 54;
+        const offset = circumference - (altProgress / 100) * circumference;
         setTimeout(() => {
-            altProgressEl.style.width = progress + '%';
+            altRing.style.strokeDashoffset = offset;
         }, 300);
     }
     
-    // Glucose
+    // Glucose - Circular Ring (inverse - lower is better)
     const glucose = baseline.fasting_glucose || 0;
+    const glucoseTarget = parseFloat(targets.glucose?.replace(/[^0-9.]/g, '') || '95');
+    const glucoseBaseline = 106.8;
+    const glucoseProgress = Math.min(100, Math.max(0, ((glucoseBaseline - glucose) / (glucoseBaseline - glucoseTarget)) * 100));
+    
     const glucoseEl = document.getElementById('glucoseValue');
-    const glucoseProgressEl = document.getElementById('glucoseProgress');
-    if (glucoseEl) glucoseEl.textContent = glucose.toFixed(1);
-    if (glucoseProgressEl) {
-        const progress = Math.min(100, (95 / glucose) * 100);
+    const glucoseRing = document.getElementById('glucoseRing');
+    if (glucoseEl) glucoseEl.textContent = `${glucose.toFixed(1)} mg/dL`;
+    if (glucoseRing) {
+        const circumference = 2 * Math.PI * 54;
+        const offset = circumference - (glucoseProgress / 100) * circumference;
         setTimeout(() => {
-            glucoseProgressEl.style.width = progress + '%';
+            glucoseRing.style.strokeDashoffset = offset;
         }, 400);
     }
 }
@@ -329,6 +348,48 @@ function updateGoalAndBaseline(goalInfo, baseline) {
         const triglyceridesEl = document.getElementById('baselineTriglycerides');
         if (triglyceridesEl && baseline.triglycerides !== undefined && baseline.triglycerides !== null) {
             triglyceridesEl.textContent = `${baseline.triglycerides} mg/dL`;
+        }
+    }
+}
+
+function updateFishCounter(dailyLogs) {
+    let totalFish = 0;
+    dailyLogs.forEach(day => {
+        const fish = day.total?.seafoodKg || day.seafoodKg || day.seafood_kg || 0;
+        if (fish) {
+            totalFish += parseFloat(fish);
+        }
+    });
+    
+    const fishCounterEl = document.getElementById('fishCounter');
+    if (fishCounterEl) {
+        fishCounterEl.textContent = `Total fish demolished: ${totalFish.toFixed(2)} kg 🐟`;
+    }
+}
+
+function updateALTCountdown(baseline) {
+    if (!baseline) return;
+    
+    const currentALT = baseline.alt || 315;
+    const targetALT = 80;
+    const altRemaining = Math.max(0, currentALT - targetALT);
+    
+    // Estimate days based on average ALT drop (rough estimate: 5-10 points per week)
+    // Assuming ~1 point per day on average
+    const estimatedDays = Math.ceil(altRemaining / 1);
+    
+    const altCountdownEl = document.getElementById('altCountdown');
+    const altDaysEl = document.getElementById('altDays');
+    
+    if (altCountdownEl) {
+        altCountdownEl.textContent = `${currentALT} → <${targetALT}`;
+    }
+    
+    if (altDaysEl) {
+        if (altRemaining <= 0) {
+            altDaysEl.textContent = 'Target achieved! 🎉';
+        } else {
+            altDaysEl.textContent = `~${estimatedDays} days remaining`;
         }
     }
 }
