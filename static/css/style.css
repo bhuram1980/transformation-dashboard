@@ -538,8 +538,8 @@ body {
     }
     
     .log-input-section,
-    .progress-graph-section,
-    .photos-section {
+    .goal-baseline-section,
+    .meals-section {
         padding: 24px 20px;
     }
     
@@ -551,9 +551,11 @@ body {
         grid-template-columns: 1fr;
     }
     
+    /* Chart wrapper commented out
     .chart-wrapper {
         height: 300px;
     }
+    */
 }
 
 /* Dark mode support */
@@ -564,7 +566,7 @@ body {
     }
     
     .log-input-section,
-    .progress-graph-section,
+    .goal-baseline-section,
     .goal-card,
     .meals-section {
         background: #1a1a1a;
