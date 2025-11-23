@@ -7,9 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script>
-        // Make userRole and isAdmin available to JavaScript
-        window.userRole = '{{ user_role|default("viewer") }}';
-        window.isAdmin = {{ 'true' if is_admin else 'false' }};
+        // All features enabled - no authentication
+        window.userRole = 'viewer';
+        window.isAdmin = true;
     </script>
 </head>
 <body>
@@ -22,14 +22,6 @@
                         <span id="streakCount">0</span> Day Streak
                         <div class="streak-glow" id="streakGlow"></div>
                     </div>
-                    <span style="color: #667eea; font-size: 0.9em; font-weight: 500;">
-                        {% if is_admin %}👑 Admin{% else %}👁️ Public Viewer{% endif %}
-                    </span>
-                    {% if is_admin %}
-                    <a href="/logout" style="color: #f5576c; text-decoration: none; font-size: 0.9em; padding: 8px 12px; border: 1px solid #f5576c; border-radius: 6px; transition: all 0.2s;">Logout</a>
-                    {% else %}
-                    <a href="/login" style="color: #667eea; text-decoration: none; font-size: 0.9em; padding: 8px 12px; border: 1px solid #667eea; border-radius: 6px; transition: all 0.2s;">Admin Login</a>
-                    {% endif %}
                 </div>
             </div>
         </header>
@@ -76,8 +68,7 @@
             </div>
         </section>
 
-        <!-- Grok Advice Section (Admin Only) -->
-        {% if is_admin %}
+        <!-- Grok Advice Section -->
         <section class="advice-section">
             <div class="section-header">
                 <h2>🤖 Daily Grok Advice</h2>
@@ -87,16 +78,6 @@
                 <div class="loading">Loading advice from Grok...</div>
             </div>
         </section>
-        {% else %}
-        <section class="advice-section" style="opacity: 0.6;">
-            <div class="section-header">
-                <h2>🤖 Daily Grok Advice</h2>
-            </div>
-            <div class="advice-box" style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; color: #666;">
-                <p>👁️ <strong>Viewer Mode:</strong> Grok AI advice is only available to admin users.</p>
-            </div>
-        </section>
-        {% endif %}
 
         <!-- Charts Section -->
         <section class="charts-section">
@@ -193,17 +174,11 @@
         <section class="photo-section">
             <h2>📸 Progress Photos</h2>
             <div class="photo-upload-box">
-                {% if is_admin %}
                 <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handlePhotoUpload(event)">
                 <button class="btn-upload" onclick="document.getElementById('photoInput').click()">
                     📷 Upload Photo (Fish Plate / Mirror Selfie)
                 </button>
                 <div id="photoPreview" class="photo-preview"></div>
-                {% else %}
-                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; color: #666; border: 2px dashed #ddd;">
-                    <p>👁️ <strong>Viewer Mode:</strong> Photo upload is only available to admin users.</p>
-                </div>
-                {% endif %}
                 <div style="margin-top: 30px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h3 style="margin: 0; color: #667eea; font-size: 1.2em;">📷 Photo Gallery</h3>

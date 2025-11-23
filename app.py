@@ -25,13 +25,7 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-this-to-a-random-secret-k
 GROK_API_KEY = os.getenv('GROK_API_KEY', '')
 GROK_API_URL = 'https://api.x.ai/v1/chat/completions'
 
-# Admin authentication configuration
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'x/headlesstale')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '')
-
-# Session timeout (24 hours)
-PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
-app.permanent_session_lifetime = PERMANENT_SESSION_LIFETIME
+# Authentication disabled - public access for all features
 
 
 class TransformationLogParser:
@@ -189,23 +183,7 @@ class TransformationLogParser:
         }
 
 
-# Authentication helpers
-def get_user_role():
-    """Get current user role - defaults to 'viewer' for public access"""
-    return session.get('user_role', 'viewer')
-
-def is_admin():
-    """Check if current user is admin"""
-    return session.get('user_role') == 'admin' and session.get('username') == ADMIN_USERNAME
-
-def admin_required(f):
-    """Require admin role for API endpoints"""
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not is_admin():
-            return jsonify({'error': 'Admin access required. Please login as admin.'}), 403
-        return f(*args, **kwargs)
-    return decorated_function
+# Authentication disabled - all features are public
 
 
 def get_grok_advice(log_content: str, recent_days: List[Dict], baseline: Dict, targets: Dict) -> str:
@@ -304,47 +282,10 @@ Keep it concise, actionable, and motivating."""
         return f"⚠️ Error getting Grok advice: {str(e)}\n\nKeep following your protocol - consistency is key! 🔥"
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    """Admin login page - public can view without login"""
-    if request.method == 'POST':
-        username = request.form.get('username', '').strip()
-        password = request.form.get('password', '')
-        
-        # Check if admin credentials are configured
-        if not ADMIN_PASSWORD:
-            # No admin password set - allow any login as admin (development mode)
-            session['user_role'] = 'admin'
-            session['username'] = username or 'admin'
-            session.permanent = True
-            return redirect(url_for('index'))
-        
-        # Check admin credentials (username must match ADMIN_USERNAME)
-        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-            session['user_role'] = 'admin'
-            session['username'] = username
-            session.permanent = True
-            return redirect(url_for('index'))
-        
-        # Invalid credentials
-        return render_template('login.html', error='Invalid username or password. Only admin login is available.')
-    
-    # GET request - show login page
-    return render_template('login.html')
-
-
-@app.route('/logout')
-def logout():
-    """Logout and clear session"""
-    session.clear()
-    return redirect(url_for('index'))
-
-
 @app.route('/')
 def index():
-    """Main dashboard - public access (viewer mode by default)"""
-    user_role = get_user_role()
-    return render_template('dashboard.html', user_role=user_role, is_admin=is_admin())
+    """Main dashboard - public access, all features enabled"""
+    return render_template('dashboard.html', user_role='viewer', is_admin=True)
 
 
 @app.route('/api/data')
@@ -369,9 +310,8 @@ def get_data():
 
 
 @app.route('/api/advice')
-@admin_required
 def get_advice():
-    """API endpoint to get Grok advice - Admin only"""
+    """API endpoint to get Grok advice - Public access"""
     
     parser = TransformationLogParser()
     
@@ -419,9 +359,8 @@ def get_stats():
 
 
 @app.route('/api/upload-photo', methods=['POST'])
-@admin_required
 def upload_photo():
-    """Upload photo to Vercel Blob storage - Admin only"""
+    """Upload photo to Vercel Blob storage - Public access"""
     
     try:
         if 'photo' not in request.files:

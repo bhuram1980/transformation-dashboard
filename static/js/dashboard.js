@@ -18,16 +18,8 @@ const fishMacros = {
 // Load all data on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
-    // Only load Grok advice if admin
-    if (isAdmin) {
-        loadAdvice();
-    } else {
-        // Hide or disable advice section for viewers
-        const adviceBox = document.getElementById('adviceBox');
-        if (adviceBox && !adviceBox.innerHTML.includes('Viewer Mode')) {
-            adviceBox.innerHTML = '<p style="text-align: center; color: #666;">👁️ Public Viewer: Grok AI advice is only available to admin users. <a href="/login" style="color: #667eea;">Login as admin</a></p>';
-        }
-    }
+    // Load Grok advice (public access)
+    loadAdvice();
     loadStats();
     // Load photos after a short delay to ensure DOM is ready
     setTimeout(() => loadPhotos(), 500);
@@ -241,17 +233,8 @@ function updateRecentDaysTable(dailyLogs) {
     `).join('');
 }
 
-// Load Advice (Admin only)
+// Load Advice (Public access)
 async function loadAdvice() {
-    // Check if user is admin
-    if (!isAdmin) {
-        const adviceBox = document.getElementById('adviceBox');
-        if (adviceBox) {
-            adviceBox.innerHTML = '<p style="text-align: center; color: #666;">👁️ Public Viewer: Grok AI advice is only available to admin users. <a href="/login" style="color: #667eea;">Login as admin</a></p>';
-        }
-        return;
-    }
-    
     const adviceBox = document.getElementById('adviceBox');
     if (!adviceBox) return;
     
@@ -260,12 +243,6 @@ async function loadAdvice() {
     try {
         const response = await fetch('/api/advice');
         const data = await response.json();
-        
-        if (data.error && response.status === 403) {
-            // Admin access required
-            adviceBox.innerHTML = `<div class="advice-content" style="color: #f5576c;">${data.error}</div>`;
-            return;
-        }
         
         if (data.advice) {
             // Format advice with line breaks
@@ -472,14 +449,6 @@ function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8, m
 
 // Photo Upload Handler with Compression
 async function handlePhotoUpload(event) {
-    // Check if user is admin
-    if (!isAdmin) {
-        alert('👁️ Public Viewer: Photo upload is only available to admin users. Please login as admin.');
-        event.target.value = ''; // Clear file input
-        window.location.href = '/login';
-        return;
-    }
-    
     const file = event.target.files[0];
     if (!file) return;
     
