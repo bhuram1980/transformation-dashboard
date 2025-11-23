@@ -424,7 +424,15 @@ def upload_photo():
             return jsonify({'success': True, 'url': url})
             
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        error_msg = str(e)
+        print(f"Upload error: {error_msg}")
+        # Return more helpful error message
+        if 'Blob' in error_msg or 'blob' in error_msg.lower():
+            return jsonify({
+                'success': False, 
+                'error': f'Blob upload failed: {error_msg}. Check BLOB_READ_WRITE_TOKEN is set correctly.'
+            }), 500
+        return jsonify({'success': False, 'error': error_msg}), 500
 
 
 @app.route('/api/photos')
