@@ -40,12 +40,17 @@ async function loadData() {
             updateGoals(data.baseline, data.targets);
         }
         
-        // Render progress chart
-        if (data.daily_logs && data.daily_logs.length > 0) {
-            renderProgressChart(data.daily_logs);
-        } else {
-            console.warn('No daily logs found');
+        // Update goal and baseline metrics
+        if (data.goal && data.baseline) {
+            updateGoalAndBaseline(data.goal, data.baseline);
         }
+        
+        // Render progress chart (COMMENTED OUT - may add later)
+        // if (data.daily_logs && data.daily_logs.length > 0) {
+        //     renderProgressChart(data.daily_logs);
+        // } else {
+        //     console.warn('No daily logs found');
+        // }
     } catch (error) {
         console.error('Error loading data:', error);
     }
