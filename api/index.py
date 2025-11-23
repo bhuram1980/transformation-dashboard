@@ -16,6 +16,14 @@ sys.path.insert(0, str(parent_dir))
 # Change to parent directory so relative paths work
 os.chdir(str(parent_dir))
 
+# Debug: Log paths for troubleshooting
+import sys
+sys.stderr.write(f"api/index.py: current_dir = {current_dir}\n")
+sys.stderr.write(f"api/index.py: parent_dir = {parent_dir}\n")
+sys.stderr.write(f"api/index.py: cwd = {os.getcwd()}\n")
+sys.stderr.write(f"api/index.py: public/data exists = {(parent_dir / 'public' / 'data').exists()}\n")
+sys.stderr.flush()
+
 # Import Flask app
 try:
     from app import app
