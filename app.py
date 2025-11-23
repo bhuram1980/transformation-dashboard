@@ -194,18 +194,37 @@ class TransformationDataLoader:
         vercel_env = os.getenv('VERCEL')
         if vercel_env == '1':
             # Try api/data first on Vercel
-            # Path from app.py: app.py is in root, so api/data is at root/api/data
-            api_master = Path(__file__).parent / "api" / "data" / "master-health-file.json"
-            api_logs = Path(__file__).parent / "api" / "data" / "daily-logs"
-            print(f"Checking api/data paths:")
-            print(f"  api_master: {api_master} (exists: {api_master.exists()})")
-            print(f"  api_logs: {api_logs} (exists: {api_logs.exists()})")
-            if api_master.exists():
-                master_file = str(api_master)
-                print(f"Using Vercel api/data master file: {master_file}")
-            if api_logs.exists():
-                daily_logs_dir = str(api_logs)
-                print(f"Using Vercel api/data logs dir: {daily_logs_dir}")
+            # On Vercel, api/index.py sets cwd to parent_dir (project root)
+            # So from app.py's perspective, api/data is at: cwd/api/data
+            # But also try relative to app.py's location
+            cwd = Path.cwd()
+            api_master_from_cwd = cwd / "api" / "data" / "master-health-file.json"
+            api_logs_from_cwd = cwd / "api" / "data" / "daily-logs"
+            api_master_from_file = Path(__file__).parent / "api" / "data" / "master-health-file.json"
+            api_logs_from_file = Path(__file__).parent / "api" / "data" / "daily-logs"
+            
+            print(f"Checking api/data paths on Vercel:")
+            print(f"  cwd: {cwd}")
+            print(f"  __file__ parent: {Path(__file__).parent}")
+            print(f"  api_master_from_cwd: {api_master_from_cwd} (exists: {api_master_from_cwd.exists()})")
+            print(f"  api_logs_from_cwd: {api_logs_from_cwd} (exists: {api_logs_from_cwd.exists()})")
+            print(f"  api_master_from_file: {api_master_from_file} (exists: {api_master_from_file.exists()})")
+            print(f"  api_logs_from_file: {api_logs_from_file} (exists: {api_logs_from_file.exists()})")
+            
+            # Try cwd first (set by api/index.py), then file location
+            if api_master_from_cwd.exists():
+                master_file = str(api_master_from_cwd)
+                print(f"Using Vercel api/data master file (from cwd): {master_file}")
+            elif api_master_from_file.exists():
+                master_file = str(api_master_from_file)
+                print(f"Using Vercel api/data master file (from __file__): {master_file}")
+            
+            if api_logs_from_cwd.exists():
+                daily_logs_dir = str(api_logs_from_cwd)
+                print(f"Using Vercel api/data logs dir (from cwd): {daily_logs_dir}")
+            elif api_logs_from_file.exists():
+                daily_logs_dir = str(api_logs_from_file)
+                print(f"Using Vercel api/data logs dir (from __file__): {daily_logs_dir}")
         
         try:
             # Use absolute paths from app root
