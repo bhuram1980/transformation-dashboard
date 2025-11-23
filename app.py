@@ -184,6 +184,116 @@ class TransformationLogParser:
         }
 
 
+class TransformationDataLoader:
+    """Load data from JSON files: master file + daily logs"""
+    
+    def __init__(self, master_file: str = "public/data/master-health-file.json", daily_logs_dir: str = "public/data/daily-logs"):
+        # Use absolute paths from app root
+        app_root = Path(__file__).parent
+        self.master_file = app_root / master_file
+        self.daily_logs_dir = app_root / daily_logs_dir
+        self.master_data = self._load_master()
+        self.daily_logs = self._load_daily_logs()
+    
+    def _load_master(self) -> Dict:
+        """Load master health file"""
+        if not self.master_file.exists():
+            print(f"Master file does not exist: {self.master_file}")
+            return {}
+        try:
+            return json.loads(self.master_file.read_text(encoding='utf-8'))
+        except Exception as e:
+            print(f"Error loading master file: {e}")
+            return {}
+    
+    def _load_daily_logs(self) -> List[Dict]:
+        """Load all daily log JSON files, sorted by date"""
+        days = []
+        if not self.daily_logs_dir.exists():
+            print(f"Daily logs directory does not exist: {self.daily_logs_dir}")
+            return days
+        
+        # Get all JSON files
+        json_files = sorted(self.daily_logs_dir.glob("*.json"))
+        print(f"Found {len(json_files)} JSON files in {self.daily_logs_dir}")
+        
+        for json_file in json_files:
+            try:
+                content = json_file.read_text(encoding='utf-8')
+                day_data = json.loads(content)
+                # Add day number based on order
+                day_data['day'] = len(days) + 1
+                # Parse date for display
+                try:
+                    date_obj = datetime.strptime(day_data['date'], '%Y-%m-%d')
+                    day_data['date_display'] = date_obj.strftime('%b %d, %Y')
+                except Exception as e:
+                    print(f"Error parsing date {day_data.get('date')}: {e}")
+                    day_data['date_display'] = day_data.get('date', 'Unknown')
+                days.append(day_data)
+                print(f"Loaded {json_file.name}: Day {day_data['day']}, Protein: {day_data.get('protein')}")
+            except Exception as e:
+                print(f"Error loading {json_file}: {e}")
+                import traceback
+                traceback.print_exc()
+        
+        print(f"Total days loaded: {len(days)}")
+        return days
+    
+    def get_baseline(self) -> Dict:
+        """Get baseline metrics from master file"""
+        baseline = self.master_data.get('baseline', {})
+        bloods = baseline.get('bloods', {})
+        
+        # Flatten structure for compatibility
+        result = {
+            'age': baseline.get('age'),
+            'height': baseline.get('height'),
+            'weight': baseline.get('weight'),
+            'body_fat': baseline.get('bodyFat'),
+            'android_fat': baseline.get('androidFat'),
+            'lean_mass': baseline.get('leanMass'),
+            'alt': bloods.get('alt'),
+            'ast': bloods.get('ast'),
+            'ggt': bloods.get('ggt'),
+            'fasting_glucose': bloods.get('fastingGlucose'),
+            'triglycerides': bloods.get('triglycerides'),
+            'hs-crp': bloods.get('hsCrp'),
+            'vitamin_d': bloods.get('vitaminD'),
+            'ferritin': bloods.get('ferritin')
+        }
+        return result
+    
+    def get_targets(self) -> Dict:
+        """Get targets from master file"""
+        targets = self.master_data.get('targets', {})
+        # Convert to compatible format
+        return {
+            'weight': targets.get('weight', ''),
+            'body_fat': targets.get('bodyFat', ''),
+            'android_fat': targets.get('androidFat', ''),
+            'alt': targets.get('alt', ''),
+            'glucose': targets.get('glucose', ''),
+            'triglycerides': targets.get('triglycerides', '')
+        }
+    
+    def get_daily_logs(self) -> List[Dict]:
+        """Get all daily logs"""
+        return self.daily_logs
+    
+    def get_streak(self) -> int:
+        """Calculate current streak"""
+        return len(self.daily_logs)
+    
+    def get_goal_info(self) -> Dict:
+        """Get goal information from master file"""
+        goal = self.master_data.get('goal', {})
+        return {
+            'goal': goal.get('description', ''),
+            'started': goal.get('started', '')
+        }
+
+
 # Authentication disabled - all features are public
 
 
