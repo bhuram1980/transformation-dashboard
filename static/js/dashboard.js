@@ -485,11 +485,22 @@ function loadDayMeals() {
                         <tbody>
                 `;
                 
+                // Calculate totals as we iterate
+                let totalProtein = 0;
+                let totalCarbs = 0;
+                let totalFat = 0;
+                let totalKcal = 0;
+                
                 mealOrder.forEach(mealKey => {
                     const meal = selectedDayData.meals[mealKey];
                     if (meal && typeof meal === 'object' && meal !== null && meal.description) {
                         const desc = meal.description;
                         if (desc && desc.toLowerCase() !== 'none') {
+                            totalProtein += meal.protein || 0;
+                            totalCarbs += meal.carbs || 0;
+                            totalFat += meal.fat || 0;
+                            totalKcal += meal.kcal || 0;
+                            
                             mealsHTML += `
                                 <tr class="meal-table-row">
                                     <td class="meal-col-name">${mealLabels[mealKey] || mealKey}</td>
@@ -506,33 +517,20 @@ function loadDayMeals() {
                 
                 mealsHTML += `
                         </tbody>
+                        <tfoot>
+                            <tr class="meal-table-totals">
+                                <td class="meal-col-name"><strong>Total</strong></td>
+                                <td class="meal-col-desc"></td>
+                                <td class="meal-col-macro"><strong>${totalProtein}g</strong></td>
+                                <td class="meal-col-macro"><strong>${totalCarbs}g</strong></td>
+                                <td class="meal-col-macro"><strong>${totalFat}g</strong></td>
+                                <td class="meal-col-macro"><strong>${totalKcal}</strong></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 `;
                 
                 mealsHTML += `
-                            </div>
-                            <div class="meals-detail-totals">
-                                <div class="meals-total-item">
-                                    <span class="meals-total-label">Protein</span>
-                                    <span class="meals-total-value">${dailyTotal.protein || 0}g</span>
-                                </div>
-                                <div class="meals-total-item">
-                                    <span class="meals-total-label">Carbs</span>
-                                    <span class="meals-total-value">${dailyTotal.carbs || 0}g</span>
-                                </div>
-                                <div class="meals-total-item">
-                                    <span class="meals-total-label">Fat</span>
-                                    <span class="meals-total-value">${dailyTotal.fat || 0}g</span>
-                                </div>
-                                <div class="meals-total-item">
-                                    <span class="meals-total-label">Kcal</span>
-                                    <span class="meals-total-value">${dailyTotal.kcal || 0}</span>
-                                </div>
-                                <div class="meals-total-item">
-                                    <span class="meals-total-label">Seafood</span>
-                                    <span class="meals-total-value">${dailyTotal.seafoodKg || 0}kg</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 `;

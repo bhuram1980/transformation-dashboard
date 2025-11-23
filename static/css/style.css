@@ -644,6 +644,32 @@ body {
     font-size: 14px;
 }
 
+.meals-table tfoot {
+    border-top: 2px solid #e5e5e5;
+    background: #f8f9fa;
+}
+
+.meals-table tfoot tr.meal-table-totals {
+    border-bottom: none;
+}
+
+.meals-table tfoot tr.meal-table-totals:hover {
+    background: #f8f9fa;
+}
+
+.meals-table tfoot td {
+    padding: 20px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #000;
+}
+
+.meals-table tfoot td.meal-col-macro {
+    color: #0066ff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
 .meals-detail-totals {
     padding-top: 24px;
     border-top: 1px solid #e5e5e5;
