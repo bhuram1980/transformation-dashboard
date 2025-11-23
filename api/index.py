@@ -59,6 +59,12 @@ class handler(BaseHTTPRequestHandler):
             path = path_parts[0]
             query_string = path_parts[1] if len(path_parts) > 1 else ''
             
+            # Skip static files - let Vercel handle them
+            if path.startswith('/static/') or path.startswith('/public/'):
+                self.send_response(404)
+                self.end_headers()
+                return
+            
             # Read request body if present
             content_length = int(self.headers.get('Content-Length', 0))
             body = self.rfile.read(content_length) if content_length > 0 else b''
