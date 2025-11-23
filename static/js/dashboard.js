@@ -496,16 +496,39 @@ async function handlePhotoUpload(event) {
             // Store the uploaded photo URL
             const uploadedUrl = result.url;
             
-            // Store in localStorage as backup
+            // Store in localStorage (PRIMARY storage - most reliable)
             try {
-                const storedPhotos = JSON.parse(localStorage.getItem('uploadedPhotos') || '[]');
-                storedPhotos.push({
-                    url: uploadedUrl,
-                    date: new Date().toISOString()
-                });
-                localStorage.setItem('uploadedPhotos', JSON.stringify(storedPhotos));
+                const storedStr = localStorage.getItem('uploadedPhotos') || '[]';
+                const storedPhotos = JSON.parse(storedStr);
+                if (!Array.isArray(storedPhotos)) {
+                    console.warn('localStorage photos was not an array, resetting');
+                    localStorage.setItem('uploadedPhotos', JSON.stringify([]));
+                }
+                
+                // Check if URL already exists (avoid duplicates)
+                if (!storedPhotos.find(p => p.url === uploadedUrl)) {
+                    storedPhotos.push({
+                        url: uploadedUrl,
+                        date: new Date().toISOString()
+                    });
+                    localStorage.setItem('uploadedPhotos', JSON.stringify(storedPhotos));
+                    console.log('Photo saved to localStorage:', uploadedUrl);
+                    console.log('Total photos in localStorage:', storedPhotos.length);
+                } else {
+                    console.log('Photo already in localStorage, skipping duplicate');
+                }
             } catch (e) {
                 console.error('Error storing photo in localStorage:', e);
+                // Try to recover by resetting
+                try {
+                    localStorage.setItem('uploadedPhotos', JSON.stringify([{
+                        url: uploadedUrl,
+                        date: new Date().toISOString()
+                    }]));
+                    console.log('Reset localStorage and saved photo');
+                } catch (e2) {
+                    console.error('Failed to reset localStorage:', e2);
+                }
             }
             
             // Add to gallery immediately (optimistic update)
@@ -564,55 +587,63 @@ async function loadPhotos() {
             return;
         }
         
-        // Try to load from server first
+        // PRIMARY: Load from localStorage (most reliable)
         let photos = [];
         try {
-            const response = await fetch('/api/photos');
-            const data = await response.json();
-            console.log('Photos from server:', data);
-            if (data.photos && Array.isArray(data.photos)) {
-                photos = data.photos;
+            const storedStr = localStorage.getItem('uploadedPhotos');
+            console.log('localStorage raw:', storedStr);
+            if (storedStr) {
+                const storedPhotos = JSON.parse(storedStr);
+                console.log('Photos from localStorage:', storedPhotos);
+                photos = Array.isArray(storedPhotos) ? storedPhotos : [];
             }
-        } catch (error) {
-            console.error('Error fetching from server:', error);
-        }
-        
-        // Also check localStorage as backup
-        try {
-            const storedPhotos = JSON.parse(localStorage.getItem('uploadedPhotos') || '[]');
-            console.log('Photos from localStorage:', storedPhotos);
-            
-            // Merge with server photos, avoiding duplicates
-            for (const stored of storedPhotos) {
-                if (!photos.find(p => p.url === stored.url)) {
-                    photos.push(stored);
-                }
-            }
-            
-            // Sort by date, newest first
-            photos.sort((a, b) => {
-                const dateA = new Date(a.date || 0);
-                const dateB = new Date(b.date || 0);
-                return dateB - dateA;
-            });
         } catch (error) {
             console.error('Error reading localStorage:', error);
         }
         
-        console.log('Total photos to display:', photos.length);
+        // SECONDARY: Try to load from server (may not work with Vercel Blob)
+        try {
+            const response = await fetch('/api/photos');
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Photos from server:', data);
+                if (data.photos && Array.isArray(data.photos)) {
+                    // Merge with localStorage, avoiding duplicates
+                    for (const serverPhoto of data.photos) {
+                        if (!photos.find(p => p.url === serverPhoto.url)) {
+                            photos.push(serverPhoto);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching from server:', error);
+            // Not critical - localStorage is primary source
+        }
+        
+        // Sort by date, newest first
+        photos.sort((a, b) => {
+            const dateA = new Date(a.date || 0);
+            const dateB = new Date(b.date || 0);
+            return dateB - dateA;
+        });
+        
+        console.log(`Displaying ${photos.length} photos:`, photos);
         
         if (photos.length > 0) {
-            gallery.innerHTML = photos.map(photo => {
+            gallery.innerHTML = photos.map((photo, index) => {
                 const url = photo.url;
+                // Escape URL for HTML
+                const safeUrl = url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 return `
-                    <div class="photo-item">
-                        <img src="${url}" 
-                             alt="Progress photo" 
-                             onclick="window.open('${url}', '_blank')"
-                             style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;"
+                    <div class="photo-item" style="position: relative;">
+                        <img src="${safeUrl}" 
+                             alt="Progress photo ${index + 1}" 
+                             onclick="window.open('${safeUrl}', '_blank')"
+                             style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; display: block;"
                              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
                              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';"
-                             onerror="console.error('Failed to load image:', '${url}'); this.style.border='2px solid #f5576c';">
+                             onerror="console.error('Failed to load image:', '${safeUrl}'); this.style.border='2px solid #f5576c'; this.alt='Failed to load - click to open';">
                     </div>
                 `;
             }).join('');
@@ -627,4 +658,27 @@ async function loadPhotos() {
         }
     }
 }
+
+// Debug function - can be called from console
+window.debugPhotos = function() {
+    const stored = localStorage.getItem('uploadedPhotos');
+    console.log('=== PHOTO DEBUG ===');
+    console.log('localStorage key "uploadedPhotos":', stored);
+    if (stored) {
+        try {
+            const parsed = JSON.parse(stored);
+            console.log('Parsed photos:', parsed);
+            console.log('Number of photos:', parsed.length);
+            parsed.forEach((p, i) => {
+                console.log(`Photo ${i + 1}:`, p.url);
+            });
+        } catch (e) {
+            console.error('Failed to parse:', e);
+        }
+    } else {
+        console.log('No photos in localStorage');
+    }
+    console.log('==================');
+    return stored;
+};
 
