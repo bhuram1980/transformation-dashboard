@@ -493,14 +493,37 @@ async function handlePhotoUpload(event) {
         const result = await response.json();
         
         if (result.success) {
-            // Store the uploaded photo URL temporarily
+            // Store the uploaded photo URL
             const uploadedUrl = result.url;
+            
+            // Store in localStorage as backup
+            try {
+                const storedPhotos = JSON.parse(localStorage.getItem('uploadedPhotos') || '[]');
+                storedPhotos.push({
+                    url: uploadedUrl,
+                    date: new Date().toISOString()
+                });
+                localStorage.setItem('uploadedPhotos', JSON.stringify(storedPhotos));
+            } catch (e) {
+                console.error('Error storing photo in localStorage:', e);
+            }
             
             // Add to gallery immediately (optimistic update)
             const gallery = document.getElementById('photoGallery');
-            if (gallery.innerHTML.includes('No photos yet')) {
+            if (!gallery) {
+                console.error('Gallery element not found!');
+                alert('Photo uploaded but gallery not found. URL: ' + uploadedUrl);
+                return;
+            }
+            
+            // Clear "no photos" message
+            if (gallery.innerHTML.includes('No photos yet') || gallery.innerHTML.includes('no photos')) {
                 gallery.innerHTML = '';
             }
+            
+            // Create photo item
+            const photoDiv = document.createElement('div');
+            photoDiv.className = 'photo-item';
             const img = document.createElement('img');
             img.src = uploadedUrl;
             img.alt = 'Progress photo';
@@ -508,10 +531,16 @@ async function handlePhotoUpload(event) {
             img.style.cssText = 'width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;';
             img.onmouseover = () => img.style.transform = 'scale(1.05)';
             img.onmouseout = () => img.style.transform = 'scale(1)';
-            gallery.insertBefore(img, gallery.firstChild);
+            img.onerror = function() {
+                console.error('Failed to load image:', uploadedUrl);
+                this.style.border = '2px solid #f5576c';
+                this.alt = 'Failed to load - click to open URL';
+            };
+            photoDiv.appendChild(img);
+            gallery.insertBefore(photoDiv, gallery.firstChild);
             
             // Also reload from server to get all photos
-            loadPhotos();
+            setTimeout(() => loadPhotos(), 1000);
             
             preview.innerHTML = '';
             document.getElementById('photoInput').value = '';
@@ -529,26 +558,61 @@ async function handlePhotoUpload(event) {
 // Load Photos
 async function loadPhotos() {
     try {
-        const response = await fetch('/api/photos');
-        const data = await response.json();
-        
-        console.log('Photos data:', data);
-        
         const gallery = document.getElementById('photoGallery');
         if (!gallery) {
             console.error('Photo gallery element not found!');
             return;
         }
         
-        if (data.photos && data.photos.length > 0) {
-            gallery.innerHTML = data.photos.map(photo => {
+        // Try to load from server first
+        let photos = [];
+        try {
+            const response = await fetch('/api/photos');
+            const data = await response.json();
+            console.log('Photos from server:', data);
+            if (data.photos && Array.isArray(data.photos)) {
+                photos = data.photos;
+            }
+        } catch (error) {
+            console.error('Error fetching from server:', error);
+        }
+        
+        // Also check localStorage as backup
+        try {
+            const storedPhotos = JSON.parse(localStorage.getItem('uploadedPhotos') || '[]');
+            console.log('Photos from localStorage:', storedPhotos);
+            
+            // Merge with server photos, avoiding duplicates
+            for (const stored of storedPhotos) {
+                if (!photos.find(p => p.url === stored.url)) {
+                    photos.push(stored);
+                }
+            }
+            
+            // Sort by date, newest first
+            photos.sort((a, b) => {
+                const dateA = new Date(a.date || 0);
+                const dateB = new Date(b.date || 0);
+                return dateB - dateA;
+            });
+        } catch (error) {
+            console.error('Error reading localStorage:', error);
+        }
+        
+        console.log('Total photos to display:', photos.length);
+        
+        if (photos.length > 0) {
+            gallery.innerHTML = photos.map(photo => {
                 const url = photo.url;
                 return `
                     <div class="photo-item">
                         <img src="${url}" 
                              alt="Progress photo" 
                              onclick="window.open('${url}', '_blank')"
-                             onerror="this.style.display='none'; console.error('Failed to load image: ${url}');">
+                             style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;"
+                             onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
+                             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';"
+                             onerror="console.error('Failed to load image:', '${url}'); this.style.border='2px solid #f5576c';">
                     </div>
                 `;
             }).join('');
@@ -559,7 +623,7 @@ async function loadPhotos() {
         console.error('Error loading photos:', error);
         const gallery = document.getElementById('photoGallery');
         if (gallery) {
-            gallery.innerHTML = `<p style="text-align: center; color: #f5576c; grid-column: 1 / -1;">Error loading photos. Check console for details.</p>`;
+            gallery.innerHTML = `<p style="text-align: center; color: #f5576c; grid-column: 1 / -1;">Error loading photos. Check console (F12) for details.</p>`;
         }
     }
 }

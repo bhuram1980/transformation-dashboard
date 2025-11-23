@@ -425,7 +425,13 @@ def upload_photo():
                 
                 # Log for debugging
                 print(f"Upload successful: {blob_url}")
-                return jsonify({'success': True, 'url': blob_url})
+                # Return the URL - client will store it in localStorage
+                return jsonify({
+                    'success': True, 
+                    'url': blob_url,
+                    'filename': filename,
+                    'message': 'Photo uploaded successfully'
+                })
             else:
                 error_msg = response.text or f"Status {response.status_code}"
                 raise Exception(f"Blob upload failed: {response.status_code} - {error_msg}")
