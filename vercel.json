@@ -16,11 +16,6 @@
       "dest": "api/index.py"
     }
   ],
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.12"
-    }
-  },
   "env": {
     "FLASK_ENV": "production"
   }
