@@ -1173,7 +1173,9 @@ def get_advice():
     targets = loader.get_targets()
     daily_logs = loader.get_daily_logs()
     
-    advice = get_grok_advice(parser.log_content, daily_logs, baseline, targets)
+    # Convert daily logs to text format for Grok
+    log_content = f"Baseline: {baseline}\nTargets: {targets}\nDaily Logs: {daily_logs}"
+    advice = get_grok_advice(log_content, daily_logs, baseline, targets)
     
     return jsonify({
         'advice': advice,
@@ -1206,32 +1208,32 @@ def get_stats():
         
         # Calculate averages
         if daily_logs:
-        proteins = [float(d.get('protein', 0) or 0) for d in daily_logs if d.get('protein')]
-        carbs = [float(d.get('carbs', 0) or 0) for d in daily_logs if d.get('carbs')]
-        fats = [float(d.get('fat', 0) or 0) for d in daily_logs if d.get('fat')]
-        seafoods = []
-        for d in daily_logs:
-            fish = d.get('seafoodKg') or d.get('seafood_kg')
-            if fish:
-                seafoods.append(float(fish))
-        
-        stats['avg_protein'] = sum(proteins) / len(proteins) if proteins else 0
-        stats['avg_carbs'] = sum(carbs) / len(carbs) if carbs else 0
-        stats['avg_fat'] = sum(fats) / len(fats) if fats else 0
-        stats['avg_seafood'] = sum(seafoods) / len(seafoods) if seafoods else 0
-    else:
-        stats['avg_protein'] = 0
-        stats['avg_carbs'] = 0
-        stats['avg_fat'] = 0
-        stats['avg_seafood'] = 0
-    
-            stats['total_fish_kg'] = round(total_fish_kg, 2)
-            stats['alt_current'] = current_alt
-            stats['alt_target'] = target_alt
-            stats['alt_remaining'] = alt_remaining
+            proteins = [float(d.get('protein', 0) or 0) for d in daily_logs if d.get('protein')]
+            carbs = [float(d.get('carbs', 0) or 0) for d in daily_logs if d.get('carbs')]
+            fats = [float(d.get('fat', 0) or 0) for d in daily_logs if d.get('fat')]
+            seafoods = []
+            for d in daily_logs:
+                fish = d.get('seafoodKg') or d.get('seafood_kg')
+                if fish:
+                    seafoods.append(float(fish))
             
-            return jsonify(stats)
-        except Exception as e:
+            stats['avg_protein'] = sum(proteins) / len(proteins) if proteins else 0
+            stats['avg_carbs'] = sum(carbs) / len(carbs) if carbs else 0
+            stats['avg_fat'] = sum(fats) / len(fats) if fats else 0
+            stats['avg_seafood'] = sum(seafoods) / len(seafoods) if seafoods else 0
+        else:
+            stats['avg_protein'] = 0
+            stats['avg_carbs'] = 0
+            stats['avg_fat'] = 0
+            stats['avg_seafood'] = 0
+        
+        stats['total_fish_kg'] = round(total_fish_kg, 2)
+        stats['alt_current'] = current_alt
+        stats['alt_target'] = target_alt
+        stats['alt_remaining'] = alt_remaining
+        
+        return jsonify(stats)
+    except Exception as e:
         print(f"Error in /api/stats: {e}")
         import traceback
         traceback.print_exc()
