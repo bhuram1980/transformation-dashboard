@@ -29,21 +29,13 @@ try:
 except Exception as e:
     print(f"  Error listing: {e}")
 
+# @vercel/python automatically handles Flask WSGI apps
+# We just need to import and export the app
 try:
     from app import app
-    print("Successfully imported app")
-    
-    # Use vercel-python-wsgi adapter for proper Flask handling on Vercel
-    try:
-        from vercel_wsgi import VercelApp
-        application = VercelApp(app)
-        print("Using vercel-python-wsgi adapter")
-    except ImportError:
-        # Fallback: @vercel/python should handle Flask automatically
-        print("vercel-python-wsgi not available, using direct Flask app")
-        application = app
+    print("Successfully imported Flask app")
 except Exception as e:
-    print(f"Error importing app: {e}")
+    print(f"CRITICAL: Error importing app: {e}")
     import traceback
     traceback.print_exc()
     # Create a minimal error handler app instead of crashing
@@ -53,12 +45,7 @@ except Exception as e:
     @app.route('/')
     def error_handler(path=''):
         return jsonify({'error': f'App import failed: {str(e)}', 'path': path}), 500
-    try:
-        from vercel_wsgi import VercelApp
-        application = VercelApp(app)
-    except ImportError:
-        application = app
 
 # Vercel expects a handler function
-# Export the WSGI application
-handler = application
+# @vercel/python runtime automatically handles WSGI apps (Flask)
+handler = app
