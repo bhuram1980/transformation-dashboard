@@ -1177,10 +1177,14 @@ def get_stats():
     
     # Calculate averages
     if daily_logs:
-        proteins = [d.get('protein', 0) or 0 for d in daily_logs if d.get('protein')]
-        carbs = [d.get('carbs', 0) or 0 for d in daily_logs if d.get('carbs')]
-        fats = [d.get('fat', 0) or 0 for d in daily_logs if d.get('fat')]
-        seafoods = [d.get('seafoodKg', 0) or 0 for d in daily_logs if d.get('seafoodKg')]
+        proteins = [float(d.get('protein', 0) or 0) for d in daily_logs if d.get('protein')]
+        carbs = [float(d.get('carbs', 0) or 0) for d in daily_logs if d.get('carbs')]
+        fats = [float(d.get('fat', 0) or 0) for d in daily_logs if d.get('fat')]
+        seafoods = []
+        for d in daily_logs:
+            fish = d.get('seafoodKg') or d.get('seafood_kg')
+            if fish:
+                seafoods.append(float(fish))
         
         stats['avg_protein'] = sum(proteins) / len(proteins) if proteins else 0
         stats['avg_carbs'] = sum(carbs) / len(carbs) if carbs else 0
