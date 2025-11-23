@@ -36,7 +36,13 @@ except Exception as e:
     print(f"Error importing app: {e}")
     import traceback
     traceback.print_exc()
-    raise
+    # Create a minimal error handler app instead of crashing
+    from flask import Flask, jsonify
+    app = Flask(__name__)
+    @app.route('/<path:path>')
+    @app.route('/')
+    def error_handler(path=''):
+        return jsonify({'error': f'App import failed: {str(e)}', 'path': path}), 500
 
 # Vercel expects a handler function
 # The @vercel/python runtime automatically handles WSGI apps

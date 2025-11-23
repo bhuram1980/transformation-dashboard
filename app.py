@@ -188,116 +188,152 @@ class TransformationDataLoader:
     """Load data from JSON files: master file + daily logs"""
     
     def __init__(self, master_file: str = "public/data/master-health-file.json", daily_logs_dir: str = "public/data/daily-logs"):
-        # Use absolute paths from app root
-        # On Vercel, we need to find the project root
-        # Try multiple strategies to find the correct path
-        
-        # Strategy 1: Use __file__ from app.py (this file)
-        app_root = Path(__file__).parent
-        
-        # Strategy 2: Check if we're in api/ directory and go up
-        if app_root.name == 'api':
-            app_root = app_root.parent
-        
-        # Strategy 3: Use current working directory (set by api/index.py)
-        cwd = Path.cwd()
-        
-        # Strategy 4: Try to find public/ directory
-        # On Vercel, files are in /var/task or /var/runtime
-        # Also check LAMBDA_TASK_ROOT environment variable
-        lambda_root = os.getenv('LAMBDA_TASK_ROOT')
-        vercel_env = os.getenv('VERCEL')
-        
-        possible_roots = [
-            app_root,
-            cwd,
-            app_root.parent if app_root.name == 'api' else app_root,
-            cwd.parent if cwd.name == 'api' else cwd,
-        ]
-        
-        # Add Vercel-specific paths
-        if vercel_env == '1' or lambda_root:
-            possible_roots.extend([
-                Path('/var/task'),  # Vercel serverless function directory
-                Path('/var/runtime'),  # Alternative Vercel location
-            ])
-            if lambda_root:
-                possible_roots.append(Path(lambda_root))
-        
-        # Try multiple possible paths for master file
-        possible_master = []
-        for root in possible_roots:
-            possible_master.extend([
-                root / master_file,
-                root / "public" / "data" / "master-health-file.json",
-                root / "data" / "master-health-file.json",  # Without public prefix
-            ])
-        # Also try relative to current working directory
-        possible_master.extend([
-            Path(master_file),
-            Path("public/data/master-health-file.json"),
-            Path("data/master-health-file.json"),  # Without public prefix
-        ])
-        
-        # Try multiple possible paths for daily logs
-        possible_logs = []
-        for root in possible_roots:
-            possible_logs.extend([
-                root / daily_logs_dir,
-                root / "public" / "data" / "daily-logs",
-                root / "data" / "daily-logs",  # Without public prefix
-            ])
-        # Also try relative to current working directory
-        possible_logs.extend([
-            Path(daily_logs_dir),
-            Path("public/data/daily-logs"),
-            Path("data/daily-logs"),  # Without public prefix
-        ])
-        
-        # Find the first existing path
-        self.master_file = None
-        for path in possible_master:
-            try:
-                if path.exists():
-                    self.master_file = path
-                    break
-            except Exception:
-                continue
-        if not self.master_file:
-            # Use first as default, but make sure it's absolute
-            self.master_file = Path(possible_master[0]).resolve() if possible_master else Path(master_file)
-        
-        self.daily_logs_dir = None
-        for path in possible_logs:
-            try:
-                if path.exists() and path.is_dir():
-                    self.daily_logs_dir = path
-                    break
-            except Exception:
-                continue
-        if not self.daily_logs_dir:
-            # Use first as default, but make sure it's absolute
-            self.daily_logs_dir = Path(possible_logs[0]).resolve() if possible_logs else Path(daily_logs_dir)
-        
-        print(f"TransformationDataLoader initialized:")
-        print(f"  Master file: {self.master_file} (exists: {self.master_file.exists() if self.master_file else False})")
-        print(f"  Daily logs dir: {self.daily_logs_dir} (exists: {self.daily_logs_dir.exists() if self.daily_logs_dir else False})")
-        print(f"  App root (from __file__): {Path(__file__).parent}")
-        print(f"  Current working dir: {Path.cwd()}")
-        print(f"  __file__ location: {__file__}")
-        print(f"  VERCEL env: {os.getenv('VERCEL')}")
-        print(f"  LAMBDA_TASK_ROOT: {os.getenv('LAMBDA_TASK_ROOT')}")
-        
-        # List some paths to help debug
-        print(f"  Trying to list cwd contents:")
+        """Initialize data loader with robust error handling to prevent crashes"""
         try:
-            for item in list(Path.cwd().iterdir())[:10]:
-                print(f"    - {item.name}")
+            # Use absolute paths from app root
+            # On Vercel, we need to find the project root
+            # Try multiple strategies to find the correct path
+            
+            # Strategy 1: Use __file__ from app.py (this file)
+            try:
+                app_root = Path(__file__).parent
+            except Exception:
+                app_root = Path.cwd()
+            
+            # Strategy 2: Check if we're in api/ directory and go up
+            if app_root.name == 'api':
+                app_root = app_root.parent
+            
+            # Strategy 3: Use current working directory (set by api/index.py)
+            try:
+                cwd = Path.cwd()
+            except Exception:
+                cwd = app_root
+            
+            # Strategy 4: Try to find public/ directory
+            # On Vercel, files are in /var/task or /var/runtime
+            # Also check LAMBDA_TASK_ROOT environment variable
+            lambda_root = os.getenv('LAMBDA_TASK_ROOT')
+            vercel_env = os.getenv('VERCEL')
+            
+            possible_roots = [
+                app_root,
+                cwd,
+                app_root.parent if app_root.name == 'api' else app_root,
+                cwd.parent if cwd.name == 'api' else cwd,
+            ]
+            
+            # Add Vercel-specific paths
+            if vercel_env == '1' or lambda_root:
+                possible_roots.extend([
+                    Path('/var/task'),  # Vercel serverless function directory
+                    Path('/var/runtime'),  # Alternative Vercel location
+                ])
+                if lambda_root:
+                    possible_roots.append(Path(lambda_root))
+            
+            # Try multiple possible paths for master file
+            possible_master = []
+            for root in possible_roots:
+                try:
+                    possible_master.extend([
+                        root / master_file,
+                        root / "public" / "data" / "master-health-file.json",
+                        root / "data" / "master-health-file.json",  # Without public prefix
+                    ])
+                except Exception:
+                    continue
+            # Also try relative to current working directory
+            try:
+                possible_master.extend([
+                    Path(master_file),
+                    Path("public/data/master-health-file.json"),
+                    Path("data/master-health-file.json"),  # Without public prefix
+                ])
+            except Exception:
+                pass
+            
+            # Try multiple possible paths for daily logs
+            possible_logs = []
+            for root in possible_roots:
+                try:
+                    possible_logs.extend([
+                        root / daily_logs_dir,
+                        root / "public" / "data" / "daily-logs",
+                        root / "data" / "daily-logs",  # Without public prefix
+                    ])
+                except Exception:
+                    continue
+            # Also try relative to current working directory
+            try:
+                possible_logs.extend([
+                    Path(daily_logs_dir),
+                    Path("public/data/daily-logs"),
+                    Path("data/daily-logs"),  # Without public prefix
+                ])
+            except Exception:
+                pass
+            
+            # Find the first existing path
+            self.master_file = None
+            for path in possible_master:
+                try:
+                    if path.exists():
+                        self.master_file = path
+                        break
+                except Exception:
+                    continue
+            if not self.master_file:
+                # Use first as default, but make sure it's absolute
+                try:
+                    self.master_file = Path(possible_master[0]).resolve() if possible_master else Path(master_file)
+                except Exception:
+                    self.master_file = Path(master_file)
+            
+            self.daily_logs_dir = None
+            for path in possible_logs:
+                try:
+                    if path.exists() and path.is_dir():
+                        self.daily_logs_dir = path
+                        break
+                except Exception:
+                    continue
+            if not self.daily_logs_dir:
+                # Use first as default, but make sure it's absolute
+                try:
+                    self.daily_logs_dir = Path(possible_logs[0]).resolve() if possible_logs else Path(daily_logs_dir)
+                except Exception:
+                    self.daily_logs_dir = Path(daily_logs_dir)
+            
+            # Safe debug printing
+            try:
+                print(f"TransformationDataLoader initialized:")
+                print(f"  Master file: {self.master_file} (exists: {self.master_file.exists() if self.master_file else False})")
+                print(f"  Daily logs dir: {self.daily_logs_dir} (exists: {self.daily_logs_dir.exists() if self.daily_logs_dir else False})")
+                print(f"  App root (from __file__): {Path(__file__).parent}")
+                print(f"  Current working dir: {Path.cwd()}")
+                print(f"  VERCEL env: {os.getenv('VERCEL')}")
+                print(f"  LAMBDA_TASK_ROOT: {os.getenv('LAMBDA_TASK_ROOT')}")
+            except Exception as e:
+                print(f"Debug print error (non-fatal): {e}")
+            
+            # Load data with error handling
+            self.master_data = self._load_master()
+            self.daily_logs = self._load_daily_logs()
         except Exception as e:
-            print(f"    Error: {e}")
-        
-        self.master_data = self._load_master()
-        self.daily_logs = self._load_daily_logs()
+            # If initialization fails completely, set defaults to prevent crashes
+            print(f"CRITICAL: TransformationDataLoader init failed: {e}")
+            import traceback
+            traceback.print_exc()
+            self.master_file = Path(master_file)
+            self.daily_logs_dir = Path(daily_logs_dir)
+            self.master_data = {
+                'baseline': {},
+                'targets': {},
+                'goal': {},
+                'protocol': {}
+            }
+            self.daily_logs = []
     
     def _load_master(self) -> Dict:
         """Load master health file"""
