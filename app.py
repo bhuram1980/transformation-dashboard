@@ -12,7 +12,9 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            static_folder='static',
+            template_folder='templates')
 
 # Grok API configuration (set via environment variable)
 GROK_API_KEY = os.getenv('GROK_API_KEY', '')
