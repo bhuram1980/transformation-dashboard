@@ -230,11 +230,13 @@ class TransformationDataLoader:
             possible_master.extend([
                 root / master_file,
                 root / "public" / "data" / "master-health-file.json",
+                root / "data" / "master-health-file.json",  # Without public prefix
             ])
         # Also try relative to current working directory
         possible_master.extend([
             Path(master_file),
             Path("public/data/master-health-file.json"),
+            Path("data/master-health-file.json"),  # Without public prefix
         ])
         
         # Try multiple possible paths for daily logs
@@ -243,11 +245,13 @@ class TransformationDataLoader:
             possible_logs.extend([
                 root / daily_logs_dir,
                 root / "public" / "data" / "daily-logs",
+                root / "data" / "daily-logs",  # Without public prefix
             ])
         # Also try relative to current working directory
         possible_logs.extend([
             Path(daily_logs_dir),
             Path("public/data/daily-logs"),
+            Path("data/daily-logs"),  # Without public prefix
         ])
         
         # Find the first existing path
