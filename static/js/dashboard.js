@@ -233,29 +233,6 @@ function updateRecentDaysTable(dailyLogs) {
     `).join('');
 }
 
-// Load Advice (Public access)
-async function loadAdvice() {
-    const adviceBox = document.getElementById('adviceBox');
-    if (!adviceBox) return;
-    
-    adviceBox.innerHTML = '<div class="loading">Loading advice from Grok...</div>';
-    
-    try {
-        const response = await fetch('/api/advice');
-        const data = await response.json();
-        
-        if (data.advice) {
-            // Format advice with line breaks
-            const formattedAdvice = data.advice.replace(/\n/g, '<br>');
-            adviceBox.innerHTML = `<div class="advice-content">${formattedAdvice}</div>`;
-        } else {
-            adviceBox.innerHTML = '⚠️ Error loading advice. Make sure GROK_API_KEY is set in your environment.';
-        }
-    } catch (error) {
-        console.error('Error loading advice:', error);
-        adviceBox.innerHTML = '⚠️ Error loading advice. Check console for details.';
-    }
-}
 
 async function loadStats() {
     try {
