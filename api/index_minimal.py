@@ -1,45 +1,60 @@
 #!/usr/bin/env python3
 """
-Minimal test handler for Vercel
+Minimal test handler for Vercel - using Vercel's recommended pattern
 """
 import sys
+import os
 
-# Force immediate output
-sys.stdout.reconfigure(line_buffering=True) if hasattr(sys.stdout, 'reconfigure') else None
-sys.stderr.reconfigure(line_buffering=True) if hasattr(sys.stderr, 'reconfigure') else None
+# Write to stderr immediately (Vercel captures this better)
+def log(msg):
+    msg_str = str(msg) + "\n"
+    sys.stderr.write(msg_str)
+    sys.stderr.flush()
+    sys.stdout.write(msg_str)
+    sys.stdout.flush()
 
-print("=" * 60, flush=True)
-print("MINIMAL HANDLER: Starting", flush=True)
-print("=" * 60, flush=True)
+log("=" * 60)
+log("MINIMAL HANDLER: Starting")
+log(f"Python: {sys.version}")
+log(f"CWD: {os.getcwd()}")
+log("=" * 60)
 
 try:
+    log("Importing Flask...")
     from flask import Flask, jsonify
-    print("Flask imported successfully", flush=True)
+    log("✓ Flask imported")
     
+    log("Creating Flask app...")
     app = Flask(__name__)
+    log("✓ Flask app created")
     
     @app.route('/')
     def home():
+        log("Route / called")
         return jsonify({'status': 'ok', 'message': 'Minimal handler working'})
     
     @app.route('/<path:path>')
     def catch_all(path):
+        log(f"Route /{path} called")
         return jsonify({'status': 'ok', 'path': path})
     
-    print("Flask app created", flush=True)
+    log("Routes registered")
+    log("Setting handler = app")
+    
+    # Vercel expects 'handler' to be exported
     handler = app
-    print("Handler set", flush=True)
+    
+    log("✓ Handler set successfully")
+    log("=" * 60)
+    log("MINIMAL HANDLER: Complete")
+    log("=" * 60)
     
 except Exception as e:
-    print(f"ERROR: {type(e).__name__}: {e}", flush=True)
+    log(f"✗ ERROR: {type(e).__name__}: {e}")
     import traceback
-    traceback.print_exc(file=sys.stdout)
-    traceback.print_exc(file=sys.stderr)
-    sys.stdout.flush()
+    error_trace = traceback.format_exc()
+    log(error_trace)
+    sys.stderr.write(error_trace)
     sys.stderr.flush()
     raise
-
-print("=" * 60, flush=True)
-print("MINIMAL HANDLER: Complete", flush=True)
-print("=" * 60, flush=True)
 
