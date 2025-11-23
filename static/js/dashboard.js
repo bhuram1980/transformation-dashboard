@@ -75,50 +75,58 @@ function animateStreak(element, start, end) {
 
 function updateGoals(baseline, targets) {
     // Android Fat
-    const androidFat = baseline.android_fat || 0;
+    const androidFat = baseline.android_fat || baseline.androidFat || 0;
+    const androidFatTarget = parseFloat(targets.android_fat?.replace(/[^0-9.]/g, '') || '15');
+    const androidFatProgress = Math.min(100, (androidFat / androidFatTarget) * 100);
+    
     const androidEl = document.getElementById('androidFatValue');
     const androidProgressEl = document.getElementById('androidFatProgress');
     if (androidEl) androidEl.textContent = androidFat.toFixed(1) + '%';
     if (androidProgressEl) {
-        const progress = Math.min(100, (15 / androidFat) * 100);
         setTimeout(() => {
-            androidProgressEl.style.width = progress + '%';
+            androidProgressEl.style.width = androidFatProgress + '%';
         }, 100);
     }
     
     // Body Fat
-    const bodyFat = baseline.body_fat || 0;
+    const bodyFat = baseline.body_fat || baseline.bodyFat || 0;
+    const bodyFatTarget = parseFloat(targets.body_fat?.replace(/[^0-9.]/g, '') || '13');
+    const bodyFatProgress = Math.min(100, (bodyFat / bodyFatTarget) * 100);
+    
     const bodyFatEl = document.getElementById('bodyFatValue');
     const bodyProgressEl = document.getElementById('bodyFatProgress');
     if (bodyFatEl) bodyFatEl.textContent = bodyFat.toFixed(1) + '%';
     if (bodyProgressEl) {
-        const progress = Math.min(100, (13 / bodyFat) * 100);
         setTimeout(() => {
-            bodyProgressEl.style.width = progress + '%';
+            bodyProgressEl.style.width = bodyFatProgress + '%';
         }, 200);
     }
     
     // ALT
     const alt = baseline.alt || 0;
+    const altTarget = parseFloat(targets.alt?.replace(/[^0-9.]/g, '') || '80');
+    const altProgress = Math.min(100, (alt / altTarget) * 100);
+    
     const altEl = document.getElementById('altValue');
     const altProgressEl = document.getElementById('altProgress');
     if (altEl) altEl.textContent = alt.toFixed(0);
     if (altProgressEl) {
-        const progress = Math.min(100, (80 / alt) * 100);
         setTimeout(() => {
-            altProgressEl.style.width = progress + '%';
+            altProgressEl.style.width = altProgress + '%';
         }, 300);
     }
     
     // Glucose
     const glucose = baseline.fasting_glucose || 0;
+    const glucoseTarget = parseFloat(targets.glucose?.replace(/[^0-9.]/g, '') || '95');
+    const glucoseProgress = Math.min(100, (glucose / glucoseTarget) * 100);
+    
     const glucoseEl = document.getElementById('glucoseValue');
     const glucoseProgressEl = document.getElementById('glucoseProgress');
     if (glucoseEl) glucoseEl.textContent = glucose.toFixed(1);
     if (glucoseProgressEl) {
-        const progress = Math.min(100, (95 / glucose) * 100);
         setTimeout(() => {
-            glucoseProgressEl.style.width = progress + '%';
+            glucoseProgressEl.style.width = glucoseProgress + '%';
         }, 400);
     }
 }
