@@ -15,7 +15,20 @@ sys.path.insert(0, str(parent_dir))
 # Change to parent directory so relative paths work
 os.chdir(str(parent_dir))
 
-from app import app
+# Print debug info
+print(f"api/index.py: current_dir = {current_dir}")
+print(f"api/index.py: parent_dir = {parent_dir}")
+print(f"api/index.py: cwd = {os.getcwd()}")
+print(f"api/index.py: public/data exists = {(parent_dir / 'public' / 'data').exists()}")
+
+try:
+    from app import app
+    print("Successfully imported app")
+except Exception as e:
+    print(f"Error importing app: {e}")
+    import traceback
+    traceback.print_exc()
+    raise
 
 # Vercel expects a handler function
 # The @vercel/python runtime automatically handles WSGI apps

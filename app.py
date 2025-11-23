@@ -189,47 +189,76 @@ class TransformationDataLoader:
     
     def __init__(self, master_file: str = "public/data/master-health-file.json", daily_logs_dir: str = "public/data/daily-logs"):
         # Use absolute paths from app root
-        # On Vercel, __file__ might be in api/ directory, so go up one level
-        # Also handle case where we're running from root
+        # On Vercel, we need to find the project root
+        # Try multiple strategies to find the correct path
+        
+        # Strategy 1: Use __file__ from app.py (this file)
         app_root = Path(__file__).parent
+        
+        # Strategy 2: Check if we're in api/ directory and go up
         if app_root.name == 'api':
             app_root = app_root.parent
         
-        # Try multiple possible paths
-        possible_master = [
-            app_root / master_file,
-            Path.cwd() / master_file,
-            Path(master_file)
+        # Strategy 3: Use current working directory (set by api/index.py)
+        cwd = Path.cwd()
+        
+        # Strategy 4: Try to find public/ directory
+        possible_roots = [
+            app_root,
+            cwd,
+            app_root.parent if app_root.name == 'api' else app_root,
+            cwd.parent if cwd.name == 'api' else cwd,
         ]
         
-        possible_logs = [
-            app_root / daily_logs_dir,
-            Path.cwd() / daily_logs_dir,
-            Path(daily_logs_dir)
-        ]
+        # Try multiple possible paths for master file
+        possible_master = []
+        for root in possible_roots:
+            possible_master.extend([
+                root / master_file,
+                root / "public" / "data" / "master-health-file.json",
+            ])
+        possible_master.append(Path(master_file))
+        
+        # Try multiple possible paths for daily logs
+        possible_logs = []
+        for root in possible_roots:
+            possible_logs.extend([
+                root / daily_logs_dir,
+                root / "public" / "data" / "daily-logs",
+            ])
+        possible_logs.append(Path(daily_logs_dir))
         
         # Find the first existing path
         self.master_file = None
         for path in possible_master:
-            if path.exists():
-                self.master_file = path
-                break
+            try:
+                if path.exists():
+                    self.master_file = path
+                    break
+            except Exception:
+                continue
         if not self.master_file:
-            self.master_file = possible_master[0]  # Use first as default
+            # Use first as default, but make sure it's absolute
+            self.master_file = Path(possible_master[0]).resolve() if possible_master else Path(master_file)
         
         self.daily_logs_dir = None
         for path in possible_logs:
-            if path.exists():
-                self.daily_logs_dir = path
-                break
+            try:
+                if path.exists() and path.is_dir():
+                    self.daily_logs_dir = path
+                    break
+            except Exception:
+                continue
         if not self.daily_logs_dir:
-            self.daily_logs_dir = possible_logs[0]  # Use first as default
+            # Use first as default, but make sure it's absolute
+            self.daily_logs_dir = Path(possible_logs[0]).resolve() if possible_logs else Path(daily_logs_dir)
         
         print(f"TransformationDataLoader initialized:")
-        print(f"  Master file: {self.master_file} (exists: {self.master_file.exists()})")
-        print(f"  Daily logs dir: {self.daily_logs_dir} (exists: {self.daily_logs_dir.exists()})")
-        print(f"  App root: {app_root}")
+        print(f"  Master file: {self.master_file} (exists: {self.master_file.exists() if self.master_file else False})")
+        print(f"  Daily logs dir: {self.daily_logs_dir} (exists: {self.daily_logs_dir.exists() if self.daily_logs_dir else False})")
+        print(f"  App root (from __file__): {Path(__file__).parent}")
         print(f"  Current working dir: {Path.cwd()}")
+        print(f"  __file__ location: {__file__}")
         
         self.master_data = self._load_master()
         self.daily_logs = self._load_daily_logs()
