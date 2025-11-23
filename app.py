@@ -194,8 +194,12 @@ class TransformationDataLoader:
         vercel_env = os.getenv('VERCEL')
         if vercel_env == '1':
             # Try api/data first on Vercel
-            api_master = Path(__file__).parent.parent / "api" / "data" / "master-health-file.json"
-            api_logs = Path(__file__).parent.parent / "api" / "data" / "daily-logs"
+            # Path from app.py: app.py is in root, so api/data is at root/api/data
+            api_master = Path(__file__).parent / "api" / "data" / "master-health-file.json"
+            api_logs = Path(__file__).parent / "api" / "data" / "daily-logs"
+            print(f"Checking api/data paths:")
+            print(f"  api_master: {api_master} (exists: {api_master.exists()})")
+            print(f"  api_logs: {api_logs} (exists: {api_logs.exists()})")
             if api_master.exists():
                 master_file = str(api_master)
                 print(f"Using Vercel api/data master file: {master_file}")
