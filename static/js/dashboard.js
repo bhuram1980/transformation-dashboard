@@ -118,6 +118,8 @@ function updateGoals(baseline, targets) {
     }
 }
 
+// Progress chart rendering (COMMENTED OUT - may add later)
+/*
 function renderProgressChart(dailyLogs) {
     const ctx = document.getElementById('progressChart');
     if (!ctx) return;
@@ -264,6 +266,60 @@ function renderProgressChart(dailyLogs) {
             }
         }
     });
+}
+*/
+
+function updateGoalAndBaseline(goalInfo, baseline) {
+    // Update goal description
+    const goalDescEl = document.getElementById('goalDescription');
+    if (goalDescEl && goalInfo && goalInfo.goal) {
+        goalDescEl.textContent = goalInfo.goal;
+    }
+    
+    // Update baseline date
+    const baselineDateEl = document.getElementById('baselineDate');
+    if (baselineDateEl && goalInfo && goalInfo.started) {
+        // Extract date from "November 21, 2025 (Sri Lanka)" format
+        const dateMatch = goalInfo.started.match(/([A-Za-z]+ \d+, \d{4})/);
+        if (dateMatch) {
+            baselineDateEl.textContent = `(${dateMatch[1]})`;
+        } else {
+            baselineDateEl.textContent = `(${goalInfo.started})`;
+        }
+    }
+    
+    // Update baseline metrics
+    if (baseline) {
+        const weightEl = document.getElementById('baselineWeight');
+        if (weightEl && baseline.weight !== undefined && baseline.weight !== null) {
+            weightEl.textContent = `${baseline.weight} kg`;
+        }
+        
+        const bodyFatEl = document.getElementById('baselineBodyFat');
+        if (bodyFatEl && baseline.body_fat !== undefined && baseline.body_fat !== null) {
+            bodyFatEl.textContent = `${baseline.body_fat}%`;
+        }
+        
+        const androidFatEl = document.getElementById('baselineAndroidFat');
+        if (androidFatEl && baseline.android_fat !== undefined && baseline.android_fat !== null) {
+            androidFatEl.textContent = `${baseline.android_fat}%`;
+        }
+        
+        const altEl = document.getElementById('baselineALT');
+        if (altEl && baseline.alt !== undefined && baseline.alt !== null) {
+            altEl.textContent = `${baseline.alt}`;
+        }
+        
+        const glucoseEl = document.getElementById('baselineGlucose');
+        if (glucoseEl && baseline.fasting_glucose !== undefined && baseline.fasting_glucose !== null) {
+            glucoseEl.textContent = `${baseline.fasting_glucose} mg/dL`;
+        }
+        
+        const triglyceridesEl = document.getElementById('baselineTriglycerides');
+        if (triglyceridesEl && baseline.triglycerides !== undefined && baseline.triglycerides !== null) {
+            triglyceridesEl.textContent = `${baseline.triglycerides} mg/dL`;
+        }
+    }
 }
 
 async function loadStats() {
