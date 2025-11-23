@@ -449,16 +449,23 @@ function loadDayMeals() {
                     snacks: 'Snacks'
                 };
                 
+                let hasMeals = false;
                 Object.keys(mealLabels).forEach(mealKey => {
-                    if (selectedDayData.meals[mealKey]) {
+                    const mealValue = selectedDayData.meals[mealKey];
+                    if (mealValue && mealValue.trim() && mealValue.toLowerCase() !== 'none') {
+                        hasMeals = true;
                         mealsHTML += `
                             <div class="meal-item">
                                 <span class="meal-label">${mealLabels[mealKey]}:</span>
-                                <span class="meal-content">${selectedDayData.meals[mealKey]}</span>
+                                <span class="meal-content">${mealValue}</span>
                             </div>
                         `;
                     }
                 });
+                
+                if (!hasMeals) {
+                    mealsHTML += '<p class="meals-placeholder" style="text-align: center; padding: 20px; color: #999;">No meals logged</p>';
+                }
                 
                 mealsHTML += `
                         </div>
@@ -483,9 +490,11 @@ function loadDayMeals() {
                     creatine: 'Creatine'
                 };
                 
+                let hasSupplements = false;
                 Object.keys(supplementLabels).forEach(suppKey => {
                     const supp = selectedDayData.supplements[suppKey];
                     if (supp && typeof supp === 'object') {
+                        hasSupplements = true;
                         const taken = supp.taken === true;
                         const dose = supp.dose || supp.note || '';
                         const scoops = supp.scoops !== undefined ? supp.scoops : null;
@@ -498,7 +507,7 @@ function loadDayMeals() {
                                 </div>
                                 ${dose || scoops !== null ? `
                                     <div class="supplement-details">
-                                        ${scoops !== null ? `<span class="supplement-scoops">${scoops} scoop${scoops !== 1 ? 's' : ''}</span>` : ''}
+                                        ${scoops !== null && scoops > 0 ? `<span class="supplement-scoops">${scoops} scoop${scoops !== 1 ? 's' : ''}</span>` : ''}
                                         ${dose ? `<span class="supplement-dose">${dose}</span>` : ''}
                                     </div>
                                 ` : ''}
@@ -506,6 +515,10 @@ function loadDayMeals() {
                         `;
                     }
                 });
+                
+                if (!hasSupplements) {
+                    mealsHTML += '<p class="meals-placeholder" style="text-align: center; padding: 20px; color: #999;">No supplements logged</p>';
+                }
                 
                 mealsHTML += `
                         </div>
