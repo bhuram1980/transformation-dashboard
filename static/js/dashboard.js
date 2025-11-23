@@ -393,21 +393,22 @@ async function handlePhotoUpload(event) {
     };
     reader.readAsDataURL(file);
     
-    // Upload via Vercel serverless function (preferred) or Flask fallback
+    // Upload via Flask endpoint (simpler and more reliable)
     try {
-        // Generate filename
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-        const filename = `${timestamp}_${file.name}`;
+        const formData = new FormData();
+        formData.append('photo', file);
         
-        // Try Vercel serverless function first
-        const response = await fetch('/api/blob-upload', {
+        const response = await fetch('/api/upload-photo', {
             method: 'POST',
-            headers: {
-                'X-Filename': filename,
-                'Content-Type': file.type || 'image/jpeg'
-            },
-            body: file
+            body: formData
         });
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            throw new Error(`Server returned non-JSON: ${text.substring(0, 100)}`);
+        }
         
         const result = await response.json();
         
@@ -418,24 +419,7 @@ async function handlePhotoUpload(event) {
             document.getElementById('photoInput').value = '';
             alert('Photo uploaded successfully! 📸');
         } else {
-            // Fallback to Flask endpoint
-            const formData = new FormData();
-            formData.append('photo', file);
-            
-            const fallbackResponse = await fetch('/api/upload-photo', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const fallbackResult = await fallbackResponse.json();
-            if (fallbackResult.success) {
-                loadPhotos();
-                document.getElementById('photoPreview').innerHTML = '';
-                document.getElementById('photoInput').value = '';
-                alert('Photo uploaded successfully! 📸');
-            } else {
-                alert('Upload failed: ' + (fallbackResult.error || result.error || 'Unknown error'));
-            }
+            alert('Upload failed: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Upload error:', error);
