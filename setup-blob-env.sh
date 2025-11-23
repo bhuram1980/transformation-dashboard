@@ -1,0 +1,26 @@
+#!/bin/bash
+# Script to help set up Vercel Blob environment variable
+
+echo "🔧 Vercel Blob Setup"
+echo ""
+echo "Blob store created: transformation-photos (store_hAVpOQsDOW14w1w5)"
+echo ""
+echo "To complete setup:"
+echo ""
+echo "1. Go to Vercel Dashboard:"
+echo "   https://vercel.com/bhuram1980s-projects/transformation-dashboard/settings/environment-variables"
+echo ""
+echo "2. The BLOB_READ_WRITE_TOKEN should be automatically added."
+echo "   If not, you can:"
+echo "   - Go to Storage tab in Vercel Dashboard"
+echo "   - Click on 'transformation-photos' store"
+echo "   - Copy the Read-Write Token"
+echo "   - Add it as environment variable: BLOB_READ_WRITE_TOKEN"
+echo ""
+echo "3. Or use Vercel CLI (if token is available):"
+echo "   vercel env add BLOB_READ_WRITE_TOKEN"
+echo ""
+echo "4. After adding, redeploy:"
+echo "   vercel --prod"
+echo ""
+

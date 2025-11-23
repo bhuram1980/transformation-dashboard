@@ -359,30 +359,51 @@ def upload_photo():
             return jsonify({'success': False, 'error': 'No file selected'}), 400
         
         # Try to use Vercel Blob if available
-        try:
-            from vercel_blob import put
-            import os
-            
-            blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
-            if not blob_token:
-                # Fallback: save locally (for development)
+        blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
+        
+        if blob_token:
+            try:
+                import requests
+                
+                # Upload to Vercel Blob using HTTP API
+                filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+                file_data = file.read()
+                
+                # Vercel Blob API endpoint
+                headers = {
+                    'Authorization': f'Bearer {blob_token}',
+                    'x-content-type': file.content_type or 'image/jpeg'
+                }
+                
+                # Upload to Vercel Blob
+                response = requests.put(
+                    f'https://blob.vercel-storage.com/{filename}',
+                    data=file_data,
+                    headers=headers,
+                    params={'access': 'public'},
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    return jsonify({'success': True, 'url': result.get('url', result.get('downloadUrl'))})
+                else:
+                    # Fallback to local if Blob upload fails
+                    raise Exception(f"Blob upload failed: {response.status_code}")
+                    
+            except Exception as e:
+                # Fallback: save locally if Blob fails
+                print(f"Blob upload error: {e}, falling back to local storage")
                 upload_folder = Path('static/uploads')
                 upload_folder.mkdir(exist_ok=True)
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
                 filepath = upload_folder / filename
+                file.seek(0)  # Reset file pointer
                 file.save(filepath)
                 url = f"/static/uploads/{filename}"
                 return jsonify({'success': True, 'url': url})
-            
-            # Upload to Vercel Blob
-            result = put(file.filename, file.read(), {
-                'access': 'public',
-                'token': blob_token
-            })
-            return jsonify({'success': True, 'url': result.url})
-            
-        except ImportError:
-            # Fallback: save locally
+        else:
+            # Fallback: save locally (for development)
             upload_folder = Path('static/uploads')
             upload_folder.mkdir(exist_ok=True)
             filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
@@ -399,11 +420,34 @@ def upload_photo():
 def get_photos():
     """Get list of uploaded photos"""
     try:
-        # For now, return empty list (can be enhanced to read from Vercel Blob or local storage)
-        # In production, you'd list files from Vercel Blob
         photos = []
+        blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')
         
-        # Check local uploads folder (development)
+        # Try to list from Vercel Blob if token is available
+        if blob_token:
+            try:
+                import requests
+                response = requests.get(
+                    'https://blob.vercel-storage.com',
+                    headers={'Authorization': f'Bearer {blob_token}'},
+                    params={'limit': 100},
+                    timeout=10
+                )
+                if response.status_code == 200:
+                    blob_data = response.json()
+                    if 'blobs' in blob_data:
+                        photos = [
+                            {
+                                'url': blob.get('url', blob.get('downloadUrl')),
+                                'date': blob.get('uploadedAt', blob.get('createdAt', datetime.now().isoformat()))
+                            }
+                            for blob in blob_data['blobs']
+                            if blob.get('pathname', '').startswith('20')  # Filter for our date-prefixed files
+                        ]
+            except Exception as e:
+                print(f"Error fetching from Blob: {e}")
+        
+        # Also check local uploads folder (development/fallback)
         upload_folder = Path('static/uploads')
         if upload_folder.exists():
             for file in upload_folder.glob('*'):
@@ -413,7 +457,9 @@ def get_photos():
                         'date': datetime.fromtimestamp(file.stat().st_mtime).isoformat()
                     })
         
-        return jsonify({'photos': sorted(photos, key=lambda x: x['date'], reverse=True)})
+        # Sort by date, newest first
+        photos.sort(key=lambda x: x['date'], reverse=True)
+        return jsonify({'photos': photos})
     except Exception as e:
         return jsonify({'photos': [], 'error': str(e)})
 
