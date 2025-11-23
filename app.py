@@ -25,8 +25,8 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-this-to-a-random-secret-k
 GROK_API_KEY = os.getenv('GROK_API_KEY', '')
 GROK_API_URL = 'https://api.x.ai/v1/chat/completions'
 
-# Password configuration (set via environment variables)
-VIEWER_PASSWORD = os.getenv('VIEWER_PASSWORD', '')
+# Admin authentication configuration
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'x/headlesstale')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '')
 
 # Session timeout (24 hours)
@@ -292,9 +292,8 @@ def index():
 
 
 @app.route('/api/data')
-@login_required
 def get_data():
-    """API endpoint to get all transformation data"""
+    """API endpoint to get all transformation data - public access"""
     parser = TransformationLogParser()
     
     baseline = parser.get_baseline()
@@ -314,14 +313,9 @@ def get_data():
 
 
 @app.route('/api/advice')
-@login_required
+@admin_required
 def get_advice():
     """API endpoint to get Grok advice - Admin only"""
-    if not check_permission('admin'):
-        return jsonify({
-            'error': 'Admin access required to get Grok advice',
-            'advice': 'Viewer access: Grok advice is only available to admin users.'
-        }), 403
     
     parser = TransformationLogParser()
     
@@ -338,9 +332,8 @@ def get_advice():
 
 
 @app.route('/api/stats')
-@login_required
 def get_stats():
-    """API endpoint for aggregated statistics"""
+    """API endpoint for aggregated statistics - public access"""
     parser = TransformationLogParser()
     daily_logs = parser.get_daily_logs()
     
@@ -370,14 +363,9 @@ def get_stats():
 
 
 @app.route('/api/upload-photo', methods=['POST'])
-@login_required
+@admin_required
 def upload_photo():
     """Upload photo to Vercel Blob storage - Admin only"""
-    if not check_permission('admin'):
-        return jsonify({
-            'success': False,
-            'error': 'Admin access required to upload photos'
-        }), 403
     
     try:
         if 'photo' not in request.files:
@@ -480,9 +468,8 @@ def upload_photo():
 
 
 @app.route('/api/photos')
-@login_required
 def get_photos():
-    """Get list of uploaded photos"""
+    """Get list of uploaded photos - public access"""
     try:
         photos = []
         blob_token = os.getenv('BLOB_READ_WRITE_TOKEN')

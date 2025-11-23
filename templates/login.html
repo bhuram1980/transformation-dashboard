@@ -154,7 +154,7 @@
 <body>
     <div class="login-container">
         <div class="login-header">
-            <h1>🔐 Login</h1>
+            <h1>🔐 Admin Login</h1>
             <p>Transformation Dashboard</p>
         </div>
         
@@ -166,6 +166,18 @@
         
         <form method="POST" action="/login">
             <div class="form-group">
+                <label for="username">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Enter admin username"
+                    required
+                    autofocus
+                    autocomplete="username"
+                >
+            </div>
+            <div class="form-group">
                 <label for="password">Password</label>
                 <input 
                     type="password" 
@@ -173,26 +185,29 @@
                     name="password" 
                     placeholder="Enter password"
                     required
-                    autofocus
                     autocomplete="current-password"
                 >
             </div>
             
-            <button type="submit" class="btn-login">Login</button>
+            <button type="submit" class="btn-login">Login as Admin</button>
         </form>
         
         <div class="info-box">
-            <strong>Two Access Levels:</strong><br>
-            <strong>Viewer:</strong> View dashboard and data (read-only)<br>
-            <strong>Admin:</strong> Full access including uploads and Grok advice
+            <strong>Public Access:</strong><br>
+            The dashboard is publicly accessible in <strong>viewer mode</strong> (read-only).<br><br>
+            <strong>Admin Login:</strong><br>
+            Login as admin to upload photos and get Grok AI advice.
         </div>
         
         <div class="role-info">
             <h3>Access Levels</h3>
             <ul>
-                <li><strong>Viewer:</strong> View all data, charts, and stats</li>
-                <li><strong>Admin:</strong> Everything + upload photos + get Grok AI advice</li>
+                <li><strong>Public (No Login):</strong> View all data, charts, and stats (read-only)</li>
+                <li><strong>Admin (Login Required):</strong> Everything + upload photos + get Grok AI advice</li>
             </ul>
+            <p style="margin-top: 15px; text-align: center;">
+                <a href="/" style="color: #667eea; text-decoration: none;">← Continue as Public Viewer</a>
+            </p>
         </div>
     </div>
 </body>

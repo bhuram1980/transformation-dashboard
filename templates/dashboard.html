@@ -7,8 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script>
-        // Make userRole available to JavaScript
+        // Make userRole and isAdmin available to JavaScript
         window.userRole = '{{ user_role|default("viewer") }}';
+        window.isAdmin = {{ 'true' if is_admin else 'false' }};
     </script>
 </head>
 <body>
@@ -22,9 +23,13 @@
                         <div class="streak-glow" id="streakGlow"></div>
                     </div>
                     <span style="color: #667eea; font-size: 0.9em; font-weight: 500;">
-                        {% if user_role == 'admin' %}👑 Admin{% else %}👁️ Viewer{% endif %}
+                        {% if is_admin %}👑 Admin{% else %}👁️ Public Viewer{% endif %}
                     </span>
+                    {% if is_admin %}
                     <a href="/logout" style="color: #f5576c; text-decoration: none; font-size: 0.9em; padding: 8px 12px; border: 1px solid #f5576c; border-radius: 6px; transition: all 0.2s;">Logout</a>
+                    {% else %}
+                    <a href="/login" style="color: #667eea; text-decoration: none; font-size: 0.9em; padding: 8px 12px; border: 1px solid #667eea; border-radius: 6px; transition: all 0.2s;">Admin Login</a>
+                    {% endif %}
                 </div>
             </div>
         </header>
@@ -72,7 +77,7 @@
         </section>
 
         <!-- Grok Advice Section (Admin Only) -->
-        {% if user_role == 'admin' %}
+        {% if is_admin %}
         <section class="advice-section">
             <div class="section-header">
                 <h2>🤖 Daily Grok Advice</h2>
@@ -188,7 +193,7 @@
         <section class="photo-section">
             <h2>📸 Progress Photos</h2>
             <div class="photo-upload-box">
-                {% if user_role == 'admin' %}
+                {% if is_admin %}
                 <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handlePhotoUpload(event)">
                 <button class="btn-upload" onclick="document.getElementById('photoInput').click()">
                     📷 Upload Photo (Fish Plate / Mirror Selfie)

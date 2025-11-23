@@ -2,8 +2,9 @@
 
 let macrosChart, proteinChart, seafoodChart, weightChart, waistChart;
 
-// Get user role from window (set by Flask template)
+// Get user role and admin status from window (set by Flask template)
 const userRole = window.userRole || 'viewer';
+const isAdmin = window.isAdmin || false;
 
 // Macro calculation data (per kg of fish, skin on)
 const fishMacros = {
@@ -18,13 +19,13 @@ const fishMacros = {
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
     // Only load Grok advice if admin
-    if (userRole === 'admin') {
+    if (isAdmin) {
         loadAdvice();
     } else {
         // Hide or disable advice section for viewers
         const adviceBox = document.getElementById('adviceBox');
         if (adviceBox && !adviceBox.innerHTML.includes('Viewer Mode')) {
-            adviceBox.innerHTML = '<p style="text-align: center; color: #666;">👁️ Viewer Mode: Grok AI advice is only available to admin users.</p>';
+            adviceBox.innerHTML = '<p style="text-align: center; color: #666;">👁️ Public Viewer: Grok AI advice is only available to admin users. <a href="/login" style="color: #667eea;">Login as admin</a></p>';
         }
     }
     loadStats();
@@ -243,10 +244,10 @@ function updateRecentDaysTable(dailyLogs) {
 // Load Advice (Admin only)
 async function loadAdvice() {
     // Check if user is admin
-    if (userRole !== 'admin') {
+    if (!isAdmin) {
         const adviceBox = document.getElementById('adviceBox');
         if (adviceBox) {
-            adviceBox.innerHTML = '<p style="text-align: center; color: #666;">👁️ Viewer Mode: Grok AI advice is only available to admin users.</p>';
+            adviceBox.innerHTML = '<p style="text-align: center; color: #666;">👁️ Public Viewer: Grok AI advice is only available to admin users. <a href="/login" style="color: #667eea;">Login as admin</a></p>';
         }
         return;
     }
@@ -472,9 +473,10 @@ function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8, m
 // Photo Upload Handler with Compression
 async function handlePhotoUpload(event) {
     // Check if user is admin
-    if (userRole !== 'admin') {
-        alert('👁️ Viewer Mode: Photo upload is only available to admin users.');
+    if (!isAdmin) {
+        alert('👁️ Public Viewer: Photo upload is only available to admin users. Please login as admin.');
         event.target.value = ''; // Clear file input
+        window.location.href = '/login';
         return;
     }
     
