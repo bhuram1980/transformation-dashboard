@@ -473,7 +473,7 @@ function loadDayMeals() {
                 `;
             }
             
-            // Display supplements if available
+            // Display supplements if available (supports both old and new schema)
             if (selectedDayData.supplements && typeof selectedDayData.supplements === 'object') {
                 mealsHTML += `
                     <div class="supplements-section-card">
@@ -484,31 +484,73 @@ function loadDayMeals() {
                 const supplementLabels = {
                     omega3: 'Omega-3',
                     nac: 'NAC',
+                    nacMorning: 'NAC (Morning)',
+                    nacNight: 'NAC (Night)',
                     d3k2: 'D3 + K2',
                     zmb: 'ZMB Pro',
                     whey: 'Whey',
+                    wheyScoops: 'Whey',
                     creatine: 'Creatine'
                 };
                 
                 let hasSupplements = false;
-                Object.keys(supplementLabels).forEach(suppKey => {
+                
+                // Check if new schema (objects with "taken" property) or old schema (booleans/numbers)
+                const isNewSchema = Object.values(selectedDayData.supplements).some(v => 
+                    typeof v === 'object' && v !== null && 'taken' in v
+                );
+                
+                Object.keys(selectedDayData.supplements).forEach(suppKey => {
                     const supp = selectedDayData.supplements[suppKey];
-                    if (supp && typeof supp === 'object') {
+                    const label = supplementLabels[suppKey] || suppKey;
+                    
+                    if (isNewSchema) {
+                        // New schema: { "taken": true, "dose": "...", "scoops": 1 }
+                        if (supp && typeof supp === 'object' && supp !== null) {
+                            hasSupplements = true;
+                            const taken = supp.taken === true;
+                            const dose = supp.dose || supp.note || '';
+                            const scoops = supp.scoops !== undefined ? supp.scoops : null;
+                            
+                            mealsHTML += `
+                                <div class="supplement-item ${taken ? 'taken' : 'not-taken'}">
+                                    <div class="supplement-header">
+                                        <span class="supplement-check">${taken ? '✓' : '○'}</span>
+                                        <span class="supplement-name">${label}</span>
+                                    </div>
+                                    ${dose || scoops !== null ? `
+                                        <div class="supplement-details">
+                                            ${scoops !== null && scoops > 0 ? `<span class="supplement-scoops">${scoops} scoop${scoops !== 1 ? 's' : ''}</span>` : ''}
+                                            ${dose ? `<span class="supplement-dose">${dose}</span>` : ''}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }
+                    } else {
+                        // Old schema: boolean or number values
                         hasSupplements = true;
-                        const taken = supp.taken === true;
-                        const dose = supp.dose || supp.note || '';
-                        const scoops = supp.scoops !== undefined ? supp.scoops : null;
+                        let taken = false;
+                        let dose = '';
+                        let scoops = null;
+                        
+                        if (suppKey === 'wheyScoops') {
+                            taken = supp > 0;
+                            scoops = supp;
+                            dose = supp > 0 ? `${supp} scoop${supp !== 1 ? 's' : ''}` : '';
+                        } else {
+                            taken = supp === true || supp === 1;
+                        }
                         
                         mealsHTML += `
                             <div class="supplement-item ${taken ? 'taken' : 'not-taken'}">
                                 <div class="supplement-header">
                                     <span class="supplement-check">${taken ? '✓' : '○'}</span>
-                                    <span class="supplement-name">${supplementLabels[suppKey]}</span>
+                                    <span class="supplement-name">${label}</span>
                                 </div>
-                                ${dose || scoops !== null ? `
+                                ${dose ? `
                                     <div class="supplement-details">
-                                        ${scoops !== null && scoops > 0 ? `<span class="supplement-scoops">${scoops} scoop${scoops !== 1 ? 's' : ''}</span>` : ''}
-                                        ${dose ? `<span class="supplement-dose">${dose}</span>` : ''}
+                                        <span class="supplement-dose">${dose}</span>
                                     </div>
                                 ` : ''}
                             </div>
