@@ -75,58 +75,50 @@ function animateStreak(element, start, end) {
 
 function updateGoals(baseline, targets) {
     // Android Fat
-    const androidFat = baseline.android_fat || baseline.androidFat || 0;
-    const androidFatTarget = parseFloat(targets.android_fat?.replace(/[^0-9.]/g, '') || '15');
-    const androidFatProgress = Math.min(100, (androidFat / androidFatTarget) * 100);
-    
-    const androidFatEl = document.getElementById('androidFatValue');
-    const androidFatProgressEl = document.getElementById('androidFatProgress');
-    if (androidFatEl) androidFatEl.textContent = `${androidFat.toFixed(1)}%`;
-    if (androidFatProgressEl) {
+    const androidFat = baseline.android_fat || 0;
+    const androidEl = document.getElementById('androidFatValue');
+    const androidProgressEl = document.getElementById('androidFatProgress');
+    if (androidEl) androidEl.textContent = androidFat.toFixed(1) + '%';
+    if (androidProgressEl) {
+        const progress = Math.min(100, (15 / androidFat) * 100);
         setTimeout(() => {
-            androidFatProgressEl.style.width = `${androidFatProgress}%`;
+            androidProgressEl.style.width = progress + '%';
         }, 100);
     }
     
     // Body Fat
-    const bodyFat = baseline.body_fat || baseline.bodyFat || 0;
-    const bodyFatTarget = parseFloat(targets.body_fat?.replace(/[^0-9.]/g, '') || '13');
-    const bodyFatProgress = Math.min(100, (bodyFat / bodyFatTarget) * 100);
-    
+    const bodyFat = baseline.body_fat || 0;
     const bodyFatEl = document.getElementById('bodyFatValue');
-    const bodyFatProgressEl = document.getElementById('bodyFatProgress');
-    if (bodyFatEl) bodyFatEl.textContent = `${bodyFat.toFixed(1)}%`;
-    if (bodyFatProgressEl) {
+    const bodyProgressEl = document.getElementById('bodyFatProgress');
+    if (bodyFatEl) bodyFatEl.textContent = bodyFat.toFixed(1) + '%';
+    if (bodyProgressEl) {
+        const progress = Math.min(100, (13 / bodyFat) * 100);
         setTimeout(() => {
-            bodyFatProgressEl.style.width = `${bodyFatProgress}%`;
+            bodyProgressEl.style.width = progress + '%';
         }, 200);
     }
     
     // ALT
     const alt = baseline.alt || 0;
-    const altTarget = parseFloat(targets.alt?.replace(/[^0-9.]/g, '') || '80');
-    const altProgress = Math.min(100, (alt / altTarget) * 100);
-    
     const altEl = document.getElementById('altValue');
     const altProgressEl = document.getElementById('altProgress');
     if (altEl) altEl.textContent = alt.toFixed(0);
     if (altProgressEl) {
+        const progress = Math.min(100, (80 / alt) * 100);
         setTimeout(() => {
-            altProgressEl.style.width = `${altProgress}%`;
+            altProgressEl.style.width = progress + '%';
         }, 300);
     }
     
     // Glucose
     const glucose = baseline.fasting_glucose || 0;
-    const glucoseTarget = parseFloat(targets.glucose?.replace(/[^0-9.]/g, '') || '95');
-    const glucoseProgress = Math.min(100, (glucose / glucoseTarget) * 100);
-    
     const glucoseEl = document.getElementById('glucoseValue');
     const glucoseProgressEl = document.getElementById('glucoseProgress');
-    if (glucoseEl) glucoseEl.textContent = `${glucose.toFixed(1)} mg/dL`;
+    if (glucoseEl) glucoseEl.textContent = glucose.toFixed(1);
     if (glucoseProgressEl) {
+        const progress = Math.min(100, (95 / glucose) * 100);
         setTimeout(() => {
-            glucoseProgressEl.style.width = `${glucoseProgress}%`;
+            glucoseProgressEl.style.width = progress + '%';
         }, 400);
     }
 }
@@ -335,7 +327,6 @@ function updateGoalAndBaseline(goalInfo, baseline) {
     }
 }
 
-
 async function loadStats() {
     try {
         const response = await fetch('/api/stats');
@@ -392,364 +383,342 @@ function loadDayMeals() {
     const selector = document.getElementById('daySelect');
     const mealsContainer = document.getElementById('dayMeals');
     
-    if (!mealsContainer) return;
+    if (!selector || !mealsContainer) return;
     
-    // Use currentDayIndex if available, otherwise use selector value
-    let selectedDayData;
-    if (dailyLogsList.length > 0 && currentDayIndex >= 0 && currentDayIndex < dailyLogsList.length) {
-        selectedDayData = dailyLogsList[currentDayIndex];
-    } else if (selector && selector.value) {
-        // Fallback to selector value
-        selectedDayData = dailyLogsList.find(d => d.day == selector.value);
-    }
-    
-    if (!selectedDayData) {
-        // Load data if not already loaded
-        fetch('/api/data')
-            .then(response => response.json())
-            .then(data => {
-                dailyLogsList = data.daily_logs || [];
-                if (selector && selector.value) {
-                    selectedDayData = dailyLogsList.find(d => d.day == selector.value);
-                } else if (dailyLogsList.length > 0) {
-                    selectedDayData = dailyLogsList[dailyLogsList.length - 1];
-                    currentDayIndex = dailyLogsList.length - 1;
-                }
-                
-                if (!selectedDayData) {
-                    mealsContainer.innerHTML = '<p class="meals-placeholder">Select a day to view meals</p>';
-                    return;
-                }
-                
-                renderDayMeals(selectedDayData, mealsContainer);
-            })
-            .catch(error => {
-                console.error('Error loading day meals:', error);
-                mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
-            });
+    const selectedDay = selector.value;
+    if (!selectedDay) {
+        mealsContainer.innerHTML = '<p class="meals-placeholder">Select a day to view meals</p>';
         return;
     }
     
-    renderDayMeals(selectedDayData, mealsContainer);
-}
-
-function renderDayMeals(selectedDayData, mealsContainer) {
-    if (!selectedDayData) {
-        mealsContainer.innerHTML = '<p class="meals-placeholder">Day not found</p>';
-        return;
-    }
-    
-    // Get daily totals (from total object or top-level fields)
-    const dailyTotal = selectedDayData.total || {
-        protein: selectedDayData.protein || 0,
-        carbs: selectedDayData.carbs || 0,
-        fat: selectedDayData.fat || 0,
-        kcal: selectedDayData.kcal || 0,
-        seafoodKg: selectedDayData.seafoodKg || selectedDayData.seafood_kg || 0
-    };
-    
-    // Build meals display
-    let mealsHTML = `
-        <div class="meals-day-header">
-            <h3>Day ${selectedDayData.day} - ${selectedDayData.date_display || selectedDayData.date}</h3>
-        </div>
-        
-        <div class="meals-macros">
-            <div class="macro-item">
-                <span class="macro-label">Protein:</span>
-                <span class="macro-value">${dailyTotal.protein || 0}g</span>
-            </div>
-            <div class="macro-item">
-                <span class="macro-label">Carbs:</span>
-                <span class="macro-value">${dailyTotal.carbs || 0}g</span>
-            </div>
-            <div class="macro-item">
-                <span class="macro-label">Fat:</span>
-                <span class="macro-value">${dailyTotal.fat || 0}g</span>
-            </div>
-            <div class="macro-item">
-                <span class="macro-label">Kcal:</span>
-                <span class="macro-value">${dailyTotal.kcal || 0}</span>
-            </div>
-            <div class="macro-item">
-                <span class="macro-label">Seafood:</span>
-                <span class="macro-value">${dailyTotal.seafoodKg || 0}kg</span>
-            </div>
-        </div>
-    `;
-    
-    // Check if meals have detailed breakdown (new schema with per-meal macros)
-    const hasDetailedMeals = selectedDayData.meals && typeof selectedDayData.meals === 'object' &&
-        Object.values(selectedDayData.meals).some(meal => 
-            typeof meal === 'object' && meal !== null && 'protein' in meal
-        );
-    
-    // Display detailed meals if available (new schema)
-    if (hasDetailedMeals) {
-        mealsHTML += `
-            <div class="meals-detail-card">
-                <button class="meals-toggle" onclick="toggleMealsDetail(this)">
-                    <span class="meals-toggle-icon">▼</span>
-                    <span class="meals-toggle-text">Meals</span>
-                </button>
-                <div class="meals-detail-content" style="display: none;">
-                    <div class="meals-detail-list">
-        `;
-        
-        const mealLabels = {
-            breakfast: 'Breakfast',
-            midMorning: 'Mid Morning',
-            lunch: 'Lunch',
-            dinner: 'Dinner',
-            snacks: 'Snacks'
-        };
-        
-        const mealOrder = ['breakfast', 'midMorning', 'lunch', 'dinner', 'snacks'];
-        
-        mealsHTML += `
-            <table class="meals-table">
-                <thead>
-                    <tr>
-                        <th class="meal-col-name">Meal</th>
-                        <th class="meal-col-desc">Description</th>
-                        <th class="meal-col-macro">Protein</th>
-                        <th class="meal-col-macro">Carbs</th>
-                        <th class="meal-col-macro">Fat</th>
-                        <th class="meal-col-macro">Kcal</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-        
-        // Calculate totals as we iterate
-        let totalProtein = 0;
-        let totalCarbs = 0;
-        let totalFat = 0;
-        let totalKcal = 0;
-        
-        mealOrder.forEach(mealKey => {
-            const meal = selectedDayData.meals[mealKey];
-            if (meal && typeof meal === 'object' && meal !== null && meal.description) {
-                const desc = meal.description;
-                if (desc && desc.toLowerCase() !== 'none') {
-                    totalProtein += meal.protein || 0;
-                    totalCarbs += meal.carbs || 0;
-                    totalFat += meal.fat || 0;
-                    totalKcal += meal.kcal || 0;
-                    
-                    mealsHTML += `
-                        <tr class="meal-table-row">
-                            <td class="meal-col-name">${mealLabels[mealKey] || mealKey}</td>
-                            <td class="meal-col-desc">${desc}</td>
-                            <td class="meal-col-macro">${meal.protein || 0}g</td>
-                            <td class="meal-col-macro">${meal.carbs || 0}g</td>
-                            <td class="meal-col-macro">${meal.fat || 0}g</td>
-                            <td class="meal-col-macro">${meal.kcal || 0}</td>
-                        </tr>
-                    `;
-                }
-            }
-        });
-        
-        mealsHTML += `
-                </tbody>
-                <tfoot>
-                    <tr class="meal-table-totals">
-                        <td class="meal-col-name"><strong>Total</strong></td>
-                        <td class="meal-col-desc"></td>
-                        <td class="meal-col-macro"><strong>${totalProtein}g</strong></td>
-                        <td class="meal-col-macro"><strong>${totalCarbs}g</strong></td>
-                        <td class="meal-col-macro"><strong>${totalFat}g</strong></td>
-                        <td class="meal-col-macro"><strong>${totalKcal}</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
-        `;
-        
-        mealsHTML += `
-                </div>
-            </div>
-        `;
-    } else if (selectedDayData.meals && typeof selectedDayData.meals === 'object') {
-        // Fallback: old schema with just descriptions (no per-meal macros)
-        mealsHTML += `
-            <div class="meals-section-card">
-                <h4 class="meals-section-title">Meals</h4>
-                <div class="meals-list">
-        `;
-        
-        const mealLabels = {
-            breakfast: 'Breakfast',
-            midMorning: 'Mid Morning',
-            lunch: 'Lunch',
-            dinner: 'Dinner',
-            snacks: 'Snacks'
-        };
-        
-        let hasMeals = false;
-        Object.keys(mealLabels).forEach(mealKey => {
-            const mealValue = selectedDayData.meals[mealKey];
-            if (typeof mealValue === 'string' && mealValue.trim() && mealValue.toLowerCase() !== 'none') {
-                hasMeals = true;
-                mealsHTML += `
-                    <div class="meal-item">
-                        <span class="meal-label">${mealLabels[mealKey]}:</span>
-                        <span class="meal-content">${mealValue}</span>
-                    </div>
-                `;
-            }
-        });
-        
-        if (!hasMeals) {
-            mealsHTML += '<p class="meals-placeholder" style="text-align: center; padding: 20px; color: #999;">No meals logged</p>';
-        }
-        
-        mealsHTML += `
-                </div>
-            </div>
-        `;
-    }
-    
-    // Display supplements if available (supports both old and new schema)
-    if (selectedDayData.supplements && typeof selectedDayData.supplements === 'object') {
-        mealsHTML += `
-            <div class="supplements-section-card">
-                <h4 class="supplements-section-title">Supplements</h4>
-                <div class="supplements-list">
-        `;
-        
-        const supplementLabels = {
-            omega3: 'Omega-3',
-            nac: 'NAC',
-            nacMorning: 'NAC (Morning)',
-            nacNight: 'NAC (Night)',
-            d3k2: 'D3 + K2',
-            zmb: 'ZMB Pro',
-            whey: 'Whey',
-            wheyScoops: 'Whey',
-            creatine: 'Creatine'
-        };
-        
-        let hasSupplements = false;
-        
-        // Check if new schema (objects with "taken" property) or old schema (booleans/numbers)
-        const isNewSchema = Object.values(selectedDayData.supplements).some(v => 
-            typeof v === 'object' && v !== null && 'taken' in v
-        );
-        
-        Object.keys(selectedDayData.supplements).forEach(suppKey => {
-            const supp = selectedDayData.supplements[suppKey];
-            const label = supplementLabels[suppKey] || suppKey;
+    // Load data
+    fetch('/api/data')
+        .then(response => response.json())
+        .then(data => {
+            const dailyLogs = data.daily_logs || [];
+            const selectedDayData = dailyLogs.find(d => d.day == selectedDay);
             
-            if (isNewSchema) {
-                // New schema: { "taken": true, "dose": "...", "scoops": 1 }
-                if (supp && typeof supp === 'object' && supp !== null) {
-                    hasSupplements = true;
-                    const taken = supp.taken === true;
-                    const dose = supp.dose || supp.note || '';
-                    const scoops = supp.scoops !== undefined ? supp.scoops : null;
-                    
-                    mealsHTML += `
-                        <div class="supplement-item ${taken ? 'taken' : 'not-taken'}">
-                            <div class="supplement-header">
-                                <span class="supplement-check">${taken ? '✓' : '○'}</span>
-                                <span class="supplement-name">${label}</span>
-                            </div>
-                            ${dose || scoops !== null ? `
-                                <div class="supplement-details">
-                                    ${scoops !== null && scoops > 0 ? `<span class="supplement-scoops">${scoops} scoop${scoops !== 1 ? 's' : ''}</span>` : ''}
-                                    ${dose ? `<span class="supplement-dose">${dose}</span>` : ''}
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }
-            } else {
-                // Old schema: boolean or number values
-                hasSupplements = true;
-                let taken = false;
-                let dose = '';
-                let scoops = null;
+            if (!selectedDayData) {
+                mealsContainer.innerHTML = '<p class="meals-placeholder">Day not found</p>';
+                return;
+            }
+            
+            // Get daily totals (from total object or top-level fields)
+            const dailyTotal = selectedDayData.total || {
+                protein: selectedDayData.protein || 0,
+                carbs: selectedDayData.carbs || 0,
+                fat: selectedDayData.fat || 0,
+                kcal: selectedDayData.kcal || 0,
+                seafoodKg: selectedDayData.seafoodKg || selectedDayData.seafood_kg || 0
+            };
+            
+            // Build meals display
+            let mealsHTML = `
+                <div class="meals-day-header">
+                    <h3>Day ${selectedDayData.day} - ${selectedDayData.date_display || selectedDayData.date}</h3>
+                </div>
                 
-                if (suppKey === 'wheyScoops') {
-                    taken = supp > 0;
-                    scoops = supp;
-                    dose = supp > 0 ? `${supp} scoop${supp !== 1 ? 's' : ''}` : '';
-                } else {
-                    taken = supp === true || supp === 1;
+                <div class="meals-macros">
+                    <div class="macro-item">
+                        <span class="macro-label">Protein:</span>
+                        <span class="macro-value">${dailyTotal.protein || 0}g</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Carbs:</span>
+                        <span class="macro-value">${dailyTotal.carbs || 0}g</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Fat:</span>
+                        <span class="macro-value">${dailyTotal.fat || 0}g</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Kcal:</span>
+                        <span class="macro-value">${dailyTotal.kcal || 0}</span>
+                    </div>
+                    <div class="macro-item">
+                        <span class="macro-label">Seafood:</span>
+                        <span class="macro-value">${dailyTotal.seafoodKg || 0}kg</span>
+                    </div>
+                </div>
+            `;
+            
+            // Check if meals have detailed breakdown (new schema with per-meal macros)
+            const hasDetailedMeals = selectedDayData.meals && typeof selectedDayData.meals === 'object' &&
+                Object.values(selectedDayData.meals).some(meal => 
+                    typeof meal === 'object' && meal !== null && 'protein' in meal
+                );
+            
+            // Display detailed meals if available (new schema)
+            if (hasDetailedMeals) {
+                mealsHTML += `
+                    <div class="meals-detail-card">
+                        <button class="meals-toggle" onclick="toggleMealsDetail(this)">
+                            <span class="meals-toggle-icon">▼</span>
+                            <span class="meals-toggle-text">Meals</span>
+                        </button>
+                        <div class="meals-detail-content" style="display: none;">
+                            <div class="meals-detail-list">
+                `;
+                
+                const mealLabels = {
+                    breakfast: 'Breakfast',
+                    midMorning: 'Mid Morning',
+                    lunch: 'Lunch',
+                    dinner: 'Dinner',
+                    snacks: 'Snacks'
+                };
+                
+                const mealOrder = ['breakfast', 'midMorning', 'lunch', 'dinner', 'snacks'];
+                
+                mealsHTML += `
+                    <table class="meals-table">
+                        <thead>
+                            <tr>
+                                <th class="meal-col-name">Meal</th>
+                                <th class="meal-col-desc">Description</th>
+                                <th class="meal-col-macro">Protein</th>
+                                <th class="meal-col-macro">Carbs</th>
+                                <th class="meal-col-macro">Fat</th>
+                                <th class="meal-col-macro">Kcal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                // Calculate totals as we iterate
+                let totalProtein = 0;
+                let totalCarbs = 0;
+                let totalFat = 0;
+                let totalKcal = 0;
+                
+                mealOrder.forEach(mealKey => {
+                    const meal = selectedDayData.meals[mealKey];
+                    if (meal && typeof meal === 'object' && meal !== null && meal.description) {
+                        const desc = meal.description;
+                        if (desc && desc.toLowerCase() !== 'none') {
+                            totalProtein += meal.protein || 0;
+                            totalCarbs += meal.carbs || 0;
+                            totalFat += meal.fat || 0;
+                            totalKcal += meal.kcal || 0;
+                            
+                            mealsHTML += `
+                                <tr class="meal-table-row">
+                                    <td class="meal-col-name">${mealLabels[mealKey] || mealKey}</td>
+                                    <td class="meal-col-desc">${desc}</td>
+                                    <td class="meal-col-macro">${meal.protein || 0}g</td>
+                                    <td class="meal-col-macro">${meal.carbs || 0}g</td>
+                                    <td class="meal-col-macro">${meal.fat || 0}g</td>
+                                    <td class="meal-col-macro">${meal.kcal || 0}</td>
+                                </tr>
+                            `;
+                        }
+                    }
+                });
+                
+                mealsHTML += `
+                        </tbody>
+                        <tfoot>
+                            <tr class="meal-table-totals">
+                                <td class="meal-col-name"><strong>Total</strong></td>
+                                <td class="meal-col-desc"></td>
+                                <td class="meal-col-macro"><strong>${totalProtein}g</strong></td>
+                                <td class="meal-col-macro"><strong>${totalCarbs}g</strong></td>
+                                <td class="meal-col-macro"><strong>${totalFat}g</strong></td>
+                                <td class="meal-col-macro"><strong>${totalKcal}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                `;
+                
+                mealsHTML += `
+                        </div>
+                    </div>
+                `;
+            } else if (selectedDayData.meals && typeof selectedDayData.meals === 'object') {
+                // Fallback: old schema with just descriptions (no per-meal macros)
+                mealsHTML += `
+                    <div class="meals-section-card">
+                        <h4 class="meals-section-title">Meals</h4>
+                        <div class="meals-list">
+                `;
+                
+                const mealLabels = {
+                    breakfast: 'Breakfast',
+                    midMorning: 'Mid Morning',
+                    lunch: 'Lunch',
+                    dinner: 'Dinner',
+                    snacks: 'Snacks'
+                };
+                
+                let hasMeals = false;
+                Object.keys(mealLabels).forEach(mealKey => {
+                    const mealValue = selectedDayData.meals[mealKey];
+                    if (typeof mealValue === 'string' && mealValue.trim() && mealValue.toLowerCase() !== 'none') {
+                        hasMeals = true;
+                        mealsHTML += `
+                            <div class="meal-item">
+                                <span class="meal-label">${mealLabels[mealKey]}:</span>
+                                <span class="meal-content">${mealValue}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                if (!hasMeals) {
+                    mealsHTML += '<p class="meals-placeholder" style="text-align: center; padding: 20px; color: #999;">No meals logged</p>';
                 }
                 
                 mealsHTML += `
-                    <div class="supplement-item ${taken ? 'taken' : 'not-taken'}">
-                        <div class="supplement-header">
-                            <span class="supplement-check">${taken ? '✓' : '○'}</span>
-                            <span class="supplement-name">${label}</span>
                         </div>
-                        ${dose ? `
-                            <div class="supplement-details">
-                                <span class="supplement-dose">${dose}</span>
-                            </div>
-                        ` : ''}
                     </div>
                 `;
             }
+            
+            // Display supplements if available (supports both old and new schema)
+            if (selectedDayData.supplements && typeof selectedDayData.supplements === 'object') {
+                mealsHTML += `
+                    <div class="supplements-section-card">
+                        <h4 class="supplements-section-title">Supplements</h4>
+                        <div class="supplements-list">
+                `;
+                
+                const supplementLabels = {
+                    omega3: 'Omega-3',
+                    nac: 'NAC',
+                    nacMorning: 'NAC (Morning)',
+                    nacNight: 'NAC (Night)',
+                    d3k2: 'D3 + K2',
+                    zmb: 'ZMB Pro',
+                    whey: 'Whey',
+                    wheyScoops: 'Whey',
+                    creatine: 'Creatine'
+                };
+                
+                let hasSupplements = false;
+                
+                // Check if new schema (objects with "taken" property) or old schema (booleans/numbers)
+                const isNewSchema = Object.values(selectedDayData.supplements).some(v => 
+                    typeof v === 'object' && v !== null && 'taken' in v
+                );
+                
+                Object.keys(selectedDayData.supplements).forEach(suppKey => {
+                    const supp = selectedDayData.supplements[suppKey];
+                    const label = supplementLabels[suppKey] || suppKey;
+                    
+                    if (isNewSchema) {
+                        // New schema: { "taken": true, "dose": "...", "scoops": 1 }
+                        if (supp && typeof supp === 'object' && supp !== null) {
+                            hasSupplements = true;
+                            const taken = supp.taken === true;
+                            const dose = supp.dose || supp.note || '';
+                            const scoops = supp.scoops !== undefined ? supp.scoops : null;
+                            
+                            mealsHTML += `
+                                <div class="supplement-item ${taken ? 'taken' : 'not-taken'}">
+                                    <div class="supplement-header">
+                                        <span class="supplement-check">${taken ? '✓' : '○'}</span>
+                                        <span class="supplement-name">${label}</span>
+                                    </div>
+                                    ${dose || scoops !== null ? `
+                                        <div class="supplement-details">
+                                            ${scoops !== null && scoops > 0 ? `<span class="supplement-scoops">${scoops} scoop${scoops !== 1 ? 's' : ''}</span>` : ''}
+                                            ${dose ? `<span class="supplement-dose">${dose}</span>` : ''}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }
+                    } else {
+                        // Old schema: boolean or number values
+                        hasSupplements = true;
+                        let taken = false;
+                        let dose = '';
+                        let scoops = null;
+                        
+                        if (suppKey === 'wheyScoops') {
+                            taken = supp > 0;
+                            scoops = supp;
+                            dose = supp > 0 ? `${supp} scoop${supp !== 1 ? 's' : ''}` : '';
+                        } else {
+                            taken = supp === true || supp === 1;
+                        }
+                        
+                        mealsHTML += `
+                            <div class="supplement-item ${taken ? 'taken' : 'not-taken'}">
+                                <div class="supplement-header">
+                                    <span class="supplement-check">${taken ? '✓' : '○'}</span>
+                                    <span class="supplement-name">${label}</span>
+                                </div>
+                                ${dose ? `
+                                    <div class="supplement-details">
+                                        <span class="supplement-dose">${dose}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+                });
+                
+                if (!hasSupplements) {
+                    mealsHTML += '<p class="meals-placeholder" style="text-align: center; padding: 20px; color: #999;">No supplements logged</p>';
+                }
+                
+                mealsHTML += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (selectedDayData.training) {
+                mealsHTML += `
+                    <div class="meals-training">
+                        <span class="training-label">Training:</span>
+                        <span class="training-value">${selectedDayData.training}</span>
+                    </div>
+                `;
+            }
+            
+            if (selectedDayData.feeling !== undefined && selectedDayData.feeling !== null) {
+                mealsHTML += `
+                    <div class="meals-feeling">
+                        <span class="feeling-label">Feeling:</span>
+                        <span class="feeling-value">${selectedDayData.feeling}/10</span>
+                    </div>
+                `;
+            }
+            
+            if (selectedDayData.notes) {
+                mealsHTML += `
+                    <div class="meals-notes">
+                        <span class="notes-label">Notes:</span>
+                        <p class="notes-value">${selectedDayData.notes}</p>
+                    </div>
+                `;
+            }
+            
+            mealsContainer.innerHTML = mealsHTML;
+            
+            // Fade in animation
+            mealsContainer.style.opacity = '0';
+            setTimeout(() => {
+                mealsContainer.style.transition = 'opacity 0.4s ease';
+                mealsContainer.style.opacity = '1';
+            }, 10);
+            
+            // Auto-expand meals detail if it exists
+            const mealsToggle = mealsContainer.querySelector('.meals-toggle');
+            if (mealsToggle) {
+                const mealsContent = mealsToggle.nextElementSibling;
+                if (mealsContent) {
+                    mealsContent.style.display = 'block';
+                    mealsToggle.querySelector('.meals-toggle-icon').textContent = '▲';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error loading day meals:', error);
+            mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
         });
-        
-        if (!hasSupplements) {
-            mealsHTML += '<p class="meals-placeholder" style="text-align: center; padding: 20px; color: #999;">No supplements logged</p>';
-        }
-        
-        mealsHTML += `
-                </div>
-            </div>
-        `;
-    }
-    
-    if (selectedDayData.training) {
-        mealsHTML += `
-            <div class="meals-training">
-                <span class="training-label">Training:</span>
-                <span class="training-value">${selectedDayData.training}</span>
-            </div>
-        `;
-    }
-    
-    if (selectedDayData.feeling !== undefined && selectedDayData.feeling !== null) {
-        mealsHTML += `
-            <div class="meals-feeling">
-                <span class="feeling-label">Feeling:</span>
-                <span class="feeling-value">${selectedDayData.feeling}/10</span>
-            </div>
-        `;
-    }
-    
-    if (selectedDayData.notes) {
-        mealsHTML += `
-            <div class="meals-notes">
-                <span class="notes-label">Notes:</span>
-                <p class="notes-value">${selectedDayData.notes}</p>
-            </div>
-        `;
-    }
-    
-    mealsContainer.innerHTML = mealsHTML;
-    
-    // Fade in animation
-    mealsContainer.style.opacity = '0';
-    setTimeout(() => {
-        mealsContainer.style.transition = 'opacity 0.4s ease';
-        mealsContainer.style.opacity = '1';
-    }, 10);
-    
-    // Auto-expand meals detail if it exists
-    const mealsToggle = mealsContainer.querySelector('.meals-toggle');
-    if (mealsToggle) {
-        const mealsContent = mealsToggle.nextElementSibling;
-        if (mealsContent) {
-            mealsContent.style.display = 'block';
-            mealsToggle.querySelector('.meals-toggle-icon').textContent = '▲';
-        }
-    }
 }
 
 function toggleMealsDetail(button) {
