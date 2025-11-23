@@ -404,7 +404,18 @@ def upload_photo():
             
             if response.status_code == 200:
                 result = response.json()
-                blob_url = result.get('url') or result.get('downloadUrl') or f'https://blob.vercel-storage.com/{filename}'
+                # Vercel Blob returns different formats - handle all possibilities
+                blob_url = (result.get('url') or 
+                           result.get('downloadUrl') or 
+                           result.get('pathname') or
+                           f'https://blob.vercel-storage.com/{filename}')
+                
+                # Ensure full URL
+                if not blob_url.startswith('http'):
+                    blob_url = f'https://blob.vercel-storage.com/{blob_url}'
+                
+                # Log for debugging
+                print(f"Upload successful: {blob_url}")
                 return jsonify({'success': True, 'url': blob_url})
             else:
                 error_msg = response.text or f"Status {response.status_code}"
