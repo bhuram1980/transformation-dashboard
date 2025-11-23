@@ -473,18 +473,142 @@ def chat_with_grok():
             }
         ]
         
+        # Get full transformation log context
+        parser = TransformationLogParser()
+        baseline = parser.get_baseline()
+        targets = parser.get_targets()
+        daily_logs = parser.get_daily_logs()
+        goal_info = parser.get_goal_info()
+        
+        # Build comprehensive system prompt with full context
+        baseline_text = f"""
+BASELINE METRICS (November 2025):
+- Body Fat: {baseline.get('body_fat', 'N/A')}%
+- Android (Visceral) Fat: {baseline.get('android_fat', 'N/A')}% (TARGET: ≤15%)
+- Weight: {baseline.get('weight', 'N/A')} kg
+- Height: {baseline.get('height', 'N/A')} cm
+- Lean Mass: {baseline.get('lean_mass', 'N/A')} kg
+- ALT: {baseline.get('alt', 'N/A')} (TARGET: <80)
+- AST: {baseline.get('ast', 'N/A')} (TARGET: <40)
+- GGT: {baseline.get('ggt', 'N/A')} (TARGET: <60)
+- Fasting Glucose: {baseline.get('fasting_glucose', 'N/A')} (TARGET: <95)
+- Triglycerides: {baseline.get('triglycerides', 'N/A')} (TARGET: <120)
+- hs-CRP: {baseline.get('hs-crp', 'N/A')} (TARGET: <3)
+- Vitamin D: {baseline.get('vitamin_d', 'N/A')} (TARGET: 50-80)
+- Ferritin: {baseline.get('ferritin', 'N/A')} (TARGET: 30-300)
+"""
+        
+        targets_text = f"""
+60-DAY TARGETS (by Jan 20, 2026):
+- Weight: {targets.get('weight', 'N/A')}
+- Body Fat %: {targets.get('body_fat', 'N/A')}
+- Android Fat %: {targets.get('android_fat', 'N/A')}
+- ALT: {targets.get('alt', 'N/A')}
+- Glucose: {targets.get('glucose', 'N/A')}
+- Triglycerides: {targets.get('triglycerides', 'N/A')}
+"""
+        
+        goal_text = f"""
+GOAL: {goal_info.get('goal', 'Reverse NAFLD, drop android fat from 37.8% → ≤15%, reach 11-13% body fat, +8-10 kg muscle by April 2026')}
+Started: {goal_info.get('started', 'November 21, 2025 (Sri Lanka)')}
+Current Streak: {len(daily_logs)} days
+"""
+        
+        protocol_text = """
+DAILY PROTOCOL (Never change for 60 days):
+- Protein: 350-420g daily
+- Carbs: <50g (only from veggies + pickles)
+- Fat: 150-200g (mostly from fish skin + eggs)
+- Seafood/Fish: 1.0-1.5kg edible daily (skin/shell on)
+- No rice, roti, potato, bread, fruit (except tiny guava/mango ≤100g)
+
+SUPPLEMENTS:
+- PAN Omega-3 1000 mg: 4 caps (1200 mg EPA+DHA) - With biggest fish meal
+- NAC 600 mg: 2 tablets - 1 morning, 1 night
+- Vitamin D3 + K2: 5 tablets (5000 IU + 500 mcg K2) - With fatty meal
+- Galvanize ZMB Pro: 3 capsules - 30-60 min before bed
+- Critical Whey: 1-3 scoops - Post-surf/gym or between meals
+- ProScience Creatine: 5g - With whey shake
+
+TRAINING:
+- Surfing: 1-3 hrs whenever possible
+- Gym: 3-5×/week full-body or PPL (heavy compound lifts)
+"""
+        
+        recent_days_text = ""
+        if daily_logs:
+            recent_days_text = "\nRECENT DAYS:\n"
+            for day in daily_logs[-5:]:  # Last 5 days
+                recent_days_text += f"Day {day['day']} ({day['date']}): "
+                if day.get('protein'):
+                    recent_days_text += f"P:{day['protein']}g "
+                if day.get('carbs'):
+                    recent_days_text += f"C:{day['carbs']}g "
+                if day.get('fat'):
+                    recent_days_text += f"F:{day['fat']}g "
+                if day.get('seafood_kg'):
+                    recent_days_text += f"Seafood:{day['seafood_kg']}kg "
+                if day.get('training'):
+                    recent_days_text += f"Training:{day['training']} "
+                if day.get('feeling'):
+                    recent_days_text += f"Feeling:{day['feeling']}"
+                recent_days_text += "\n"
+        
+        daily_template = """
+DAILY LOG TEMPLATE (use this format when adding entries):
+### Day __ – ___ __, 2025
+
+**Fasted weight:** ____ kg  **Waist:** ____ cm  
+**Morning photos:** [ ] Front [ ] Side [ ] Back  
+
+**Meals**  
+- Breakfast:  
+- Lunch:  
+- Shake/Snack:  
+- Dinner:  
+
+**Macros**  Protein ____ g  Carbs ____ g  Fat ____ g  kcal ____  
+**Seafood total:** ____ g (skin on? Y/N)  
+**Training:**  
+**Supplements**  [ ] Omega-3 [ ] NAC×2 [ ] D3+K2 [ ] ZMB [ ] Whey [ ] Creatine  
+**Feeling (1–10):** ____  **Notes:**  
+"""
+        
+        system_prompt = f"""You are a helpful AI assistant for a transformation/fitness tracking app. You have full context about the user's transformation journey.
+
+{goal_text}
+
+{baseline_text}
+
+{targets_text}
+
+{protocol_text}
+
+{recent_days_text}
+
+{daily_template}
+
+You can help users:
+- Add or update daily log entries (use the template format above)
+- Upload progress photos
+- View current data and stats
+- Provide personalized advice based on their progress and protocol
+
+When adding day entries:
+- Use the exact markdown format shown in the template
+- Include all macros (protein, carbs, fat, kcal)
+- Include seafood amount in kg
+- Include training details
+- Include supplements taken
+- Include feeling/notes
+
+Be friendly, concise, and actionable. Always reference their baseline, targets, and protocol when giving advice."""
+        
         # Build conversation messages
         messages = [
             {
                 "role": "system",
-                "content": """You are a helpful AI assistant for a transformation/fitness tracking app. 
-You can help users:
-- Add or update daily log entries
-- Upload progress photos
-- View current data and stats
-- Provide advice based on their progress
-
-Be friendly, concise, and actionable. When adding day entries, format them in markdown following the existing log format."""
+                "content": system_prompt
             }
         ]
         
