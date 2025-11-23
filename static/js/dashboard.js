@@ -673,10 +673,8 @@ window.debugPhotos = function() {
     return stored;
 };
 
-// Chat with Grok
-let chatHistory = [];
-
-async function sendChatMessage() {
+// Chat functions removed - chat is now private
+// Removed chat functionality for public dashboard
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
     

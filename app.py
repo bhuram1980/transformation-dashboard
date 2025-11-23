@@ -1008,6 +1008,15 @@ def get_stats():
     parser = TransformationLogParser()
     daily_logs = parser.get_daily_logs()
     
+    # Calculate total fish demolished
+    total_fish_kg = sum(day.get('seafood_kg', 0) or 0 for day in daily_logs if day.get('seafood_kg'))
+    
+    # Get baseline ALT for countdown
+    baseline = parser.get_baseline()
+    current_alt = baseline.get('alt', 315)
+    target_alt = 100  # Countdown to <100
+    alt_remaining = max(0, current_alt - target_alt)
+    
     if not daily_logs:
         return jsonify({'error': 'No data available'})
     
@@ -1029,6 +1038,11 @@ def get_stats():
         'days_tracked': len(daily_logs),
         'recent_days': len(recent_days)
     }
+    
+    stats['total_fish_kg'] = round(total_fish_kg, 2)
+    stats['alt_current'] = current_alt
+    stats['alt_target'] = target_alt
+    stats['alt_remaining'] = alt_remaining
     
     return jsonify(stats)
 

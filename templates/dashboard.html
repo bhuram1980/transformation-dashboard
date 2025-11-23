@@ -14,17 +14,44 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <h1>🔥 Transformation Dashboard</h1>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div class="streak-badge" id="streakBadge">
-                        <span id="streakCount">0</span> Day Streak
-                        <div class="streak-glow" id="streakGlow"></div>
-                    </div>
+        <!-- Huge Animated Streak Counter -->
+        <header class="fire-header">
+            <div class="streak-hero">
+                <div class="flames-container">
+                    <div class="flame flame-1">🔥</div>
+                    <div class="flame flame-2">🔥</div>
+                    <div class="flame flame-3">🔥</div>
+                    <div class="flame flame-4">🔥</div>
+                    <div class="flame flame-5">🔥</div>
+                </div>
+                <div class="streak-display">
+                    <div class="streak-label">LEGENDARY STREAK</div>
+                    <div class="streak-number" id="streakCount">0</div>
+                    <div class="streak-unit">DAYS</div>
+                </div>
+                <div class="flames-container">
+                    <div class="flame flame-1">🔥</div>
+                    <div class="flame flame-2">🔥</div>
+                    <div class="flame flame-3">🔥</div>
+                    <div class="flame flame-4">🔥</div>
+                    <div class="flame flame-5">🔥</div>
                 </div>
             </div>
         </header>
+
+        <!-- Fire Stats Row -->
+        <section class="fire-stats-row">
+            <div class="fire-stat-card">
+                <div class="fire-stat-icon">🐟</div>
+                <div class="fire-stat-value" id="fishTotal">0</div>
+                <div class="fire-stat-label">KG FISH DEMOLISHED</div>
+            </div>
+            <div class="fire-stat-card alt-countdown">
+                <div class="fire-stat-icon">⚡</div>
+                <div class="fire-stat-value" id="altCountdown">315</div>
+                <div class="fire-stat-label">ALT MELTDOWN → <100</div>
+            </div>
+        </section>
 
         <!-- Goal Section -->
         <section class="goal-section">
@@ -68,37 +95,11 @@
             </div>
         </section>
 
-        <!-- Grok Chat Section -->
-        <section class="chat-section" style="margin-bottom: 30px;">
-            <div class="section-header">
-                <h2>💬 Chat with Grok AI</h2>
-                <span style="font-size: 0.9em; color: #666;">Ask me to log entries, upload photos, or get advice!</span>
-            </div>
-            <div class="chat-container" id="chatContainer">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-message bot-message">
-                        <div class="message-content">
-                            👋 Hi! I'm Grok, your transformation assistant. I can help you:
-                            <ul style="margin: 10px 0; padding-left: 20px;">
-                                <li>📝 Add or update daily log entries</li>
-                                <li>📸 Upload progress photos</li>
-                                <li>📊 View your current stats</li>
-                                <li>💡 Provide personalized advice</li>
-                            </ul>
-                            Try: "Add Day 4: 395g protein, 42g carbs, 1.2kg seafood, 2hr surfing"
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-input-container">
-                    <input 
-                        type="text" 
-                        id="chatInput" 
-                        class="chat-input" 
-                        placeholder="Type your message..."
-                        onkeypress="if(event.key === 'Enter') sendChatMessage()"
-                    >
-                    <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
-                </div>
+        <!-- Weight + Waist Live Graph -->
+        <section class="fire-chart-section">
+            <div class="fire-chart-card">
+                <h3 class="fire-chart-title">⚖️ WEIGHT + WAIST MELTDOWN</h3>
+                <canvas id="weightWaistChart"></canvas>
             </div>
         </section>
 
