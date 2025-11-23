@@ -136,7 +136,7 @@ function renderProgressChart(dailyLogs) {
         progressChart.destroy();
     }
     
-    const labels = dailyLogs.map(d => `Day ${d.day}`);
+    const labels = dailyLogs.map(d => `Day ${d.day || d.date || ''}`);
     const weights = dailyLogs.map(d => d.fastedWeight || null);
     const waists = dailyLogs.map(d => d.waist || null);
     const proteins = dailyLogs.map(d => d.protein || null);

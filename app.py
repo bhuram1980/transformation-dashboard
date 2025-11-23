@@ -1140,8 +1140,12 @@ def get_stats():
     loader = TransformationDataLoader()
     daily_logs = loader.get_daily_logs()
     
-    # Calculate total fish demolished
-    total_fish_kg = sum(day.get('seafoodKg', 0) or day.get('seafood_kg', 0) or 0 for day in daily_logs)
+    # Calculate total fish demolished (handle both field names)
+    total_fish_kg = 0
+    for day in daily_logs:
+        fish = day.get('seafoodKg') or day.get('seafood_kg') or 0
+        if fish:
+            total_fish_kg += float(fish)
     
     # Get baseline ALT for countdown
     baseline = loader.get_baseline()
