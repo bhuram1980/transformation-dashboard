@@ -242,8 +242,9 @@ Keep it concise, actionable, and motivating."""
         
         # Try different possible API endpoints/models
         api_configs = [
-            {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok-beta'},
+            {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok-2-1212'},
             {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok-2'},
+            {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok-beta'},
             {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok'},
         ]
         
@@ -267,9 +268,21 @@ Keep it concise, actionable, and motivating."""
             try:
                 data['model'] = config['model']
                 response = requests.post(config['url'], headers=headers, json=data, timeout=30)
+                
+                if response.status_code == 404:
+                    print(f"Model {config['model']} not found, trying next...")
+                    last_error = f"Model {config['model']} not found"
+                    continue
+                
                 response.raise_for_status()
                 result = response.json()
                 return result['choices'][0]['message']['content']
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 404:
+                    last_error = f"Model {config['model']} not found"
+                    continue
+                last_error = str(e)
+                continue
             except Exception as e:
                 last_error = e
                 continue
