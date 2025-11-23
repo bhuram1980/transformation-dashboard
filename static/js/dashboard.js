@@ -8,16 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadStats();
     populateDaySelector();
     
-    // Feeling slider update
-    const feelingSlider = document.getElementById('feeling');
-    const feelingValue = document.getElementById('feelingValue');
-    if (feelingSlider && feelingValue) {
-        feelingSlider.addEventListener('input', function() {
-            feelingValue.textContent = this.value;
-        });
-    }
-    
-    // Form removed - view-only dashboard
+    // View-only dashboard - no forms
 });
 
 async function loadData() {
