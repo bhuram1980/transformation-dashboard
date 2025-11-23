@@ -281,6 +281,16 @@ class TransformationDataLoader:
         print(f"  App root (from __file__): {Path(__file__).parent}")
         print(f"  Current working dir: {Path.cwd()}")
         print(f"  __file__ location: {__file__}")
+        print(f"  VERCEL env: {os.getenv('VERCEL')}")
+        print(f"  LAMBDA_TASK_ROOT: {os.getenv('LAMBDA_TASK_ROOT')}")
+        
+        # List some paths to help debug
+        print(f"  Trying to list cwd contents:")
+        try:
+            for item in list(Path.cwd().iterdir())[:10]:
+                print(f"    - {item.name}")
+        except Exception as e:
+            print(f"    Error: {e}")
         
         self.master_data = self._load_master()
         self.daily_logs = self._load_daily_logs()
