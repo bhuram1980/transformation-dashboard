@@ -204,21 +204,31 @@ class TransformationDataLoader:
         
         # Strategy 4: Try to find public/ directory
         # On Vercel, files are in /var/task or /var/runtime
+        # Also check LAMBDA_TASK_ROOT environment variable
+        lambda_root = os.getenv('LAMBDA_TASK_ROOT')
+        vercel_env = os.getenv('VERCEL')
+        
         possible_roots = [
             app_root,
             cwd,
             app_root.parent if app_root.name == 'api' else app_root,
             cwd.parent if cwd.name == 'api' else cwd,
-            Path('/var/task'),  # Vercel serverless function directory
-            Path('/var/runtime'),  # Alternative Vercel location
         ]
+        
+        # Add Vercel-specific paths
+        if vercel_env == '1' or lambda_root:
+            possible_roots.extend([
+                Path('/var/task'),  # Vercel serverless function directory
+                Path('/var/runtime'),  # Alternative Vercel location
+            ])
+            if lambda_root:
+                possible_roots.append(Path(lambda_root))
         
         # Try multiple possible paths for master file
         possible_master = []
         for root in possible_roots:
             possible_master.extend([
                 root / master_file,
-                root / "public" / "data" / "master-health-file.json",
                 root / "public" / "data" / "master-health-file.json",
             ])
         # Also try relative to current working directory

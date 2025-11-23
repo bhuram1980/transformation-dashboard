@@ -19,7 +19,15 @@ os.chdir(str(parent_dir))
 print(f"api/index.py: current_dir = {current_dir}")
 print(f"api/index.py: parent_dir = {parent_dir}")
 print(f"api/index.py: cwd = {os.getcwd()}")
+print(f"api/index.py: VERCEL env = {os.getenv('VERCEL')}")
+print(f"api/index.py: LAMBDA_TASK_ROOT = {os.getenv('LAMBDA_TASK_ROOT')}")
 print(f"api/index.py: public/data exists = {(parent_dir / 'public' / 'data').exists()}")
+print(f"api/index.py: Listing parent_dir contents:")
+try:
+    for item in parent_dir.iterdir():
+        print(f"  - {item.name} ({'dir' if item.is_dir() else 'file'})")
+except Exception as e:
+    print(f"  Error listing: {e}")
 
 try:
     from app import app
