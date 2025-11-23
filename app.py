@@ -237,21 +237,33 @@ class TransformationDataLoader:
     def _load_master(self) -> Dict:
         """Load master health file"""
         try:
-            if not self.master_file.exists():
+            if not self.master_file or not self.master_file.exists():
                 print(f"Master file does not exist: {self.master_file}")
-                return {}
+                # Return default empty structure to prevent crashes
+                return {
+                    'baseline': {},
+                    'targets': {},
+                    'goal': {},
+                    'protocol': {}
+                }
             return json.loads(self.master_file.read_text(encoding='utf-8'))
         except Exception as e:
             print(f"Error loading master file: {e}")
             import traceback
             traceback.print_exc()
-            return {}
+            # Return default empty structure to prevent crashes
+            return {
+                'baseline': {},
+                'targets': {},
+                'goal': {},
+                'protocol': {}
+            }
     
     def _load_daily_logs(self) -> List[Dict]:
         """Load all daily log JSON files, sorted by date"""
         days = []
         try:
-            if not self.daily_logs_dir.exists():
+            if not self.daily_logs_dir or not self.daily_logs_dir.exists():
                 print(f"Daily logs directory does not exist: {self.daily_logs_dir}")
                 return days
             
@@ -278,12 +290,16 @@ class TransformationDataLoader:
                     print(f"Error loading {json_file}: {e}")
                     import traceback
                     traceback.print_exc()
+                    # Continue loading other files even if one fails
+                    continue
             
             print(f"Total days loaded: {len(days)}")
         except Exception as e:
             print(f"Error in _load_daily_logs: {e}")
             import traceback
             traceback.print_exc()
+            # Return empty list instead of crashing
+            return []
         return days
     
     def get_baseline(self) -> Dict:
