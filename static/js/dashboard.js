@@ -393,8 +393,47 @@ async function handlePhotoUpload(event) {
     };
     reader.readAsDataURL(file);
     
-    // Upload to server
+    // Try client-side direct upload first, then fallback to server
     try {
+        // Get upload token from server
+        const tokenResponse = await fetch('/api/upload-token');
+        if (tokenResponse.ok) {
+            const tokenData = await tokenResponse.json();
+            const blobToken = tokenData.token;
+            
+            if (blobToken) {
+                // Generate filename
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                const filename = `${timestamp}_${file.name}`;
+                
+                // Upload directly to Vercel Blob
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const uploadResponse = await fetch(`https://blob.vercel-storage.com/${filename}?access=public`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${blobToken}`,
+                        'Content-Type': file.type || 'image/jpeg'
+                    },
+                    body: file
+                });
+                
+                if (uploadResponse.ok) {
+                    const result = await uploadResponse.json();
+                    const blobUrl = result.url || result.downloadUrl || `https://blob.vercel-storage.com/${filename}`;
+                    
+                    // Add to gallery
+                    loadPhotos();
+                    document.getElementById('photoPreview').innerHTML = '';
+                    document.getElementById('photoInput').value = '';
+                    alert('Photo uploaded successfully! 📸');
+                    return;
+                }
+            }
+        }
+        
+        // Fallback to server-side upload
         const formData = new FormData();
         formData.append('photo', file);
         
@@ -408,13 +447,15 @@ async function handlePhotoUpload(event) {
         if (result.success) {
             // Add to gallery
             loadPhotos();
+            document.getElementById('photoPreview').innerHTML = '';
+            document.getElementById('photoInput').value = '';
             alert('Photo uploaded successfully! 📸');
         } else {
             alert('Upload failed: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Upload error:', error);
-        alert('Error uploading photo. Make sure Vercel Blob is configured.');
+        alert('Error uploading photo: ' + error.message);
     }
 }
 
