@@ -16,8 +16,8 @@ from functools import wraps
 import tempfile
 
 app = Flask(__name__, 
-            static_folder='public/static',  # Use public/static for Vercel compatibility
-            static_url_path='/static',  # Keep /static URL path (Vercel routes will map it)
+            static_folder='public/static',  # Files are in public/static for Vercel
+            static_url_path='/static',  # Flask generates /static/ URLs
             template_folder='templates')
 
 # Secret key for sessions (set via environment variable or use default)
