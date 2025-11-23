@@ -523,6 +523,156 @@ body {
     margin: 0;
 }
 
+/* Meals Section Card */
+.meals-section-card {
+    margin-top: 24px;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+}
+
+.meals-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 16px;
+    letter-spacing: -0.2px;
+}
+
+.meals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meal-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    transition: all 0.2s ease;
+}
+
+.meal-item:hover {
+    border-color: #0066ff;
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.1);
+}
+
+.meal-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meal-content {
+    font-size: 15px;
+    color: #000;
+    line-height: 1.5;
+}
+
+/* Supplements Section Card */
+.supplements-section-card {
+    margin-top: 24px;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+}
+
+.supplements-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 16px;
+    letter-spacing: -0.2px;
+}
+
+.supplements-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.supplement-item {
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1.5px solid #e5e5e5;
+    transition: all 0.2s ease;
+}
+
+.supplement-item.taken {
+    border-color: #00c853;
+    background: #f1f8f4;
+}
+
+.supplement-item.not-taken {
+    border-color: #ff9800;
+    background: #fff8f0;
+    opacity: 0.7;
+}
+
+.supplement-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.supplement-check {
+    font-size: 18px;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.supplement-item.taken .supplement-check {
+    color: #00c853;
+    background: #e8f5e9;
+}
+
+.supplement-item.not-taken .supplement-check {
+    color: #ff9800;
+    background: #fff3e0;
+}
+
+.supplement-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+}
+
+.supplement-details {
+    margin-top: 8px;
+    padding-left: 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.supplement-dose,
+.supplement-scoops {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.supplement-scoops {
+    font-weight: 500;
+    color: #0066ff;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .dashboard-container {

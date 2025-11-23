@@ -408,6 +408,7 @@ function loadDayMeals() {
                 <div class="meals-day-header">
                     <h3>Day ${selectedDayData.day} - ${selectedDayData.date_display || selectedDayData.date}</h3>
                 </div>
+                
                 <div class="meals-macros">
                     <div class="macro-item">
                         <span class="macro-label">Protein:</span>
@@ -431,6 +432,86 @@ function loadDayMeals() {
                     </div>
                 </div>
             `;
+            
+            // Display meals if available
+            if (selectedDayData.meals && typeof selectedDayData.meals === 'object') {
+                mealsHTML += `
+                    <div class="meals-section-card">
+                        <h4 class="meals-section-title">Meals</h4>
+                        <div class="meals-list">
+                `;
+                
+                const mealLabels = {
+                    breakfast: 'Breakfast',
+                    midMorning: 'Mid Morning',
+                    lunch: 'Lunch',
+                    dinner: 'Dinner',
+                    snacks: 'Snacks'
+                };
+                
+                Object.keys(mealLabels).forEach(mealKey => {
+                    if (selectedDayData.meals[mealKey]) {
+                        mealsHTML += `
+                            <div class="meal-item">
+                                <span class="meal-label">${mealLabels[mealKey]}:</span>
+                                <span class="meal-content">${selectedDayData.meals[mealKey]}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                mealsHTML += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Display supplements if available
+            if (selectedDayData.supplements && typeof selectedDayData.supplements === 'object') {
+                mealsHTML += `
+                    <div class="supplements-section-card">
+                        <h4 class="supplements-section-title">Supplements</h4>
+                        <div class="supplements-list">
+                `;
+                
+                const supplementLabels = {
+                    omega3: 'Omega-3',
+                    nac: 'NAC',
+                    d3k2: 'D3 + K2',
+                    zmb: 'ZMB Pro',
+                    whey: 'Whey',
+                    creatine: 'Creatine'
+                };
+                
+                Object.keys(supplementLabels).forEach(suppKey => {
+                    const supp = selectedDayData.supplements[suppKey];
+                    if (supp && typeof supp === 'object') {
+                        const taken = supp.taken === true;
+                        const dose = supp.dose || supp.note || '';
+                        const scoops = supp.scoops !== undefined ? supp.scoops : null;
+                        
+                        mealsHTML += `
+                            <div class="supplement-item ${taken ? 'taken' : 'not-taken'}">
+                                <div class="supplement-header">
+                                    <span class="supplement-check">${taken ? '✓' : '○'}</span>
+                                    <span class="supplement-name">${supplementLabels[suppKey]}</span>
+                                </div>
+                                ${dose || scoops !== null ? `
+                                    <div class="supplement-details">
+                                        ${scoops !== null ? `<span class="supplement-scoops">${scoops} scoop${scoops !== 1 ? 's' : ''}</span>` : ''}
+                                        ${dose ? `<span class="supplement-dose">${dose}</span>` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+                });
+                
+                mealsHTML += `
+                        </div>
+                    </div>
+                `;
+            }
             
             if (selectedDayData.training) {
                 mealsHTML += `
