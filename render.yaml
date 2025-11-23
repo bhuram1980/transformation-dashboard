@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: transformation-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: GROK_API_KEY
+        sync: false
+    plan: free
+

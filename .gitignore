@@ -10,6 +10,9 @@ ENV/
 
 # Generated files
 daily_advice.txt
+server.log
+nohup.out
+.env
 
 # OS files
 .DS_Store

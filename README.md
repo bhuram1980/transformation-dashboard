@@ -159,6 +159,27 @@ git push
 - `GET /api/advice` - Get Grok AI advice (JSON)
 - `GET /api/stats` - Get 7-day statistics (JSON)
 
+## 🚀 Deployment
+
+Want to deploy this online? See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step instructions.
+
+**Quick deploy options:**
+- **Render** (free tier) - Recommended, easiest setup
+- **Railway** (free tier) - Auto-deploys on git push
+- **Fly.io** (free tier) - Great performance
+- **PythonAnywhere** (free tier) - Simple Python hosting
+
+## 📝 Daily Updates
+
+See **[DAILY_UPDATE_GUIDE.md](DAILY_UPDATE_GUIDE.md)** for complete instructions.
+
+**Quick daily workflow:**
+1. Update `transformation_log.md` with today's entry
+2. Commit: `git add transformation_log.md && git commit -m "Day X" && git push`
+3. Dashboard automatically updates!
+
+Or use the helper: `./daily.sh`
+
 ## Requirements
 
 - Python 3.6+ (usually pre-installed on macOS)
