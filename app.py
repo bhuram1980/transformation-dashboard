@@ -369,20 +369,34 @@ def upload_photo():
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
                 file_data = file.read()
                 
-                # Vercel Blob API: Use PUT method with pathname in URL
-                # Documentation: https://vercel.com/docs/storage/vercel-blob
+                # Vercel Blob API: Use the correct endpoint format
+                # The API requires store ID and uses POST with multipart or JSON
+                # Try using the store ID from environment or use the token directly
+                store_id = os.getenv('BLOB_STORE_ID', 'store_hAVpOQsDOW14w1w5')
+                
                 headers = {
                     'Authorization': f'Bearer {blob_token}',
-                    'Content-Type': file.content_type or 'application/octet-stream',
-                    'x-content-type': file.content_type or 'image/jpeg'
+                    'Content-Type': file.content_type or 'application/octet-stream'
                 }
                 
-                # Vercel Blob uses PUT with pathname in URL and access as query param
-                response = requests.put(
-                    f'https://blob.vercel-storage.com/{filename}',
-                    data=file_data,
-                    headers=headers,
-                    params={'access': 'public'},
+                # Vercel Blob API format: POST to /put with JSON body
+                # Alternative: Try direct upload with store ID
+                payload = {
+                    'pathname': filename,
+                    'access': 'public',
+                    'contentType': file.content_type or 'image/jpeg'
+                }
+                
+                # Try multipart form data approach
+                files = {
+                    'file': (filename, file_data, file.content_type or 'image/jpeg')
+                }
+                
+                response = requests.post(
+                    'https://blob.vercel-storage.com/put',
+                    files=files,
+                    headers={'Authorization': f'Bearer {blob_token}'},
+                    data={'pathname': filename, 'access': 'public'},
                     timeout=30
                 )
                 
