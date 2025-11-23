@@ -703,6 +703,11 @@ function loadDayMeals() {
                     mealsToggle.querySelector('.meals-toggle-icon').textContent = '▲';
                 }
             }
+        })
+        .catch(error => {
+            console.error('Error loading day meals:', error);
+            mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
+        });
 }
 
 function toggleMealsDetail(button) {
