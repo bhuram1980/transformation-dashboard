@@ -703,7 +703,29 @@ function loadDayMeals() {
                     mealsToggle.querySelector('.meals-toggle-icon').textContent = '▲';
                 }
             }
-        })
+}
+
+function toggleMealsDetail(button) {
+    const content = button.nextElementSibling;
+    const icon = button.querySelector('.meals-toggle-icon');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.textContent = '▲';
+        content.style.opacity = '0';
+        setTimeout(() => {
+            content.style.transition = 'opacity 0.3s ease';
+            content.style.opacity = '1';
+        }, 10);
+    } else {
+        content.style.transition = 'opacity 0.3s ease';
+        content.style.opacity = '0';
+        setTimeout(() => {
+            content.style.display = 'none';
+        }, 300);
+        icon.textContent = '▼';
+    }
+})
         .catch(error => {
             console.error('Error loading day meals:', error);
             mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
