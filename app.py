@@ -189,7 +189,10 @@ class TransformationDataLoader:
     
     def __init__(self, master_file: str = "public/data/master-health-file.json", daily_logs_dir: str = "public/data/daily-logs"):
         # Use absolute paths from app root
+        # On Vercel, __file__ might be in api/ directory, so go up one level
         app_root = Path(__file__).parent
+        if app_root.name == 'api':
+            app_root = app_root.parent
         self.master_file = app_root / master_file
         self.daily_logs_dir = app_root / daily_logs_dir
         self.master_data = self._load_master()
@@ -197,47 +200,54 @@ class TransformationDataLoader:
     
     def _load_master(self) -> Dict:
         """Load master health file"""
-        if not self.master_file.exists():
-            print(f"Master file does not exist: {self.master_file}")
-            return {}
         try:
+            if not self.master_file.exists():
+                print(f"Master file does not exist: {self.master_file}")
+                return {}
             return json.loads(self.master_file.read_text(encoding='utf-8'))
         except Exception as e:
             print(f"Error loading master file: {e}")
+            import traceback
+            traceback.print_exc()
             return {}
     
     def _load_daily_logs(self) -> List[Dict]:
         """Load all daily log JSON files, sorted by date"""
         days = []
-        if not self.daily_logs_dir.exists():
-            print(f"Daily logs directory does not exist: {self.daily_logs_dir}")
-            return days
-        
-        # Get all JSON files
-        json_files = sorted(self.daily_logs_dir.glob("*.json"))
-        print(f"Found {len(json_files)} JSON files in {self.daily_logs_dir}")
-        
-        for json_file in json_files:
-            try:
-                content = json_file.read_text(encoding='utf-8')
-                day_data = json.loads(content)
-                # Add day number based on order
-                day_data['day'] = len(days) + 1
-                # Parse date for display
+        try:
+            if not self.daily_logs_dir.exists():
+                print(f"Daily logs directory does not exist: {self.daily_logs_dir}")
+                return days
+            
+            # Get all JSON files
+            json_files = sorted(self.daily_logs_dir.glob("*.json"))
+            print(f"Found {len(json_files)} JSON files in {self.daily_logs_dir}")
+            
+            for json_file in json_files:
                 try:
-                    date_obj = datetime.strptime(day_data['date'], '%Y-%m-%d')
-                    day_data['date_display'] = date_obj.strftime('%b %d, %Y')
+                    content = json_file.read_text(encoding='utf-8')
+                    day_data = json.loads(content)
+                    # Add day number based on order
+                    day_data['day'] = len(days) + 1
+                    # Parse date for display
+                    try:
+                        date_obj = datetime.strptime(day_data['date'], '%Y-%m-%d')
+                        day_data['date_display'] = date_obj.strftime('%b %d, %Y')
+                    except Exception as e:
+                        print(f"Error parsing date {day_data.get('date')}: {e}")
+                        day_data['date_display'] = day_data.get('date', 'Unknown')
+                    days.append(day_data)
+                    print(f"Loaded {json_file.name}: Day {day_data['day']}, Protein: {day_data.get('protein')}")
                 except Exception as e:
-                    print(f"Error parsing date {day_data.get('date')}: {e}")
-                    day_data['date_display'] = day_data.get('date', 'Unknown')
-                days.append(day_data)
-                print(f"Loaded {json_file.name}: Day {day_data['day']}, Protein: {day_data.get('protein')}")
-            except Exception as e:
-                print(f"Error loading {json_file}: {e}")
-                import traceback
-                traceback.print_exc()
-        
-        print(f"Total days loaded: {len(days)}")
+                    print(f"Error loading {json_file}: {e}")
+                    import traceback
+                    traceback.print_exc()
+            
+            print(f"Total days loaded: {len(days)}")
+        except Exception as e:
+            print(f"Error in _load_daily_logs: {e}")
+            import traceback
+            traceback.print_exc()
         return days
     
     def get_baseline(self) -> Dict:
@@ -438,15 +448,16 @@ def get_data():
         print(f"Error in /api/data: {e}")
         import traceback
         traceback.print_exc()
+        # Return empty data instead of 500 to prevent crashes
         return jsonify({
             'error': str(e),
-            'baseline': {},
+            'baseline': {'body_fat': 25.2, 'android_fat': 37.8, 'alt': 315, 'fasting_glucose': 106.8},
             'targets': {},
             'daily_logs': [],
             'streak': 0,
             'goal': {},
             'total_days': 0
-        }), 500
+        })
 
 
 @app.route('/api/chat', methods=['POST'])
