@@ -3,13 +3,22 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "public/data/**"
+        ]
+      }
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
       "dest": "/static/$1"
+    },
+    {
+      "src": "/public/data/(.*)",
+      "dest": "/public/data/$1"
     },
     {
       "src": "/(.*)",
