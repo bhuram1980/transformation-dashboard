@@ -511,8 +511,27 @@ def get_photos():
                         'date': datetime.fromtimestamp(file.stat().st_mtime).isoformat()
                     })
         
+        # Also check the simple text file with uploaded URLs (fallback)
+        photos_file = Path('uploaded_photos.txt')
+        if photos_file.exists():
+            try:
+                with open(photos_file, 'r') as f:
+                    for line in f:
+                        line = line.strip()
+                        if '|' in line:
+                            url, date = line.split('|', 1)
+                            # Only add if not already in photos list
+                            if not any(p.get('url') == url for p in photos):
+                                photos.append({
+                                    'url': url,
+                                    'date': date
+                                })
+            except Exception as e:
+                print(f"Error reading photos file: {e}")
+        
         # Sort by date, newest first
         photos.sort(key=lambda x: x['date'], reverse=True)
+        print(f"Returning {len(photos)} photos")
         return jsonify({'photos': photos})
     except Exception as e:
         return jsonify({'photos': [], 'error': str(e)})
