@@ -1200,12 +1200,12 @@ def get_stats():
         current_alt = baseline.get('alt', 315) or 315
         target_alt = 100  # Countdown to <100
         alt_remaining = max(0, current_alt - target_alt)
-    
-    # Initialize stats dict
-    stats = {}
-    
-    # Calculate averages
-    if daily_logs:
+        
+        # Initialize stats dict
+        stats = {}
+        
+        # Calculate averages
+        if daily_logs:
         proteins = [float(d.get('protein', 0) or 0) for d in daily_logs if d.get('protein')]
         carbs = [float(d.get('carbs', 0) or 0) for d in daily_logs if d.get('carbs')]
         fats = [float(d.get('fat', 0) or 0) for d in daily_logs if d.get('fat')]
@@ -1225,13 +1225,13 @@ def get_stats():
         stats['avg_fat'] = 0
         stats['avg_seafood'] = 0
     
-        stats['total_fish_kg'] = round(total_fish_kg, 2)
-        stats['alt_current'] = current_alt
-        stats['alt_target'] = target_alt
-        stats['alt_remaining'] = alt_remaining
-        
-        return jsonify(stats)
-    except Exception as e:
+            stats['total_fish_kg'] = round(total_fish_kg, 2)
+            stats['alt_current'] = current_alt
+            stats['alt_target'] = target_alt
+            stats['alt_remaining'] = alt_remaining
+            
+            return jsonify(stats)
+        except Exception as e:
         print(f"Error in /api/stats: {e}")
         import traceback
         traceback.print_exc()
