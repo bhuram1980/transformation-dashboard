@@ -402,26 +402,38 @@ def upload_photo():
                     raise Exception(f"Blob upload failed: {response.status_code} - {error_msg}")
                     
             except Exception as e:
-                # Fallback: save locally if Blob fails
+                # On Vercel, file system is read-only, so we can't fall back to local storage
+                # Return error with helpful message
                 error_msg = str(e)
-                print(f"Blob upload error: {error_msg}, falling back to local storage")
+                print(f"Blob upload error: {error_msg}")
+                return jsonify({
+                    'success': False, 
+                    'error': f'Vercel Blob upload failed: {error_msg}. Please check BLOB_READ_WRITE_TOKEN is set correctly in Vercel environment variables.'
+                }), 500
+        else:
+            # No token - check if we're on Vercel (read-only filesystem)
+            is_vercel = os.getenv('VERCEL') == '1'
+            
+            if is_vercel:
+                return jsonify({
+                    'success': False,
+                    'error': 'BLOB_READ_WRITE_TOKEN not set. Please add it in Vercel project settings → Environment Variables.'
+                }), 500
+            
+            # Local development: save to static/uploads
+            try:
                 upload_folder = Path('static/uploads')
                 upload_folder.mkdir(exist_ok=True)
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
                 filepath = upload_folder / filename
-                file.seek(0)  # Reset file pointer
                 file.save(filepath)
                 url = f"/static/uploads/{filename}"
-                return jsonify({'success': True, 'url': url, 'note': 'Saved locally (Blob error: ' + error_msg + ')'})
-        else:
-            # Fallback: save locally (for development)
-            upload_folder = Path('static/uploads')
-            upload_folder.mkdir(exist_ok=True)
-            filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
-            filepath = upload_folder / filename
-            file.save(filepath)
-            url = f"/static/uploads/{filename}"
-            return jsonify({'success': True, 'url': url})
+                return jsonify({'success': True, 'url': url})
+            except Exception as e:
+                return jsonify({
+                    'success': False,
+                    'error': f'Failed to save file locally: {str(e)}'
+                }), 500
             
     except Exception as e:
         error_msg = str(e)
