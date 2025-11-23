@@ -1,6 +1,6 @@
 // Dashboard JavaScript
 
-let macrosChart, proteinChart, seafoodChart, weightChart, waistChart;
+let macrosChart, proteinChart, seafoodChart, weightChart, waistChart, weightWaistChart;
 
 // Get user role and admin status from window (set by Flask template)
 const userRole = window.userRole || 'viewer';
@@ -28,24 +28,35 @@ async function loadData() {
         const response = await fetch('/api/data');
         const data = await response.json();
         
-        // Update streak
-        document.getElementById('streakCount').textContent = data.streak;
+        // Update huge animated streak counter
+        const streakEl = document.getElementById('streakCount');
+        if (streakEl) {
+            const current = parseInt(streakEl.textContent) || 0;
+            const newStreak = data.streak || 0;
+            if (current !== newStreak) {
+                animateValue(streakEl, current, newStreak, 1000);
+            } else {
+                streakEl.textContent = newStreak;
+            }
+        }
         
         // Update goal
-        document.getElementById('goalText').textContent = data.goal.goal || 'Loading...';
+        const goalEl = document.getElementById('goalText');
+        if (goalEl && data.goal) {
+            goalEl.textContent = data.goal.goal || 'Loading...';
+        }
         
         // Update key metrics
-        updateMetrics(data.baseline, data.targets);
+        if (data.baseline && data.targets) {
+            updateMetrics(data.baseline, data.targets);
+        }
         
         // Update charts
-        updateCharts(data.daily_logs);
-        updateProgressCharts(data.daily_logs);
-        
-        // Update recent days table
-        updateRecentDaysTable(data.daily_logs);
-        
-        // Check for glowing streak badge (350g+ protein)
-        checkStreakGlow(data.daily_logs);
+        if (data.daily_logs && data.daily_logs.length > 0) {
+            updateCharts(data.daily_logs);
+            renderWeightWaistChart(data.daily_logs);
+            updateRecentDaysTable(data.daily_logs);
+        }
         
     } catch (error) {
         console.error('Error loading data:', error);
@@ -99,26 +110,37 @@ function updateCharts(dailyLogs) {
                 {
                     label: 'Protein (g)',
                     data: recentDays.map(d => d.protein || 0),
-                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                    backgroundColor: '#ff6400',
                 },
                 {
                     label: 'Carbs (g)',
                     data: recentDays.map(d => d.carbs || 0),
-                    backgroundColor: 'rgba(245, 87, 108, 0.8)',
+                    backgroundColor: '#8a2be2',
                 },
                 {
                     label: 'Fat (g)',
                     data: recentDays.map(d => d.fat || 0),
-                    backgroundColor: 'rgba(118, 75, 162, 0.8)',
+                    backgroundColor: '#ff00ff',
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: { color: '#fff', font: { weight: 'bold' } }
+                }
+            },
             scales: {
+                x: {
+                    ticks: { color: '#8a2be2' },
+                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
+                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: { color: '#ff6400' },
+                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
                 }
             }
         }
@@ -135,37 +157,35 @@ function updateCharts(dailyLogs) {
             datasets: [{
                 label: 'Protein (g)',
                 data: recentDays.map(d => d.protein || 0),
-                borderColor: 'rgb(102, 126, 234)',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderColor: '#ff6400',
+                backgroundColor: 'rgba(255, 100, 0, 0.1)',
+                borderWidth: 3,
                 tension: 0.4,
-                fill: true
+                fill: true,
+                pointRadius: 5,
+                pointBackgroundColor: '#ff6400',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    min: 300
+            plugins: {
+                legend: {
+                    labels: { color: '#fff', font: { weight: 'bold' } }
                 }
             },
-            plugins: {
-                annotation: {
-                    annotations: {
-                        targetLine: {
-                            type: 'line',
-                            yMin: 350,
-                            yMax: 350,
-                            borderColor: 'rgb(255, 99, 132)',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            label: {
-                                content: 'Target: 350g',
-                                enabled: true
-                            }
-                        }
-                    }
+            scales: {
+                x: {
+                    ticks: { color: '#8a2be2' },
+                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
+                },
+                y: {
+                    beginAtZero: false,
+                    min: 300,
+                    ticks: { color: '#ff6400' },
+                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
                 }
             }
         }
@@ -182,30 +202,27 @@ function updateCharts(dailyLogs) {
             datasets: [{
                 label: 'Seafood (kg)',
                 data: recentDays.map(d => d.seafood_kg || 0),
-                backgroundColor: 'rgba(118, 75, 162, 0.8)',
+                backgroundColor: '#8a2be2',
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 2.0
+            plugins: {
+                legend: {
+                    labels: { color: '#fff', font: { weight: 'bold' } }
                 }
             },
-            plugins: {
-                annotation: {
-                    annotations: {
-                        targetZone: {
-                            type: 'box',
-                            yMin: 1.0,
-                            yMax: 1.5,
-                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                            borderColor: 'rgba(102, 126, 234, 0.5)',
-                            borderWidth: 1
-                        }
-                    }
+            scales: {
+                x: {
+                    ticks: { color: '#8a2be2' },
+                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 2.0,
+                    ticks: { color: '#ff6400' },
+                    grid: { color: 'rgba(255, 100, 0, 0.1)' }
                 }
             }
         }
@@ -237,14 +254,191 @@ async function loadStats() {
         const response = await fetch('/api/stats');
         const stats = await response.json();
         
-        document.getElementById('avgProtein').textContent = stats.avg_protein ? stats.avg_protein.toFixed(0) + 'g' : '-';
-        document.getElementById('avgCarbs').textContent = stats.avg_carbs ? stats.avg_carbs.toFixed(0) + 'g' : '-';
-        document.getElementById('avgFat').textContent = stats.avg_fat ? stats.avg_fat.toFixed(0) + 'g' : '-';
-        document.getElementById('avgSeafood').textContent = stats.avg_seafood ? stats.avg_seafood.toFixed(2) + 'kg' : '-';
+        // Update fire stats
+        const fishEl = document.getElementById('fishTotal');
+        if (fishEl && stats.total_fish_kg !== undefined) {
+            const current = parseFloat(fishEl.textContent) || 0;
+            const newTotal = stats.total_fish_kg;
+            if (Math.abs(current - newTotal) > 0.1) {
+                animateValue(fishEl, current, newTotal, 1000, 1);
+            } else {
+                fishEl.textContent = newTotal.toFixed(1);
+            }
+        }
+        
+        const altEl = document.getElementById('altCountdown');
+        if (altEl && stats.alt_remaining !== undefined) {
+            const current = parseInt(altEl.textContent) || 315;
+            const newAlt = stats.alt_remaining;
+            if (current !== newAlt) {
+                animateValue(altEl, current, newAlt, 1000);
+            } else {
+                altEl.textContent = newAlt;
+            }
+        }
+        
+        // Update averages if elements exist
+        const avgProtein = document.getElementById('avgProtein');
+        const avgCarbs = document.getElementById('avgCarbs');
+        const avgFat = document.getElementById('avgFat');
+        const avgSeafood = document.getElementById('avgSeafood');
+        
+        if (avgProtein) avgProtein.textContent = stats.avg_protein ? stats.avg_protein.toFixed(0) + 'g' : '-';
+        if (avgCarbs) avgCarbs.textContent = stats.avg_carbs ? stats.avg_carbs.toFixed(0) + 'g' : '-';
+        if (avgFat) avgFat.textContent = stats.avg_fat ? stats.avg_fat.toFixed(0) + 'g' : '-';
+        if (avgSeafood) avgSeafood.textContent = stats.avg_seafood ? stats.avg_seafood.toFixed(2) + 'kg' : '-';
         
     } catch (error) {
         console.error('Error loading stats:', error);
     }
+}
+
+function animateValue(element, start, end, duration, decimals = 0) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = progress * (end - start) + start;
+        element.textContent = decimals > 0 ? value.toFixed(decimals) : Math.floor(value);
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            element.textContent = decimals > 0 ? end.toFixed(decimals) : end;
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+function renderWeightWaistChart(dailyLogs) {
+    const ctx = document.getElementById('weightWaistChart');
+    if (!ctx) return;
+    
+    // Extract weight and waist data from logs
+    const labels = dailyLogs.map(day => `Day ${day.day}`);
+    const weightData = dailyLogs.map(day => {
+        // Try to extract weight from content
+        const weightMatch = day.content?.match(/weight[:\s]+(\d+\.?\d*)\s*kg/i) || 
+                           day.content?.match(/Fasted weight[:\s]+(\d+\.?\d*)\s*kg/i);
+        return weightMatch ? parseFloat(weightMatch[1]) : null;
+    });
+    
+    const waistData = dailyLogs.map(day => {
+        // Try to extract waist from content
+        const waistMatch = day.content?.match(/waist[:\s]+(\d+\.?\d*)\s*cm/i) || 
+                          day.content?.match(/Waist[:\s]+(\d+\.?\d*)\s*cm/i);
+        return waistMatch ? parseFloat(waistMatch[1]) : null;
+    });
+    
+    // Destroy existing chart if it exists
+    if (weightWaistChart) {
+        weightWaistChart.destroy();
+    }
+    
+    // Filter out null values and create corresponding labels
+    const validIndices = [];
+    const validWeights = [];
+    const validWaists = [];
+    const validLabels = [];
+    
+    for (let i = 0; i < weightData.length; i++) {
+        if (weightData[i] !== null || waistData[i] !== null) {
+            validIndices.push(i);
+            validWeights.push(weightData[i]);
+            validWaists.push(waistData[i]);
+            validLabels.push(labels[i]);
+        }
+    }
+    
+    if (validIndices.length === 0) {
+        ctx.parentElement.innerHTML = '<p style="text-align: center; color: #8a2be2; padding: 40px; font-size: 1.2em;">Add weight & waist data to your daily logs to see the meltdown 🔥</p>';
+        return;
+    }
+    
+    weightWaistChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: validLabels,
+            datasets: [
+                {
+                    label: 'Weight (kg)',
+                    data: validWeights,
+                    borderColor: '#ff6400',
+                    backgroundColor: 'rgba(255, 100, 0, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#ff6400',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                },
+                {
+                    label: 'Waist (cm)',
+                    data: validWaists,
+                    borderColor: '#8a2be2',
+                    backgroundColor: 'rgba(138, 43, 226, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#8a2be2',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#fff',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    titleColor: '#ff6400',
+                    bodyColor: '#fff',
+                    borderColor: '#ff6400',
+                    borderWidth: 2,
+                    padding: 12
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#8a2be2',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 100, 0, 0.1)'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#ff6400',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 100, 0, 0.1)'
+                    }
+                }
+            }
+        }
+    });
 }
 
 // Macro Calculator
@@ -673,114 +867,5 @@ window.debugPhotos = function() {
     return stored;
 };
 
-// Chat functions removed - chat is now private
-// Removed chat functionality for public dashboard
-    const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    // Disable input while processing
-    input.disabled = true;
-    const sendBtn = document.querySelector('.chat-send-btn');
-    sendBtn.disabled = true;
-    
-    // Add user message to chat
-    addChatMessage('user', message);
-    input.value = '';
-    
-    // Show loading indicator
-    const loadingId = addChatMessage('bot', 'Thinking...', true);
-    
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: message,
-                history: chatHistory
-            })
-        });
-        
-        const data = await response.json();
-        
-        // Remove loading message
-        removeChatMessage(loadingId);
-        
-        if (data.error) {
-            addChatMessage('bot', `❌ Error: ${data.error}`);
-        } else {
-            // Add bot response
-            addChatMessage('bot', data.response);
-            
-            // Update chat history
-            chatHistory.push({ role: 'user', content: message });
-            chatHistory.push({ role: 'assistant', content: data.response });
-            
-            // Handle function calls
-            if (data.function_called) {
-                const funcResult = data.function_result;
-                if (funcResult && funcResult.success) {
-                    // Show success message
-                    if (data.function_called === 'add_day_entry') {
-                        addChatMessage('bot', `✅ Day entry added! ${funcResult.message}`);
-                        if (funcResult.updated_content) {
-                            addChatMessage('bot', `📝 Ready for Git commit. The updated log content has been prepared.`);
-                        }
-                        // Reload data to show new entry
-                        setTimeout(() => {
-                            loadData();
-                            loadStats();
-                        }, 1000);
-                    } else if (data.function_called === 'get_current_data') {
-                        const stats = funcResult;
-                        addChatMessage('bot', `📊 Current stats: ${stats.total_days} days tracked, current streak: ${stats.current_streak} days`);
-                    }
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Chat error:', error);
-        removeChatMessage(loadingId);
-        addChatMessage('bot', `❌ Error: ${error.message}`);
-    } finally {
-        input.disabled = false;
-        sendBtn.disabled = false;
-        input.focus();
-    }
-}
-
-function addChatMessage(role, content, isLoading = false) {
-    const messagesContainer = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    const messageId = 'msg-' + Date.now() + '-' + Math.random();
-    messageDiv.id = messageId;
-    messageDiv.className = `chat-message ${role}-message`;
-    
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'message-content';
-    contentDiv.textContent = content;
-    
-    if (isLoading) {
-        contentDiv.style.fontStyle = 'italic';
-        contentDiv.style.color = '#666';
-    }
-    
-    messageDiv.appendChild(contentDiv);
-    messagesContainer.appendChild(messageDiv);
-    
-    // Scroll to bottom
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
-    return messageId;
-}
-
-function removeChatMessage(messageId) {
-    const message = document.getElementById(messageId);
-    if (message) {
-        message.remove();
-    }
-}
+// Chat functionality removed - kept private between user and Grok
 
