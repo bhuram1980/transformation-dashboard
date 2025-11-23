@@ -45,12 +45,6 @@ async function loadData() {
             updateGoalAndBaseline(data.goal, data.baseline);
         }
         
-        // Update fish counter
-        updateFishCounter(data.daily_logs || []);
-        
-        // Update ALT countdown
-        updateALTCountdown(data.baseline);
-        
         // Render progress chart (COMMENTED OUT - may add later)
         // if (data.daily_logs && data.daily_logs.length > 0) {
         //     renderProgressChart(data.daily_logs);
@@ -352,47 +346,6 @@ function updateGoalAndBaseline(goalInfo, baseline) {
     }
 }
 
-function updateFishCounter(dailyLogs) {
-    let totalFish = 0;
-    dailyLogs.forEach(day => {
-        const fish = day.total?.seafoodKg || day.seafoodKg || day.seafood_kg || 0;
-        if (fish) {
-            totalFish += parseFloat(fish);
-        }
-    });
-    
-    const fishCounterEl = document.getElementById('fishCounter');
-    if (fishCounterEl) {
-        fishCounterEl.textContent = `Total fish demolished: ${totalFish.toFixed(2)} kg 🐟`;
-    }
-}
-
-function updateALTCountdown(baseline) {
-    if (!baseline) return;
-    
-    const currentALT = baseline.alt || 315;
-    const targetALT = 80;
-    const altRemaining = Math.max(0, currentALT - targetALT);
-    
-    // Estimate days based on average ALT drop (rough estimate: 5-10 points per week)
-    // Assuming ~1 point per day on average
-    const estimatedDays = Math.ceil(altRemaining / 1);
-    
-    const altCountdownEl = document.getElementById('altCountdown');
-    const altDaysEl = document.getElementById('altDays');
-    
-    if (altCountdownEl) {
-        altCountdownEl.textContent = `${currentALT} → <${targetALT}`;
-    }
-    
-    if (altDaysEl) {
-        if (altRemaining <= 0) {
-            altDaysEl.textContent = 'Target achieved! 🎉';
-        } else {
-            altDaysEl.textContent = `~${estimatedDays} days remaining`;
-        }
-    }
-}
 
 async function loadStats() {
     try {
@@ -406,45 +359,36 @@ async function loadStats() {
 
 // Form submission and photo upload removed - view-only dashboard
 
-let currentDayIndex = 0;
-let dailyLogsList = [];
-
 function populateDaySelector() {
     const selector = document.getElementById('daySelect');
-    const dayDisplay = document.getElementById('dayDisplay');
     if (!selector) return;
     
     // Load data and populate dropdown
     fetch('/api/data')
         .then(response => response.json())
         .then(data => {
-            dailyLogsList = data.daily_logs || [];
+            const dailyLogs = data.daily_logs || [];
             
             // Clear existing options
             selector.innerHTML = '';
             
-            if (dailyLogsList.length === 0) {
+            if (dailyLogs.length === 0) {
                 selector.innerHTML = '<option value="">No days logged yet</option>';
-                if (dayDisplay) dayDisplay.textContent = 'No days logged yet';
                 return;
             }
             
-            // Set current day to most recent
-            currentDayIndex = dailyLogsList.length - 1;
+            // Add "Today" option (most recent day)
+            const today = dailyLogs[dailyLogs.length - 1];
+            selector.innerHTML = `<option value="${today.day}" selected>Today (Day ${today.day})</option>`;
             
-            // Populate dropdown
-            dailyLogsList.forEach((day, index) => {
+            // Add previous days in reverse order
+            for (let i = dailyLogs.length - 2; i >= 0; i--) {
+                const day = dailyLogs[i];
                 const option = document.createElement('option');
                 option.value = day.day;
                 option.textContent = `Day ${day.day} - ${day.date_display || day.date}`;
-                if (index === currentDayIndex) {
-                    option.selected = true;
-                }
                 selector.appendChild(option);
-            });
-            
-            // Update day display
-            updateDayDisplay();
+            }
             
             // Load today's meals by default
             loadDayMeals();
@@ -452,39 +396,7 @@ function populateDaySelector() {
         .catch(error => {
             console.error('Error loading days:', error);
             selector.innerHTML = '<option value="">Error loading days</option>';
-            if (dayDisplay) dayDisplay.textContent = 'Error loading days';
         });
-}
-
-function updateDayDisplay() {
-    const dayDisplay = document.getElementById('dayDisplay');
-    const selector = document.getElementById('daySelect');
-    
-    if (dailyLogsList.length > 0 && currentDayIndex >= 0 && currentDayIndex < dailyLogsList.length) {
-        const currentDay = dailyLogsList[currentDayIndex];
-        if (dayDisplay) {
-            dayDisplay.textContent = `Day ${currentDay.day} - ${currentDay.date_display || currentDay.date}`;
-        }
-        if (selector) {
-            selector.value = currentDay.day;
-        }
-    }
-}
-
-function navigateDay(direction) {
-    if (dailyLogsList.length === 0) return;
-    
-    currentDayIndex += direction;
-    
-    // Wrap around
-    if (currentDayIndex < 0) {
-        currentDayIndex = dailyLogsList.length - 1;
-    } else if (currentDayIndex >= dailyLogsList.length) {
-        currentDayIndex = 0;
-    }
-    
-    updateDayDisplay();
-    loadDayMeals();
 }
 
 function loadDayMeals() {
