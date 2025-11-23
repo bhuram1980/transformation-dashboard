@@ -234,7 +234,78 @@ body {
     }
 }
 
-/* Section 3: Progress Graph */
+/* Section 2: Main Goal & Baseline Metrics */
+.goal-baseline-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e5e5;
+    margin-bottom: 32px;
+}
+
+.goal-description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #000;
+    margin-bottom: 32px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #0066ff;
+}
+
+.baseline-metrics {
+    margin-top: 24px;
+}
+
+.baseline-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.baseline-date {
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+}
+
+.baseline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.baseline-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.baseline-metric .metric-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.baseline-metric .metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+/* Section 3: Progress Graph (COMMENTED OUT - may add later) */
+/*
 .progress-graph-section {
     background: #fff;
     border-radius: 12px;
@@ -248,6 +319,7 @@ body {
     position: relative;
     height: 400px;
 }
+*/
 
 /* Section 4: Goals */
 .goals-section {
