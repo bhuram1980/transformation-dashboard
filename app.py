@@ -507,65 +507,211 @@ Be friendly, concise, and actionable. When adding day entries, format them in ma
             'Content-Type': 'application/json'
         }
         
-        payload = {
-            "model": "grok-beta",
-            "messages": messages,
-            "functions": functions,
-            "temperature": 0.7,
-            "max_tokens": 1000
-        }
+        # Try different API endpoints and models
+        api_configs = [
+            {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok-2-1212'},
+            {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok-2'},
+            {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok-beta'},
+            {'url': 'https://api.x.ai/v1/chat/completions', 'model': 'grok'},
+        ]
         
-        response = requests.post(
-            'https://api.x.ai/v1/chat/completions',
-            headers=headers,
-            json=payload,
-            timeout=30
-        )
+        last_error = None
+        result = None
+        last_status_code = None
+        working_config = None
         
-        response.raise_for_status()
-        result = response.json()
+        # First, try with function calling
+        for config in api_configs:
+            try:
+                payload = {
+                    "model": config['model'],
+                    "messages": messages,
+                    "temperature": 0.7,
+                    "max_tokens": 1000
+                }
+                
+                # Try new tools format first
+                payload["tools"] = [{"type": "function", "function": f} for f in functions]
+                payload["tool_choice"] = "auto"
+                
+                response = requests.post(
+                    config['url'],
+                    headers=headers,
+                    json=payload,
+                    timeout=30
+                )
+                
+                last_status_code = response.status_code
+                
+                if response.status_code == 404:
+                    print(f"Model {config['model']} returned 404, trying next...")
+                    last_error = f"Model {config['model']} not found (404)"
+                    continue
+                
+                if response.status_code == 401:
+                    return jsonify({
+                        'error': 'Invalid API key. Please check your GROK_API_KEY in Vercel environment variables.'
+                    }), 401
+                
+                response.raise_for_status()
+                result = response.json()
+                working_config = config
+                break  # Success, exit loop
+                
+            except requests.exceptions.HTTPError as e:
+                last_status_code = e.response.status_code if hasattr(e, 'response') else None
+                if e.response.status_code == 404:
+                    last_error = f"Model {config['model']} not found (404)"
+                    continue
+                elif e.response.status_code == 401:
+                    return jsonify({
+                        'error': 'Invalid API key. Please check your GROK_API_KEY.'
+                    }), 401
+                last_error = f"HTTP {e.response.status_code}: {str(e)}"
+                continue
+            except Exception as e:
+                last_error = str(e)
+                continue
+        
+        # If function calling failed, try without it
+        if not result:
+            print("Function calling failed, trying without functions...")
+            for config in api_configs:
+                try:
+                    payload = {
+                        "model": config['model'],
+                        "messages": messages,
+                        "temperature": 0.7,
+                        "max_tokens": 1000
+                    }
+                    
+                    response = requests.post(
+                        config['url'],
+                        headers=headers,
+                        json=payload,
+                        timeout=30
+                    )
+                    
+                    last_status_code = response.status_code
+                    
+                    if response.status_code == 404:
+                        continue
+                    
+                    if response.status_code == 401:
+                        return jsonify({
+                            'error': 'Invalid API key. Please check your GROK_API_KEY.'
+                        }), 401
+                    
+                    response.raise_for_status()
+                    result = response.json()
+                    working_config = config
+                    break
+                    
+                except requests.exceptions.HTTPError as e:
+                    last_status_code = e.response.status_code if hasattr(e, 'response') else None
+                    if e.response.status_code == 404:
+                        continue
+                    elif e.response.status_code == 401:
+                        return jsonify({
+                            'error': 'Invalid API key. Please check your GROK_API_KEY.'
+                        }), 401
+                    last_error = f"HTTP {e.response.status_code}: {str(e)}"
+                    continue
+                except Exception as e:
+                    last_error = str(e)
+                    continue
+        
+        if not result:
+            error_msg = f"Grok API error (Status: {last_status_code}): {last_error or 'Unknown error'}"
+            if last_status_code == 404:
+                error_msg += "\n\nPossible issues:\n1. Model name may be incorrect\n2. API endpoint may have changed\n3. Check xAI API documentation for correct model names\n4. Your API key may not have access to these models"
+            elif last_status_code == 401:
+                error_msg += "\n\nPlease verify your GROK_API_KEY is correct in Vercel environment variables."
+            else:
+                error_msg += "\n\nPlease check:\n1. GROK_API_KEY is set correctly\n2. API endpoint is correct\n3. xAI API is operational"
+            
+            return jsonify({
+                'error': error_msg
+            }), 500
         
         # Check if Grok wants to call a function
         choice = result['choices'][0]
         message = choice['message']
         
-        # Handle function calls
-        if 'function_call' in message:
-            function_name = message['function_call']['name']
-            function_args = json.loads(message['function_call']['arguments'])
+        # Handle function calls (check both new and old format)
+        function_call = None
+        if 'tool_calls' in message and message['tool_calls']:
+            # New format (tools)
+            tool_call = message['tool_calls'][0]
+            function_call = {
+                'name': tool_call['function']['name'],
+                'arguments': tool_call['function']['arguments']
+            }
+        elif 'function_call' in message:
+            # Old format (functions)
+            function_call = message['function_call']
+        
+        if function_call:
+            function_name = function_call['name']
+            try:
+                if isinstance(function_call.get('arguments'), str):
+                    function_args = json.loads(function_call['arguments'])
+                else:
+                    function_args = function_call.get('arguments', {})
+            except:
+                function_args = {}
             
             # Execute function
             function_result = execute_function(function_name, function_args)
             
             # Send function result back to Grok
             messages.append(message)  # Add assistant's function call
-            messages.append({
-                "role": "function",
-                "name": function_name,
-                "content": json.dumps(function_result)
-            })
+            
+            # Add function result in appropriate format
+            if 'tool_calls' in message:
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": message['tool_calls'][0]['id'],
+                    "content": json.dumps(function_result)
+                })
+            else:
+                messages.append({
+                    "role": "function",
+                    "name": function_name,
+                    "content": json.dumps(function_result)
+                })
             
             # Get final response from Grok
-            response2 = requests.post(
-                'https://api.x.ai/v1/chat/completions',
-                headers=headers,
-                json={
-                    "model": "grok-beta",
+            try:
+                # Use the working config
+                payload2 = {
+                    "model": working_config['model'],
                     "messages": messages,
                     "temperature": 0.7,
                     "max_tokens": 1000
-                },
-                timeout=30
-            )
-            response2.raise_for_status()
-            result2 = response2.json()
-            final_message = result2['choices'][0]['message']['content']
-            
-            return jsonify({
-                'response': final_message,
-                'function_called': function_name,
-                'function_result': function_result
-            })
+                }
+                response2 = requests.post(
+                    working_config['url'],
+                    headers=headers,
+                    json=payload2,
+                    timeout=30
+                )
+                response2.raise_for_status()
+                result2 = response2.json()
+                final_message = result2['choices'][0]['message']['content']
+                
+                return jsonify({
+                    'response': final_message,
+                    'function_called': function_name,
+                    'function_result': function_result
+                })
+            except Exception as e:
+                # If second call fails, return function result directly
+                return jsonify({
+                    'response': f"✅ {function_result.get('message', 'Action completed')}",
+                    'function_called': function_name,
+                    'function_result': function_result
+                })
         else:
             # Regular response
             return jsonify({
