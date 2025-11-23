@@ -369,22 +369,20 @@ def upload_photo():
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
                 file_data = file.read()
                 
-                # Vercel Blob API: POST to /put endpoint
-                # Documentation: https://vercel.com/docs/storage/vercel-blob/using-blob-sdk
+                # Vercel Blob API: Use PUT method with pathname in URL
+                # Documentation: https://vercel.com/docs/storage/vercel-blob
                 headers = {
                     'Authorization': f'Bearer {blob_token}',
-                    'Content-Type': file.content_type or 'application/octet-stream'
+                    'Content-Type': file.content_type or 'application/octet-stream',
+                    'x-content-type': file.content_type or 'image/jpeg'
                 }
                 
-                # Use POST to /put endpoint with pathname and access as query params
-                response = requests.post(
-                    'https://blob.vercel-storage.com/put',
+                # Vercel Blob uses PUT with pathname in URL and access as query param
+                response = requests.put(
+                    f'https://blob.vercel-storage.com/{filename}',
                     data=file_data,
                     headers=headers,
-                    params={
-                        'pathname': filename,
-                        'access': 'public'
-                    },
+                    params={'access': 'public'},
                     timeout=30
                 )
                 
