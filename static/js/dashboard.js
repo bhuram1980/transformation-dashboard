@@ -433,6 +433,13 @@ function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8, m
 
 // Photo Upload Handler with Compression
 async function handlePhotoUpload(event) {
+    // Check if user is admin
+    if (userRole !== 'admin') {
+        alert('👁️ Viewer Mode: Photo upload is only available to admin users.');
+        event.target.value = ''; // Clear file input
+        return;
+    }
+    
     const file = event.target.files[0];
     if (!file) return;
     

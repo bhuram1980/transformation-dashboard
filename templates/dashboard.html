@@ -6,14 +6,26 @@
     <title>Transformation Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        // Make userRole available to JavaScript
+        window.userRole = '{{ user_role|default("viewer") }}';
+    </script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔥 Transformation Dashboard</h1>
-            <div class="streak-badge" id="streakBadge">
-                <span id="streakCount">0</span> Day Streak
-                <div class="streak-glow" id="streakGlow"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1>🔥 Transformation Dashboard</h1>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="streak-badge" id="streakBadge">
+                        <span id="streakCount">0</span> Day Streak
+                        <div class="streak-glow" id="streakGlow"></div>
+                    </div>
+                    <span style="color: #667eea; font-size: 0.9em; font-weight: 500;">
+                        {% if user_role == 'admin' %}👑 Admin{% else %}👁️ Viewer{% endif %}
+                    </span>
+                    <a href="/logout" style="color: #f5576c; text-decoration: none; font-size: 0.9em; padding: 8px 12px; border: 1px solid #f5576c; border-radius: 6px; transition: all 0.2s;">Logout</a>
+                </div>
             </div>
         </header>
 
@@ -59,7 +71,8 @@
             </div>
         </section>
 
-        <!-- Grok Advice Section -->
+        <!-- Grok Advice Section (Admin Only) -->
+        {% if user_role == 'admin' %}
         <section class="advice-section">
             <div class="section-header">
                 <h2>🤖 Daily Grok Advice</h2>
@@ -69,6 +82,16 @@
                 <div class="loading">Loading advice from Grok...</div>
             </div>
         </section>
+        {% else %}
+        <section class="advice-section" style="opacity: 0.6;">
+            <div class="section-header">
+                <h2>🤖 Daily Grok Advice</h2>
+            </div>
+            <div class="advice-box" style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; color: #666;">
+                <p>👁️ <strong>Viewer Mode:</strong> Grok AI advice is only available to admin users.</p>
+            </div>
+        </section>
+        {% endif %}
 
         <!-- Charts Section -->
         <section class="charts-section">

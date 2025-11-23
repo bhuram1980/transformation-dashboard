@@ -4,21 +4,34 @@ Transformation Log Web App with Grok Integration
 Flask web application to visualize transformation progress and get AI advice
 """
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 import re
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 import os
+import hashlib
+from functools import wraps
 
 app = Flask(__name__, 
             static_folder='static',
             template_folder='templates')
 
+# Secret key for sessions (set via environment variable or use default)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-this-to-a-random-secret-key-in-production')
+
 # Grok API configuration (set via environment variable)
 GROK_API_KEY = os.getenv('GROK_API_KEY', '')
 GROK_API_URL = 'https://api.x.ai/v1/chat/completions'
+
+# Password configuration (set via environment variables)
+VIEWER_PASSWORD = os.getenv('VIEWER_PASSWORD', '')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '')
+
+# Session timeout (24 hours)
+PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
+app.permanent_session_lifetime = PERMANENT_SESSION_LIFETIME
 
 
 class TransformationLogParser:
@@ -279,6 +292,7 @@ def index():
 
 
 @app.route('/api/data')
+@login_required
 def get_data():
     """API endpoint to get all transformation data"""
     parser = TransformationLogParser()
@@ -300,8 +314,15 @@ def get_data():
 
 
 @app.route('/api/advice')
+@login_required
 def get_advice():
-    """API endpoint to get Grok advice"""
+    """API endpoint to get Grok advice - Admin only"""
+    if not check_permission('admin'):
+        return jsonify({
+            'error': 'Admin access required to get Grok advice',
+            'advice': 'Viewer access: Grok advice is only available to admin users.'
+        }), 403
+    
     parser = TransformationLogParser()
     
     baseline = parser.get_baseline()
@@ -317,6 +338,7 @@ def get_advice():
 
 
 @app.route('/api/stats')
+@login_required
 def get_stats():
     """API endpoint for aggregated statistics"""
     parser = TransformationLogParser()
@@ -348,8 +370,15 @@ def get_stats():
 
 
 @app.route('/api/upload-photo', methods=['POST'])
+@login_required
 def upload_photo():
-    """Upload photo to Vercel Blob storage - Flask fallback endpoint"""
+    """Upload photo to Vercel Blob storage - Admin only"""
+    if not check_permission('admin'):
+        return jsonify({
+            'success': False,
+            'error': 'Admin access required to upload photos'
+        }), 403
+    
     try:
         if 'photo' not in request.files:
             return jsonify({'success': False, 'error': 'No file provided'}), 400
@@ -451,6 +480,7 @@ def upload_photo():
 
 
 @app.route('/api/photos')
+@login_required
 def get_photos():
     """Get list of uploaded photos"""
     try:
