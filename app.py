@@ -188,9 +188,9 @@ class TransformationDataLoader:
     """Load data from JSON files: master file + daily logs"""
     
     def __init__(self, master_file: str = "public/data/master-health-file.json", daily_logs_dir: str = "public/data/daily-logs"):
+        """Initialize data loader with robust error handling to prevent crashes"""
         # On Vercel, try api/data first (files copied to function bundle)
         # Then fall back to public/data (for local development)
-        import os
         vercel_env = os.getenv('VERCEL')
         if vercel_env == '1':
             # Try api/data first on Vercel
@@ -198,9 +198,12 @@ class TransformationDataLoader:
             api_logs = Path(__file__).parent.parent / "api" / "data" / "daily-logs"
             if api_master.exists():
                 master_file = str(api_master)
+                print(f"Using Vercel api/data master file: {master_file}")
             if api_logs.exists():
                 daily_logs_dir = str(api_logs)
-        """Initialize data loader with robust error handling to prevent crashes"""
+                print(f"Using Vercel api/data logs dir: {daily_logs_dir}")
+        
+        try:
         try:
             # Use absolute paths from app root
             # On Vercel, we need to find the project root
