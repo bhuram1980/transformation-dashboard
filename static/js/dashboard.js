@@ -45,6 +45,12 @@ async function loadData() {
             updateGoalAndBaseline(data.goal, data.baseline);
         }
         
+        // Update fish counter
+        updateFishCounter(data.daily_logs || []);
+        
+        // Update ALT countdown
+        updateALTCountdown(data.baseline);
+        
         // Render progress chart (COMMENTED OUT - may add later)
         // if (data.daily_logs && data.daily_logs.length > 0) {
         //     renderProgressChart(data.daily_logs);
@@ -383,20 +389,48 @@ function loadDayMeals() {
     const selector = document.getElementById('daySelect');
     const mealsContainer = document.getElementById('dayMeals');
     
-    if (!selector || !mealsContainer) return;
+    if (!mealsContainer) return;
     
-    const selectedDay = selector.value;
-    if (!selectedDay) {
-        mealsContainer.innerHTML = '<p class="meals-placeholder">Select a day to view meals</p>';
+    // Use currentDayIndex if available, otherwise use selector value
+    let selectedDayData;
+    if (dailyLogsList.length > 0 && currentDayIndex >= 0 && currentDayIndex < dailyLogsList.length) {
+        selectedDayData = dailyLogsList[currentDayIndex];
+    } else if (selector && selector.value) {
+        // Fallback to selector value
+        selectedDayData = dailyLogsList.find(d => d.day == selector.value);
+    }
+    
+    if (!selectedDayData) {
+        // Load data if not already loaded
+        fetch('/api/data')
+            .then(response => response.json())
+            .then(data => {
+                dailyLogsList = data.daily_logs || [];
+                if (selector && selector.value) {
+                    selectedDayData = dailyLogsList.find(d => d.day == selector.value);
+                } else if (dailyLogsList.length > 0) {
+                    selectedDayData = dailyLogsList[dailyLogsList.length - 1];
+                    currentDayIndex = dailyLogsList.length - 1;
+                }
+                
+                if (!selectedDayData) {
+                    mealsContainer.innerHTML = '<p class="meals-placeholder">Select a day to view meals</p>';
+                    return;
+                }
+                
+                renderDayMeals(selectedDayData, mealsContainer);
+            })
+            .catch(error => {
+                console.error('Error loading day meals:', error);
+                mealsContainer.innerHTML = '<p class="meals-placeholder">Error loading meals</p>';
+            });
         return;
     }
     
-    // Load data
-    fetch('/api/data')
-        .then(response => response.json())
-        .then(data => {
-            const dailyLogs = data.daily_logs || [];
-            const selectedDayData = dailyLogs.find(d => d.day == selectedDay);
+    renderDayMeals(selectedDayData, mealsContainer);
+}
+
+function renderDayMeals(selectedDayData, mealsContainer) {
             
             if (!selectedDayData) {
                 mealsContainer.innerHTML = '<p class="meals-placeholder">Day not found</p>';

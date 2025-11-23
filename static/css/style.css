@@ -6,8 +6,8 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-    background: #fafafa;
-    color: #000;
+    background: #000;
+    color: #fff;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -24,13 +24,13 @@ body {
     text-align: center;
     margin-bottom: 60px;
     padding-bottom: 40px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #333;
 }
 
 .dashboard-title {
     font-size: 32px;
     font-weight: 700;
-    color: #000;
+    color: #fff;
     margin-bottom: 30px;
     letter-spacing: -0.5px;
 }
@@ -39,19 +39,31 @@ body {
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
 .streak-number {
-    font-size: 72px;
+    font-size: 120px;
     font-weight: 800;
-    color: #0066ff;
+    color: #007AFF;
     line-height: 1;
     transition: transform 0.3s ease;
+    animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+@keyframes subtle-pulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.05);
+        opacity: 0.95;
+    }
 }
 
 .streak-number.animate {
-    animation: pulse-scale 0.5s ease;
+    animation: pulse-scale 0.5s ease, subtle-pulse 3s ease-in-out infinite;
 }
 
 @keyframes pulse-scale {
@@ -62,9 +74,17 @@ body {
 .streak-label {
     font-size: 14px;
     font-weight: 600;
-    color: #666;
+    color: #999;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.fish-counter {
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+    margin-top: 8px;
+    letter-spacing: -0.3px;
 }
 
 /* Section 2: Daily Log Input */
@@ -80,7 +100,7 @@ body {
 .section-title {
     font-size: 20px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
     margin-bottom: 24px;
     letter-spacing: -0.3px;
 }
@@ -236,23 +256,22 @@ body {
 
 /* Section 2: Main Goal & Baseline Metrics */
 .goal-baseline-section {
-    background: #fff;
-    border-radius: 12px;
+    background: #111;
+    border-radius: 16px;
     padding: 32px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid #e5e5e5;
+    border: 1px solid #333;
     margin-bottom: 32px;
 }
 
 .goal-description {
     font-size: 18px;
     line-height: 1.6;
-    color: #000;
+    color: #fff;
     margin-bottom: 32px;
     padding: 20px;
-    background: #f8f9fa;
+    background: #1a1a1a;
     border-radius: 8px;
-    border-left: 4px solid #0066ff;
+    border-left: 4px solid #007AFF;
 }
 
 .baseline-metrics {
@@ -262,7 +281,7 @@ body {
 .baseline-title {
     font-size: 16px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -272,7 +291,7 @@ body {
 .baseline-date {
     font-size: 14px;
     font-weight: 400;
-    color: #666;
+    color: #999;
 }
 
 .baseline-grid {
@@ -286,13 +305,14 @@ body {
     flex-direction: column;
     gap: 8px;
     padding: 16px;
-    background: #f8f9fa;
+    background: #1a1a1a;
     border-radius: 8px;
+    border: 1px solid #333;
 }
 
 .baseline-metric .metric-label {
     font-size: 13px;
-    color: #666;
+    color: #999;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -301,7 +321,7 @@ body {
 .baseline-metric .metric-value {
     font-size: 24px;
     font-weight: 700;
-    color: #0066ff;
+    color: #007AFF;
 }
 
 /* Section 3: Progress Graph (COMMENTED OUT - may add later) */
@@ -431,7 +451,7 @@ body {
 
 .meals-placeholder {
     text-align: center;
-    color: #999;
+    color: #666;
     padding: 40px;
     font-size: 15px;
 }
@@ -480,8 +500,9 @@ body {
 .meals-feeling {
     margin-bottom: 16px;
     padding: 12px 16px;
-    background: #f8f9fa;
+    background: #1a1a1a;
     border-radius: 8px;
+    border: 1px solid #333;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -490,7 +511,7 @@ body {
 .training-label,
 .feeling-label {
     font-size: 14px;
-    color: #666;
+    color: #999;
     font-weight: 500;
 }
 
@@ -498,19 +519,20 @@ body {
 .feeling-value {
     font-size: 16px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
 }
 
 .meals-notes {
     margin-top: 20px;
     padding: 16px;
-    background: #f8f9fa;
+    background: #1a1a1a;
     border-radius: 8px;
+    border: 1px solid #333;
 }
 
 .notes-label {
     font-size: 14px;
-    color: #666;
+    color: #999;
     font-weight: 500;
     display: block;
     margin-bottom: 8px;
@@ -518,7 +540,7 @@ body {
 
 .notes-value {
     font-size: 15px;
-    color: #000;
+    color: #fff;
     line-height: 1.6;
     margin: 0;
 }
@@ -544,13 +566,13 @@ body {
     font-family: inherit;
     font-size: 18px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
     text-align: left;
     transition: background 0.2s ease;
 }
 
 .meals-toggle:hover {
-    background: #f8f9fa;
+    background: #1a1a1a;
 }
 
 .meals-toggle-icon {
@@ -571,13 +593,14 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 32px;
-    background: #fff;
+    background: #1a1a1a;
     border-radius: 12px;
     overflow: hidden;
+    border: 1px solid #333;
 }
 
 .meals-table thead {
-    background: #f8f9fa;
+    background: #111;
 }
 
 .meals-table th {
@@ -585,10 +608,10 @@ body {
     text-align: left;
     font-size: 12px;
     font-weight: 600;
-    color: #666;
+    color: #999;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid #e5e5e5;
+    border-bottom: 2px solid #333;
 }
 
 .meals-table th.meal-col-name {
@@ -607,7 +630,7 @@ body {
 }
 
 .meals-table tbody tr {
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #333;
     transition: background 0.15s ease;
 }
 
@@ -616,37 +639,37 @@ body {
 }
 
 .meals-table tbody tr:hover {
-    background: #f8f9fa;
+    background: #222;
 }
 
 .meals-table td {
     padding: 18px 20px;
     font-size: 15px;
-    color: #000;
+    color: #fff;
     vertical-align: top;
 }
 
 .meals-table td.meal-col-name {
     font-weight: 600;
-    color: #000;
+    color: #fff;
     letter-spacing: -0.2px;
 }
 
 .meals-table td.meal-col-desc {
-    color: #333;
+    color: #ccc;
     line-height: 1.5;
 }
 
 .meals-table td.meal-col-macro {
     text-align: right;
     font-weight: 500;
-    color: #0066ff;
+    color: #007AFF;
     font-size: 14px;
 }
 
 .meals-table tfoot {
-    border-top: 2px solid #e5e5e5;
-    background: #f8f9fa;
+    border-top: 2px solid #333;
+    background: #111;
 }
 
 .meals-table tfoot tr.meal-table-totals {
@@ -654,18 +677,18 @@ body {
 }
 
 .meals-table tfoot tr.meal-table-totals:hover {
-    background: #f8f9fa;
+    background: #111;
 }
 
 .meals-table tfoot td {
     padding: 20px;
     font-weight: 600;
     font-size: 15px;
-    color: #000;
+    color: #fff;
 }
 
 .meals-table tfoot td.meal-col-macro {
-    color: #0066ff;
+    color: #007AFF;
     font-size: 16px;
     font-weight: 700;
 }
@@ -703,15 +726,15 @@ body {
 .meals-section-card {
     margin-top: 24px;
     padding: 24px;
-    background: #fff;
+    background: #1a1a1a;
     border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #333;
 }
 
 .meals-section-title {
     font-size: 18px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
     margin-bottom: 16px;
     letter-spacing: -0.3px;
 }
@@ -727,27 +750,29 @@ body {
     flex-direction: column;
     gap: 4px;
     padding: 16px;
-    background: #f8f9fa;
+    background: #1a1a1a;
     border-radius: 12px;
+    border: 1px solid #333;
     transition: all 0.2s ease;
 }
 
 .meal-item:hover {
-    background: #f0f4f8;
+    background: #222;
+    border-color: #007AFF;
     transform: translateY(-1px);
 }
 
 .meal-label {
     font-size: 12px;
     font-weight: 600;
-    color: #666;
+    color: #999;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .meal-content {
     font-size: 15px;
-    color: #000;
+    color: #fff;
     line-height: 1.5;
 }
 
@@ -755,15 +780,15 @@ body {
 .supplements-section-card {
     margin-top: 24px;
     padding: 24px;
-    background: #f8f9fa;
+    background: #1a1a1a;
     border-radius: 12px;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #333;
 }
 
 .supplements-section-title {
     font-size: 16px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
     margin-bottom: 16px;
     letter-spacing: -0.2px;
 }
@@ -776,20 +801,20 @@ body {
 
 .supplement-item {
     padding: 14px 16px;
-    background: #fff;
+    background: #111;
     border-radius: 8px;
-    border: 1.5px solid #e5e5e5;
+    border: 1.5px solid #333;
     transition: all 0.2s ease;
 }
 
 .supplement-item.taken {
     border-color: #00c853;
-    background: #f1f8f4;
+    background: #1a2e1a;
 }
 
 .supplement-item.not-taken {
     border-color: #ff9800;
-    background: #fff8f0;
+    background: #2e1a0a;
     opacity: 0.7;
 }
 
@@ -825,7 +850,7 @@ body {
 .supplement-name {
     font-size: 15px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
 }
 
 .supplement-details {
@@ -839,13 +864,13 @@ body {
 .supplement-dose,
 .supplement-scoops {
     font-size: 13px;
-    color: #666;
+    color: #999;
     line-height: 1.4;
 }
 
 .supplement-scoops {
     font-weight: 500;
-    color: #0066ff;
+    color: #007AFF;
 }
 
 /* Mobile Responsive */
