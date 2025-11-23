@@ -359,6 +359,90 @@ def get_stats():
     return jsonify(stats)
 
 
+@app.route('/api/update-log', methods=['POST'])
+def update_log():
+    """API endpoint for Grok AI to update the transformation log file"""
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        # Get the update content
+        update_content = data.get('content', '')
+        update_type = data.get('type', 'append')  # 'append', 'replace', 'update_day'
+        day_number = data.get('day', None)
+        
+        if not update_content:
+            return jsonify({'success': False, 'error': 'No content provided'}), 400
+        
+        log_file = Path('transformation_log.md')
+        
+        # Read current content
+        if log_file.exists():
+            current_content = log_file.read_text(encoding='utf-8')
+        else:
+            current_content = "# D – Ripped 2026 Transformation Log\n\n"
+        
+        # Handle different update types
+        if update_type == 'append':
+            # Append new day entry
+            new_content = current_content + "\n\n" + update_content
+        elif update_type == 'update_day' and day_number:
+            # Update specific day entry
+            day_pattern = rf'### Day {day_number} – ([^\n]+)'
+            match = re.search(day_pattern, current_content)
+            if match:
+                # Replace existing day entry
+                start_pos = match.start()
+                next_day_match = re.search(r'### Day \d+ –', current_content[start_pos + 10:])
+                if next_day_match:
+                    end_pos = start_pos + 10 + next_day_match.start()
+                else:
+                    end_pos = len(current_content)
+                new_content = current_content[:start_pos] + update_content + current_content[end_pos:]
+            else:
+                # Day doesn't exist, append it
+                new_content = current_content + "\n\n" + update_content
+        elif update_type == 'replace':
+            # Replace entire file (use with caution)
+            new_content = update_content
+        else:
+            return jsonify({'success': False, 'error': f'Invalid update type: {update_type}'}), 400
+        
+        # Write to file
+        # Note: On Vercel, filesystem is read-only, so we'll save to a different location
+        # In production, you might want to use a database or file storage service
+        is_vercel = os.getenv('VERCEL') == '1'
+        
+        if is_vercel:
+            # On Vercel, we can't write to filesystem
+            # Option 1: Store in a database (recommended)
+            # Option 2: Use Vercel Blob storage
+            # Option 3: Return the updated content for manual commit
+            return jsonify({
+                'success': True,
+                'message': 'File update generated (Vercel read-only filesystem)',
+                'updated_content': new_content,
+                'instructions': 'Copy the updated_content and commit to Git, or use a database for storage'
+            })
+        else:
+            # Local development - write directly
+            log_file.write_text(new_content, encoding='utf-8')
+            return jsonify({
+                'success': True,
+                'message': 'Log file updated successfully',
+                'file': str(log_file)
+            })
+            
+    except Exception as e:
+        error_msg = str(e)
+        print(f"Error updating log: {error_msg}")
+        return jsonify({
+            'success': False,
+            'error': f'Failed to update log: {error_msg}'
+        }), 500
+
+
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
     """Upload photo to Vercel Blob storage - Public access"""
