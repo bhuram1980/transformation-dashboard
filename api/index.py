@@ -59,9 +59,7 @@ class handler(BaseHTTPRequestHandler):
             path = path_parts[0]
             query_string = path_parts[1] if len(path_parts) > 1 else ''
             
-            # Skip static files - let Vercel handle them via routes
-            # But don't return 404, let Flask handle it (it might need to serve templates)
-            # Actually, Vercel routes should handle static files before they reach here
+            # Let Flask handle all requests (including static files if Vercel routes don't catch them)
             
             # Read request body if present
             content_length = int(self.headers.get('Content-Length', 0))
