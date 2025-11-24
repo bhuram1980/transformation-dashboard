@@ -11,113 +11,268 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Section 1: Header & Streak -->
-        <header class="dashboard-header">
-            <h1 class="dashboard-title">Transformation Dashboard</h1>
-            <div class="streak-container">
-                <div class="streak-number" id="streakCount">0</div>
-                <div class="streak-label">Day Streak</div>
-            </div>
-        </header>
+    <div class="page-surface">
+        <div class="dashboard-container">
+            <!-- Section 1: Today Hero -->
+            <section class="layout-section today-hero" id="todayHero">
+                <div class="section-heading">
+                    <p class="section-eyebrow">Today at a glance</p>
+                    <h1 class="dashboard-title">Dominate the Day</h1>
+                </div>
+                <div class="grid-12 hero-grid">
+                    <div class="card-surface hero-card hero-streak col-span-12 col-lg-4">
+                        <div class="hero-card-label">Current streak</div>
+                        <div class="streak-container">
+                            <div class="streak-number" id="streakCount">0</div>
+                            <div class="streak-label">Day Streak</div>
+                        </div>
+                        <div class="hero-card-meta" id="streakMeta">Logs arrive nightly</div>
+                    </div>
+                    <div class="card-surface weight-card col-span-12 col-lg-8">
+                        <div class="weight-card-label">Fasted weight today</div>
+                        <div class="weight-card-value" id="weightValue">--</div>
+                        <div class="weight-card-meta" id="weightMeta">Awaiting latest log</div>
+                        <div class="weight-card-delta" id="weightDelta">Upload today's file to see changes</div>
+                    </div>
+                    <div class="card-surface hero-card fish-card col-span-12 col-lg-6">
+                        <div class="hero-card-label">Total fish demolished</div>
+                        <div class="fish-card-body">
+                            <div class="fish-ring">
+                                <svg viewBox="0 0 120 120">
+                                    <circle class="fish-ring-track" cx="60" cy="60" r="52"></circle>
+                                    <circle class="fish-ring-progress" id="fishRingProgress" cx="60" cy="60" r="52"></circle>
+                                </svg>
+                                <div class="fish-ring-center">
+                                    <div class="fish-ring-value" id="fishRingValue">0%</div>
+                                    <div class="fish-ring-caption">weekly</div>
+                                </div>
+                            </div>
+                            <div class="fish-card-stats">
+                                <div class="fish-card-value" id="fishTotal">0.00 kg 🐟</div>
+                                <div class="hero-card-meta" id="fishWeeklyMeta">0.0 / 7.0 kg this week</div>
+                                <div class="hero-card-meta subtle">Lifetime edible weight</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-surface hero-card today-score-card col-span-12 col-lg-6" id="todayScoreCard">
+                        <div class="hero-card-label">Today score</div>
+                        <div class="score-card-body">
+                            <div class="score-ring">
+                                <svg viewBox="0 0 120 120">
+                                    <circle class="score-ring-track" cx="60" cy="60" r="52"></circle>
+                                    <circle class="score-ring-progress" id="scoreRingProgress" cx="60" cy="60" r="52"></circle>
+                                </svg>
+                                <div class="score-ring-center" id="scoreRingValue">0</div>
+                            </div>
+                            <div class="score-card-text">
+                                <div class="hero-score-value" id="todayScoreValue">-- / 5</div>
+                                <div class="hero-card-meta" id="todayScoreMeta">Score updates with new log</div>
+                            </div>
+                        </div>
+                        <ul class="score-criteria" id="scoreCriteriaList">
+                            <li>Protein target</li>
+                            <li>Seafood goal</li>
+                            <li>Supplements</li>
+                            <li>Training logged</li>
+                            <li>Feeling 8+</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="hero-badges" id="heroBadges"></div>
+            </section>
 
-        <!-- Section 2: Main Goal & Baseline Metrics -->
-        <section class="goal-baseline-section">
-            <h2 class="section-title">Main Goal</h2>
-            <div class="goal-description" id="goalDescription">Loading...</div>
-            <div class="baseline-metrics">
-                <h3 class="baseline-title">Baseline Metrics <span class="baseline-date" id="baselineDate">(November 21, 2025)</span></h3>
-                <div class="baseline-grid">
-                    <div class="baseline-metric">
-                        <span class="metric-label">Weight</span>
-                        <span class="metric-value" id="baselineWeight">-</span>
+            <!-- Section 2: Long-term transformation -->
+            <section class="layout-section long-term-section" id="longTermSection">
+                <div class="section-heading">
+                    <p class="section-eyebrow">Long-term transformation</p>
+                    <h2 class="section-title">Mission progress</h2>
+                </div>
+                <div class="grid-12 long-term-grid">
+                    <div class="goal-baseline-section card-surface col-span-12 col-lg-7">
+                        <h3 class="section-subtitle">Main Goal</h3>
+                        <div class="goal-description" id="goalDescription">Loading...</div>
+                        <div class="baseline-metrics">
+                            <h4 class="baseline-title">Baseline vs Current <span class="baseline-date" id="baselineDate">(Nov 21, 2025)</span></h4>
+                            <div class="baseline-compare-grid">
+                                <div class="baseline-compare-card">
+                                    <div class="compare-label">Weight</div>
+                                    <div class="compare-values">
+                                        <div>
+                                            <span class="compare-caption">Baseline</span>
+                                            <span class="compare-value" id="weightBaselineValue">-</span>
+                                        </div>
+                                        <span class="compare-arrow">→</span>
+                                        <div>
+                                            <span class="compare-caption">Current</span>
+                                            <span class="compare-value" id="weightCurrentValue">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="compare-change" id="weightCompareDelta">Awaiting data</div>
+                                </div>
+                                <div class="baseline-compare-card">
+                                    <div class="compare-label">Body Fat</div>
+                                    <div class="compare-values">
+                                        <div>
+                                            <span class="compare-caption">Baseline</span>
+                                            <span class="compare-value" id="bodyFatBaselineValue">-</span>
+                                        </div>
+                                        <span class="compare-arrow">→</span>
+                                        <div>
+                                            <span class="compare-caption">Current</span>
+                                            <span class="compare-value" id="bodyFatCurrentValue">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="compare-change" id="bodyFatCompareDelta">Need new DEXA</div>
+                                </div>
+                                <div class="baseline-compare-card">
+                                    <div class="compare-label">Android Fat</div>
+                                    <div class="compare-values">
+                                        <div>
+                                            <span class="compare-caption">Baseline</span>
+                                            <span class="compare-value" id="androidBaselineValue">-</span>
+                                        </div>
+                                        <span class="compare-arrow">→</span>
+                                        <div>
+                                            <span class="compare-caption">Current</span>
+                                            <span class="compare-value" id="androidCurrentValue">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="compare-change" id="androidCompareDelta">Need new DEXA</div>
+                                </div>
+                                <div class="baseline-compare-card">
+                                    <div class="compare-label">ALT</div>
+                                    <div class="compare-values">
+                                        <div>
+                                            <span class="compare-caption">Baseline</span>
+                                            <span class="compare-value" id="altBaselineValue">-</span>
+                                        </div>
+                                        <span class="compare-arrow">→</span>
+                                        <div>
+                                            <span class="compare-caption">Current</span>
+                                            <span class="compare-value" id="altCurrentValue">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="compare-change" id="altCompareDelta">Need new labs</div>
+                                </div>
+                                <div class="baseline-compare-card">
+                                    <div class="compare-label">Glucose</div>
+                                    <div class="compare-values">
+                                        <div>
+                                            <span class="compare-caption">Baseline</span>
+                                            <span class="compare-value" id="glucoseBaselineValue">-</span>
+                                        </div>
+                                        <span class="compare-arrow">→</span>
+                                        <div>
+                                            <span class="compare-caption">Current</span>
+                                            <span class="compare-value" id="glucoseCurrentValue">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="compare-change" id="glucoseCompareDelta">Need new labs</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="baseline-metric">
-                        <span class="metric-label">Body Fat</span>
-                        <span class="metric-value" id="baselineBodyFat">-</span>
-                    </div>
-                    <div class="baseline-metric">
-                        <span class="metric-label">Android Fat</span>
-                        <span class="metric-value" id="baselineAndroidFat">-</span>
-                    </div>
-                    <div class="baseline-metric">
-                        <span class="metric-label">ALT</span>
-                        <span class="metric-value" id="baselineALT">-</span>
-                    </div>
-                    <div class="baseline-metric">
-                        <span class="metric-label">Glucose</span>
-                        <span class="metric-value" id="baselineGlucose">-</span>
-                    </div>
-                    <div class="baseline-metric">
-                        <span class="metric-label">Triglycerides</span>
-                        <span class="metric-value" id="baselineTriglycerides">-</span>
+                    <div class="goals-section card-surface col-span-12 col-lg-5">
+                        <h3 class="section-subtitle">Targets</h3>
+                        <div class="metric-progress-grid">
+                            <div class="metric-card has-trend" id="metricWeightCard">
+                                <div class="metric-card-heading">
+                                    <div>
+                                        <p class="metric-name">Weight</p>
+                                        <p class="metric-current" id="metricWeightCurrent">--</p>
+                                    </div>
+                                    <p class="metric-target-label" id="metricWeightTarget">Target 82-85 kg</p>
+                                </div>
+                                <p class="metric-change-line" id="metricWeightChange">Need more data</p>
+                                <div class="metric-progress-bar">
+                                    <div class="metric-progress-fill" id="metricWeightProgress"></div>
+                                </div>
+                            </div>
+                            <div class="metric-card" id="metricBodyFatCard">
+                                <div class="metric-card-heading">
+                                    <div>
+                                        <p class="metric-name">Body Fat</p>
+                                        <p class="metric-current" id="metricBodyFatCurrent">--</p>
+                                    </div>
+                                    <p class="metric-target-label" id="metricBodyFatTarget">Target ≤13%</p>
+                                </div>
+                                <p class="metric-change-line" id="metricBodyFatChange">Awaiting next DEXA</p>
+                                <div class="metric-progress-bar">
+                                    <div class="metric-progress-fill" id="metricBodyFatProgress"></div>
+                                </div>
+                            </div>
+                            <div class="metric-card" id="metricAndroidCard">
+                                <div class="metric-card-heading">
+                                    <div>
+                                        <p class="metric-name">Android Fat</p>
+                                        <p class="metric-current" id="metricAndroidCurrent">--</p>
+                                    </div>
+                                    <p class="metric-target-label" id="metricAndroidTarget">Target ≤15%</p>
+                                </div>
+                                <p class="metric-change-line" id="metricAndroidChange">Awaiting Android update</p>
+                                <div class="metric-progress-bar">
+                                    <div class="metric-progress-fill" id="metricAndroidProgress"></div>
+                                </div>
+                            </div>
+                            <div class="metric-card" id="metricAltCard">
+                                <div class="metric-card-heading">
+                                    <div>
+                                        <p class="metric-name">ALT</p>
+                                        <p class="metric-current" id="metricAltCurrent">--</p>
+                                    </div>
+                                    <p class="metric-target-label" id="metricAltTarget">Target &lt;80</p>
+                                </div>
+                                    <p class="metric-change-line" id="metricAltChange">Need new labs</p>
+                                <div class="metric-progress-bar">
+                                    <div class="metric-progress-fill" id="metricAltProgress"></div>
+                                </div>
+                            </div>
+                            <div class="metric-card" id="metricGlucoseCard">
+                                <div class="metric-card-heading">
+                                    <div>
+                                        <p class="metric-name">Fasting Glucose</p>
+                                        <p class="metric-current" id="metricGlucoseCurrent">--</p>
+                                    </div>
+                                    <p class="metric-target-label" id="metricGlucoseTarget">Target &lt;95</p>
+                                </div>
+                                <p class="metric-change-line" id="metricGlucoseChange">Need new labs</p>
+                                <div class="metric-progress-bar">
+                                    <div class="metric-progress-fill" id="metricGlucoseProgress"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Section 3: Progress Graph (COMMENTED OUT - may add later) -->
-        <!--
-        <section class="progress-graph-section">
-            <h2 class="section-title">Progress</h2>
-            <div class="chart-wrapper">
-                <canvas id="progressChart"></canvas>
-            </div>
-        </section>
-        -->
-
-        <!-- Section 4: Goals (4 cards) -->
-        <section class="goals-section">
-            <h2 class="section-title">Goals</h2>
-            <div class="goals-grid">
-                <div class="goal-card">
-                    <div class="goal-label">Android Fat</div>
-                    <div class="goal-value" id="androidFatValue">-</div>
-                    <div class="goal-target">Target: ≤15%</div>
-                    <div class="goal-progress-bar">
-                        <div class="goal-progress-fill" id="androidFatProgress"></div>
+            <!-- Section 3: Today Log -->
+            <section class="layout-section todays-log-section" id="todaysLogSection">
+                <div class="section-heading">
+                    <p class="section-eyebrow">Today’s log</p>
+                    <h2 class="section-title">What I Ate Today</h2>
+                </div>
+                <div class="meals-section card-surface">
+                    <div class="day-selector">
+                        <label class="day-select-label">Select Day:</label>
+                        <div class="day-pill-wrapper">
+                            <button class="day-pill-nav" id="prevDayBtn" onclick="navigateDay(-1)" aria-label="Previous day">←</button>
+                            <div class="day-pill-scroll">
+                                <div class="day-pill-track" id="dayPillContainer"></div>
+                            </div>
+                            <button class="day-pill-nav" id="nextDayBtn" onclick="navigateDay(1)" aria-label="Next day">→</button>
+                        </div>
+                        <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()" aria-label="Select day backup">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                    <div id="dayMeals" class="meals-content">
+                        <div class="meals-placeholder-card">
+                            <p>Select a day to view meals, macros, supplements, and notes.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="goal-card">
-                    <div class="goal-label">Body Fat</div>
-                    <div class="goal-value" id="bodyFatValue">-</div>
-                    <div class="goal-target">Target: ≤13%</div>
-                    <div class="goal-progress-bar">
-                        <div class="goal-progress-fill" id="bodyFatProgress"></div>
-                    </div>
-                </div>
-                <div class="goal-card">
-                    <div class="goal-label">ALT</div>
-                    <div class="goal-value" id="altValue">-</div>
-                    <div class="goal-target">Target: <80</div>
-                    <div class="goal-progress-bar">
-                        <div class="goal-progress-fill" id="altProgress"></div>
-                    </div>
-                </div>
-                <div class="goal-card">
-                    <div class="goal-label">Glucose</div>
-                    <div class="goal-value" id="glucoseValue">-</div>
-                    <div class="goal-target">Target: <95</div>
-                    <div class="goal-progress-bar">
-                        <div class="goal-progress-fill" id="glucoseProgress"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 5: What I Ate Today -->
-        <section class="meals-section">
-            <h2 class="section-title">What I Ate Today</h2>
-            <div class="day-selector">
-                <label for="daySelect" class="day-select-label">Select Day:</label>
-                <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()">
-                    <option value="">Loading...</option>
-                </select>
-            </div>
-            <div id="dayMeals" class="meals-content">
-                <p class="meals-placeholder">Select a day to view meals</p>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
 
     <script src="/static/js/dashboard.js"></script>
