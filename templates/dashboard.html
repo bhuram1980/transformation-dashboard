@@ -5,10 +5,234 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transformation Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: #fafafa;
+    color: #000;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Section 1: Header & Streak */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.dashboard-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
+}
+
+.streak-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.streak-number {
+    font-size: 72px;
+    font-weight: 800;
+    color: #0066ff;
+}
+
+.streak-label {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Section 2: Main Goal & Baseline Metrics */
+.goal-baseline-section {
+    margin-bottom: 48px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #000;
+}
+
+.goal-description {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.baseline-metrics {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.baseline-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.baseline-date {
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+}
+
+.baseline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px 24px;
+}
+
+.baseline-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.metric-label {
+    color: #666;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: #000;
+}
+
+/* Section 4: Goals */
+.goals-section {
+    margin-bottom: 48px;
+}
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.goal-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.goal-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 6px;
+}
+
+.goal-value {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.goal-target {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.goal-progress-bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: #edf2ff;
+    overflow: hidden;
+}
+
+.goal-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Section 5: What I Ate Today */
+.meals-section {
+    margin-bottom: 40px;
+}
+
+.day-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.day-select-label {
+    font-size: 14px;
+    color: #555;
+}
+
+.day-select-dropdown {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #d0d7e2;
+    font-size: 14px;
+    background: #fff;
+}
+
+.meals-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    min-height: 80px;
+}
+
+.meals-placeholder {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 24px 16px 40px;
+    }
+
+    .dashboard-header {
+        margin-bottom: 40px;
+    }
+
+    .dashboard-title {
+        font-size: 26px;
+    }
+
+    .streak-number {
+        font-size: 56px;
+    }
+}
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -120,6 +344,137 @@
         </section>
     </div>
 
-    <script src="/static/js/dashboard.js"></script>
+    <script>
+// Dashboard JavaScript - inline to avoid static path issues
+
+let progressChart;
+
+// Load data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadData();
+    loadStats();
+    populateDaySelector();
+    
+    // View-only dashboard - no forms
+});
+
+async function loadData() {
+    try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        
+        console.log('Loaded data:', {
+            streak: data.streak,
+            daily_logs_count: data.daily_logs?.length || 0,
+            baseline: data.baseline,
+            daily_logs: data.daily_logs
+        });
+        
+        // Update streak with animation
+        const streakEl = document.getElementById('streakCount');
+        if (streakEl) {
+            const current = parseInt(streakEl.textContent) || 0;
+            const newStreak = data.streak || 0;
+            if (current !== newStreak && newStreak > 0) {
+                animateStreak(streakEl, current, newStreak);
+            } else {
+                streakEl.textContent = newStreak;
+            }
+        }
+        
+        // Update goals
+        if (data.baseline) {
+            updateGoals(data.baseline, data.targets);
+        }
+        
+        // Update main goal description
+        if (data.goal && data.goal.goal) {
+            const goalEl = document.getElementById('goalDescription');
+            if (goalEl) {
+                goalEl.textContent = data.goal.goal;
+            }
+        }
+        
+        // Update baseline metrics
+        updateBaselineMetrics(data.baseline, data.goal);
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+// Minimal versions of functions used by dashboard.js
+function updateGoals(baseline, targets) {
+    // ... keep empty for now or implement simple updates
+}
+
+function updateBaselineMetrics(baseline, goal) {
+    if (!baseline) return;
+    const baselineWeight = document.getElementById('baselineWeight');
+    const baselineBodyFat = document.getElementById('baselineBodyFat');
+    const baselineAndroidFat = document.getElementById('baselineAndroidFat');
+    const baselineALT = document.getElementById('baselineALT');
+    const baselineGlucose = document.getElementById('baselineGlucose');
+    const baselineTrig = document.getElementById('baselineTriglycerides');
+    
+    if (baselineWeight && baseline.weight != null) baselineWeight.textContent = baseline.weight + ' kg';
+    if (baselineBodyFat && baseline.body_fat != null) baselineBodyFat.textContent = baseline.body_fat + ' %';
+    if (baselineAndroidFat && baseline.android_fat != null) baselineAndroidFat.textContent = baseline.android_fat + ' %';
+    if (baselineALT && baseline.alt != null) baselineALT.textContent = baseline.alt;
+    if (baselineGlucose && baseline.fasting_glucose != null) baselineGlucose.textContent = baseline.fasting_glucose;
+    if (baselineTrig && baseline.triglycerides != null) baselineTrig.textContent = baseline.triglycerides;
+}
+
+async function loadStats() {
+    try {
+        const response = await fetch('/api/stats');
+        const data = await response.json();
+        console.log('Loaded stats:', data);
+        // You can add DOM updates here if needed
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
+
+async function populateDaySelector() {
+    try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        const select = document.getElementById('daySelect');
+        if (!select) return;
+        
+        select.innerHTML = '';
+        if (!data.daily_logs || data.daily_logs.length === 0) {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'No data yet';
+            select.appendChild(opt);
+            return;
+        }
+        
+        data.daily_logs.forEach((log) => {
+            const opt = document.createElement('option');
+            opt.value = log.date;
+            opt.textContent = log.date;
+            select.appendChild(opt);
+        });
+    } catch (error) {
+        console.error('Error populating day selector:', error);
+    }
+}
+
+function animateStreak(el, from, to) {
+    const duration = 600;
+    const start = performance.now();
+    function frame(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const value = Math.round(from + (to - from) * progress);
+        el.textContent = value;
+        if (progress < 1) {
+            requestAnimationFrame(frame);
+        }
+    }
+    requestAnimationFrame(frame);
+}
+    </script>
 </body>
 </html>
