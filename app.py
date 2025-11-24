@@ -15,13 +15,20 @@ import hashlib
 from functools import wraps
 import tempfile
 
-# On Vercel, files in public/ are served automatically
-# Flask static_folder should point to where files actually are
-# static_url_path is the URL path Flask uses (defaults to /static)
-app = Flask(__name__, 
-            static_folder='public/static',  # Files are in public/static
-            static_url_path='/static',  # Flask generates /static/ URLs (matches public/static structure)
-            template_folder='templates')
+"""
+Flask application entrypoint.
+
+Static files:
+- Local dev: served from ./static (e.g. static/css/style.css, static/js/dashboard.js)
+- Vercel: @vercel/python bundles project files, so /static/* is also served from ./static.
+"""
+
+app = Flask(
+    __name__,
+    static_folder='static',      # serve /static/* from the local static/ directory
+    static_url_path='/static',
+    template_folder='templates',
+)
 
 # Secret key for sessions (set via environment variable or use default)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-this-to-a-random-secret-key-in-production')
