@@ -4,7 +4,7 @@ Transformation Log Web App with Grok Integration
 Flask web application to visualize transformation progress and get AI advice
 """
 
-from flask import Flask, render_template, jsonify, request, session, redirect, url_for
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for, send_from_directory
 import re
 import json
 from datetime import datetime, timedelta
@@ -29,6 +29,16 @@ app = Flask(
     static_url_path='/static',
     template_folder='templates',
 )
+
+
+@app.route('/favicon.ico')
+def favicon():
+    """Serve a tiny favicon to avoid 404s in the console."""
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.png',
+        mimetype='image/png'
+    )
 
 # Secret key for sessions (set via environment variable or use default)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-this-to-a-random-secret-key-in-production')
