@@ -296,12 +296,6 @@ body {
     color: #4f5ac4;
 }
 
-.weight-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
 /* Section 1: Header & Streak */
 .dashboard-header {
     text-align: center;
@@ -348,32 +342,6 @@ body {
     color: #666;
     text-transform: uppercase;
     letter-spacing: 1px;
-}
-
-/* Weight & Fish Highlights */
-.fish-ring-value {
-    font-size: 24px;
-    font-weight: 700;
-    color: #000;
-}
-
-.fish-ring-caption {
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #666;
-}
-
-.fish-card-value {
-    font-size: 32px;
-    font-weight: 700;
-    color: #000;
-}
-
-.fish-card-value span {
-    font-size: 20px;
-    color: #666;
-    margin-left: 8px;
 }
 
 .score-card-body {
