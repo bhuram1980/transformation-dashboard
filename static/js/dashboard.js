@@ -291,19 +291,23 @@ function renderMetricTrend() {
 
 function updateWeightHighlights(dailyLogs = [], baseline = {}) {
     const weightValueEl = document.getElementById('weightValue');
-    const weightDeltaEl = document.getElementById('weightDelta');
     const weightMetaEl = document.getElementById('weightMeta');
+    const weightDeltaWrapper = document.getElementById('weightDelta');
+    const weightDeltaArrow = document.getElementById('weightDeltaArrow');
+    const weightDeltaText = document.getElementById('weightDeltaText');
     const fishTotalEl = document.getElementById('fishTotal');
     
-    if (!weightValueEl || !weightDeltaEl || !weightMetaEl || !fishTotalEl) {
+    if (!weightValueEl || !weightMetaEl || !weightDeltaWrapper || !weightDeltaArrow || !weightDeltaText || !fishTotalEl) {
         return;
     }
     
     if (!dailyLogs.length) {
-        weightValueEl.textContent = '--';
+        weightValueEl.textContent = '-- kg';
         weightMetaEl.textContent = 'Awaiting latest log';
-        weightDeltaEl.textContent = 'Upload today\'s file to see progress';
-        fishTotalEl.textContent = '0.00 kg 🐟';
+        weightDeltaArrow.textContent = '—';
+        weightDeltaText.textContent = 'Need Day 1 + latest weight to compare';
+        weightDeltaWrapper.classList.remove('delta-positive', 'delta-negative');
+        fishTotalEl.textContent = '0.00 kg';
         return;
     }
     
@@ -313,7 +317,7 @@ function updateWeightHighlights(dailyLogs = [], baseline = {}) {
     if (currentWeight !== null) {
         weightValueEl.textContent = `${currentWeight.toFixed(1)} kg`;
     } else {
-        weightValueEl.textContent = '--';
+        weightValueEl.textContent = '-- kg';
     }
     
     const dateLabel = latestLog?.date_display || latestLog?.date || '';
@@ -329,24 +333,19 @@ function updateWeightHighlights(dailyLogs = [], baseline = {}) {
         dailyLogs[0]?.fastedWeight ??
         dailyLogs[0]?.fasted_weight
     );
-    const previousWeight = parseWeight(
-        dailyLogs.length > 1
-            ? dailyLogs[dailyLogs.length - 2]?.fastedWeight ?? dailyLogs[dailyLogs.length - 2]?.fasted_weight
-            : null
-    );
     
-    const deltaChips = [];
     if (currentWeight !== null && baselineWeight !== null) {
-        deltaChips.push(buildWeightDeltaChip('vs Day 1', currentWeight - baselineWeight));
-    }
-    if (currentWeight !== null && previousWeight !== null) {
-        deltaChips.push(buildWeightDeltaChip('vs yesterday', currentWeight - previousWeight));
-    }
-    
-    if (deltaChips.length === 0) {
-        weightDeltaEl.textContent = 'Need Day 1 + latest weight to compare';
+        const delta = currentWeight - baselineWeight;
+        const arrow = delta <= 0 ? '↓' : '↑';
+        const deltaText = `(${delta >= 0 ? '+' : '-'}${Math.abs(delta).toFixed(1)} kg from ${baselineWeight.toFixed(1)} kg)`;
+        weightDeltaArrow.textContent = arrow;
+        weightDeltaText.textContent = deltaText;
+        weightDeltaWrapper.classList.remove('delta-positive', 'delta-negative');
+        weightDeltaWrapper.classList.add(delta <= 0 ? 'delta-positive' : 'delta-negative');
     } else {
-        weightDeltaEl.innerHTML = deltaChips.join('');
+        weightDeltaArrow.textContent = '—';
+        weightDeltaText.textContent = 'Need Day 1 + latest weight to compare';
+        weightDeltaWrapper.classList.remove('delta-positive', 'delta-negative');
     }
     
     const fishTotal = dailyLogs.reduce((sum, log) => {
@@ -354,19 +353,15 @@ function updateWeightHighlights(dailyLogs = [], baseline = {}) {
         return sum + (totals.seafoodKg || 0);
     }, 0);
     
-    fishTotalEl.textContent = `${fishTotal.toFixed(2)} kg 🐟`;
+    fishTotalEl.textContent = `${fishTotal.toFixed(2)} kg`;
 }
 
 function updateFishRing(dailyLogs = []) {
-    const ringEl = document.getElementById('fishRingProgress');
-    const valueEl = document.getElementById('fishRingValue');
     const metaEl = document.getElementById('fishWeeklyMeta');
-    if (!ringEl || !valueEl || !metaEl) return;
+    if (!metaEl) return;
     
     if (!dailyLogs.length) {
-        ringEl.style.strokeDashoffset = RING_CIRCUMFERENCE;
-        valueEl.textContent = '0%';
-        metaEl.textContent = '0 / 7 kg this week';
+        metaEl.textContent = '0.0 / 7.0 kg this week';
         return;
     }
     
@@ -376,10 +371,7 @@ function updateFishRing(dailyLogs = []) {
         return sum + (totals.seafoodKg || 0);
     }, 0);
     
-    const weeklyGoal = 7; // kg per week
-    const ratio = Math.max(0, Math.min(weeklyFish / weeklyGoal, 1));
-    ringEl.style.strokeDashoffset = RING_CIRCUMFERENCE - ratio * RING_CIRCUMFERENCE;
-    valueEl.textContent = `${Math.round(ratio * 100)}%`;
+    const weeklyGoal = 7;
     metaEl.textContent = `${weeklyFish.toFixed(2)} / ${weeklyGoal.toFixed(1)} kg this week`;
 }
 
@@ -594,22 +586,6 @@ function formatMetricValue(value, unit = '', decimals = 1) {
     if (value === null || value === undefined) return '--';
     const rounded = typeof decimals === 'number' ? value.toFixed(decimals) : value;
     return `${rounded}${unit ? ` ${unit}` : ''}`;
-}
-
-function buildWeightDeltaChip(label, delta) {
-    const absDelta = Math.abs(delta);
-    const directionDown = delta <= 0;
-    const arrow = directionDown ? '↓' : '↑';
-    const className = directionDown ? 'positive' : 'negative';
-    if (absDelta < 0.05) {
-        return `<span class="weight-delta-chip"><span class="chip-label">${label}</span> flat</span>`;
-    }
-    return `
-        <span class="weight-delta-chip ${className}">
-            <span class="chip-label">${label}</span>
-            ${arrow} ${absDelta.toFixed(1)} kg
-        </span>
-    `;
 }
 
 // Progress chart rendering (COMMENTED OUT - may add later)

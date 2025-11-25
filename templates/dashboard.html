@@ -21,7 +21,7 @@
                     <h1 class="dashboard-title">Dominate the Day</h1>
                 </div>
                 <div class="grid-12 hero-grid">
-                    <div class="card-surface hero-card hero-streak col-span-12 col-lg-4">
+                    <div class="card-surface hero-card hero-streak col-span-12">
                         <div class="hero-card-label">Current streak</div>
                         <div class="streak-container">
                             <div class="streak-number" id="streakCount">0</div>
@@ -29,31 +29,27 @@
                         </div>
                         <div class="hero-card-meta" id="streakMeta">Logs arrive nightly</div>
                     </div>
-                    <div class="card-surface weight-card col-span-12 col-lg-8">
-                        <div class="weight-card-label">Fasted weight today</div>
-                        <div class="weight-card-value" id="weightValue">--</div>
-                        <div class="weight-card-meta" id="weightMeta">Awaiting latest log</div>
-                        <div class="weight-card-delta" id="weightDelta">Upload today's file to see changes</div>
-                    </div>
-                    <div class="card-surface hero-card fish-card col-span-12 col-lg-6">
-                        <div class="hero-card-label">Total fish demolished</div>
-                        <div class="fish-card-body">
-                            <div class="fish-ring">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="fish-ring-track" cx="60" cy="60" r="52"></circle>
-                                    <circle class="fish-ring-progress" id="fishRingProgress" cx="60" cy="60" r="52"></circle>
-                                </svg>
-                                <div class="fish-ring-center">
-                                    <div class="fish-ring-value" id="fishRingValue">0%</div>
-                                    <div class="fish-ring-caption">weekly</div>
-                                </div>
-                            </div>
-                            <div class="fish-card-stats">
-                                <div class="fish-card-value" id="fishTotal">0.00 kg 🐟</div>
-                                <div class="hero-card-meta" id="fishWeeklyMeta">0.0 / 7.0 kg this week</div>
-                                <div class="hero-card-meta subtle">Lifetime edible weight</div>
-                            </div>
+                    <div class="card-surface weight-highlight-card col-span-12">
+                        <div class="weight-headline">
+                            <span class="weight-headline-label">Fasted Weight Today:</span>
+                            <span class="weight-highlight-value" id="weightValue">-- kg</span>
                         </div>
+                        <div class="weight-highlight-delta" id="weightDelta">
+                            <span class="delta-arrow" id="weightDeltaArrow">—</span>
+                            <span class="delta-text" id="weightDeltaText">Need Day 1 + latest weight to compare</span>
+                        </div>
+                        <p class="weight-highlight-meta" id="weightMeta">Upload today's file to see changes</p>
+                    </div>
+                    <div class="card-surface fish-total-card col-span-12">
+                        <div class="fish-total-header">
+                            <span class="fish-total-label">Total fish demolished</span>
+                            <span class="fish-total-emoji">🐟</span>
+                        </div>
+                        <div class="fish-total-value-row">
+                            <span class="fish-total-value" id="fishTotal">0.00 kg</span>
+                        </div>
+                        <p class="fish-total-meta" id="fishLifetimeMeta">Lifetime edible weight</p>
+                        <p class="fish-total-weekly" id="fishWeeklyMeta">0.0 / 7.0 kg this week</p>
                     </div>
                     <div class="card-surface hero-card today-score-card col-span-12 col-lg-6" id="todayScoreCard">
                         <div class="hero-card-label">Today score</div>

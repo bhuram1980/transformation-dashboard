@@ -27,21 +27,21 @@ body {
 
 .page-surface {
     min-height: 100vh;
-    padding: 24px;
+    padding: 18px;
 }
 
 .dashboard-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 10px;
 }
 
 .layout-section {
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 .section-heading {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .section-eyebrow {
@@ -71,7 +71,7 @@ body {
 .grid-12 {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 16px;
+    gap: 10px;
 }
 
 .col-span-12 {
@@ -100,7 +100,7 @@ body {
 .card-surface {
     background: #fff;
     border-radius: 14px;
-    padding: 24px;
+    padding: 16px;
     border: 1px solid #ececec;
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
@@ -114,15 +114,15 @@ body {
 
 @media (max-width: 640px) {
     .page-surface {
-        padding: 16px 12px;
+        padding: 12px 10px;
     }
     
     .card-surface {
-        padding: 20px;
+        padding: 14px;
     }
     
     .grid-12 {
-        gap: 12px;
+        gap: 8px;
     }
 }
 
@@ -164,7 +164,7 @@ body {
 }
 
 .hero-badges {
-    margin-top: 24px;
+    margin-top: 14px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -192,6 +192,108 @@ body {
 .hero-badge.warning {
     background: #fff6e6;
     color: #b25a00;
+}
+
+.weight-highlight-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.weight-headline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.weight-headline-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
+    letter-spacing: -0.2px;
+}
+
+.weight-highlight-value {
+    font-size: 56px;
+    font-weight: 800;
+    color: #000;
+    letter-spacing: -1px;
+}
+
+.weight-highlight-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #666;
+}
+
+.weight-highlight-delta .delta-arrow {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.weight-highlight-delta .delta-text {
+    font-size: 17px;
+}
+
+.weight-highlight-delta.delta-positive {
+    color: #0a8a3c;
+}
+
+.weight-highlight-delta.delta-negative {
+    color: #c62828;
+}
+
+.weight-highlight-meta {
+    font-size: 14px;
+    color: #6d7383;
+}
+
+.fish-total-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fish-total-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+}
+
+.fish-total-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.fish-total-value {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.fish-total-emoji {
+    font-size: 24px;
+}
+
+.fish-total-meta {
+    font-size: 14px;
+    color: #7a808f;
+}
+
+.fish-total-weekly {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4f5ac4;
 }
 
 .weight-card {
@@ -249,155 +351,6 @@ body {
 }
 
 /* Weight & Fish Highlights */
-.weight-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.weight-card,
-.fish-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid #e5e5e5;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-
-.weight-card-label {
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.weight-card-value {
-    font-size: 64px;
-    font-weight: 800;
-    color: #000;
-    letter-spacing: -1px;
-    line-height: 1;
-}
-
-.weight-card-meta {
-    margin-top: 8px;
-    font-size: 15px;
-    color: #666;
-}
-
-.weight-card-delta {
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    font-size: 15px;
-    color: #555;
-}
-
-.weight-delta-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 14px;
-    background: #f0f0f0;
-    color: #555;
-}
-
-.weight-delta-chip .chip-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-    opacity: 0.8;
-    display: inline-block;
-}
-
-.weight-delta-chip.positive {
-    background: rgba(0, 200, 83, 0.12);
-    color: #0a8a3c;
-}
-
-.weight-delta-chip.negative {
-    background: rgba(255, 100, 100, 0.15);
-    color: #b30021;
-}
-
-.weight-delta-ref {
-    font-size: 14px;
-    color: #777;
-}
-
-.fish-card-label {
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: #666;
-    margin-bottom: 6px;
-}
-
-.fish-card-body {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.fish-card-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.fish-ring {
-    width: 120px;
-    height: 120px;
-    position: relative;
-    flex-shrink: 0;
-}
-
-.fish-ring svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-}
-
-.fish-ring-track {
-    fill: none;
-    stroke: #f0f0f0;
-    stroke-width: 8;
-}
-
-.fish-ring-progress {
-    fill: none;
-    stroke: #00a3ff;
-    stroke-width: 8;
-    stroke-linecap: round;
-    stroke-dasharray: 327;
-    stroke-dashoffset: 327;
-    transition: stroke-dashoffset 0.6s ease;
-}
-
-.fish-ring-center {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-}
-
 .fish-ring-value {
     font-size: 24px;
     font-weight: 700;
