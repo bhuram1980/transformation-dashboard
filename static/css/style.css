@@ -252,6 +252,102 @@ body {
     color: #6d7383;
 }
 
+.weight-graph-toggle-btn {
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 1px solid #e2e6f0;
+    border-radius: 10px;
+    background: #fff;
+    color: #0066ff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.weight-graph-toggle-btn:hover {
+    border-color: #0066ff;
+    background: #f0f7ff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
+}
+
+.toggle-btn-icon {
+    font-size: 16px;
+}
+
+.toggle-btn-text {
+    letter-spacing: -0.2px;
+}
+
+.weight-graph-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.weight-graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.weight-graph-close-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e6f0;
+    border-radius: 8px;
+    background: #fff;
+    color: #666;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: inherit;
+    padding: 0;
+}
+
+.weight-graph-close-btn:hover {
+    border-color: #c62828;
+    background: #fff5f5;
+    color: #c62828;
+    transform: translateY(-1px);
+}
+
+.weight-graph-subtitle {
+    font-size: 13px;
+    color: #777;
+    font-weight: 400;
+}
+
+.weight-graph-container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    margin-top: 8px;
+}
+
 .fish-total-card {
     display: flex;
     flex-direction: column;
@@ -1029,6 +1125,13 @@ body {
     color: #0066ff;
 }
 
+.macro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
 .macro-card {
     border: 1px solid #e7eaf2;
     border-radius: 14px;
@@ -1143,10 +1246,30 @@ body {
 }
 
 .meals-stack {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 14px;
     margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+    .meals-stack {
+        grid-template-columns: 1fr;
+    }
+    
+    .macro-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 960px) {
+    .meals-stack {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .macro-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 .meal-card {

@@ -6,7 +6,8 @@
     <title>Transformation Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/static/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -38,6 +39,24 @@
                             <span class="delta-text" id="weightDeltaText">Need Day 1 + latest weight to compare</span>
                         </div>
                         <p class="weight-highlight-meta" id="weightMeta">Upload today's file to see changes</p>
+                        <button class="weight-graph-toggle-btn" id="weightGraphToggle" onclick="toggleWeightGraph()">
+                            <span class="toggle-btn-icon">📊</span>
+                            <span class="toggle-btn-text">View Weight Trend Graph</span>
+                        </button>
+                    </div>
+                    <div class="card-surface weight-graph-card col-span-12" id="weightGraphCard" style="display: none;">
+                        <div class="weight-graph-header">
+                            <div>
+                                <p class="hero-card-label">Weight Trend</p>
+                                <p class="weight-graph-subtitle">Daily fasted weight over time</p>
+                            </div>
+                            <button class="weight-graph-close-btn" onclick="toggleWeightGraph()" aria-label="Close graph">
+                                ✕
+                            </button>
+                        </div>
+                        <div class="weight-graph-container">
+                            <canvas id="weightChart"></canvas>
+                        </div>
                     </div>
                     <div class="card-surface fish-total-card col-span-12">
                         <div class="fish-total-header">
