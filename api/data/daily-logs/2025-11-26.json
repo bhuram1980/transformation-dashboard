@@ -1,0 +1,63 @@
+{
+  "date": "2025-11-26",
+  "fastedWeight": 86.9,
+  "waist": null,
+  "total": {
+    "protein": 513,
+    "carbs": 41,
+    "fat": 187,
+    "kcal": 3845,
+    "seafoodKg": 1.20
+  },
+  "meals": {
+    "breakfast": {
+      "description": "6 whole eggs + 150 g shrimp omelette + steamed veggies",
+      "protein": 78,
+      "carbs": 6,
+      "fat": 38,
+      "kcal": 680
+    },
+    "postSurfShake1": {
+      "description": "1 scoop Critical Whey + 5 g creatine",
+      "protein": 27,
+      "carbs": 3,
+      "fat": 2,
+      "kcal": 130
+    },
+    "postGymShake2": {
+      "description": "1 scoop Critical Whey + 5 g creatine",
+      "protein": 27,
+      "carbs": 3,
+      "fat": 2,
+      "kcal": 130
+    },
+    "lunch": {
+      "description": "450 g salmon steak (skin on) + grilled veggies + sauerkraut",
+      "protein": 110,
+      "carbs": 15,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    },
+    "dinner": {
+      "description": "1 whole Rock Lobster + 1 whole Sea Crab (both plain grilled, shell on) + grilled veggies",
+      "protein": 271,
+      "carbs": 14,
+      "fat": 64,
+      "kcal": 1690,
+      "seafoodKg": 0.75
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps with lunch salmon – locked" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
+    "whey":     { "taken": true,  "scoops": 2 },
+    "creatine": { "taken": true,  "dose": "10 g total (2×5 g)" }
+  },
+  "training": "1.5 hr surfing",
+  "feeling": 10,
+  "notes": "DAY 6 LEGENDARY – Fasted 86.9 kg (-3.1 kg from Day 1). 513 g protein, 1.20 kg edible seafood demolished (salmon + lobster + crab). Streak = 6."
+}
+
