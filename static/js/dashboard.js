@@ -361,8 +361,8 @@ function renderWeightChart(dailyLogs = [], baseline = {}) {
         window.weightChartInstance.destroy();
     }
     
-    // Use the last 7 days (or fewer if less data) for readability on mobile
-    const logsForChart = dailyLogs.length > 7 ? dailyLogs.slice(-7) : dailyLogs;
+    // Show every day if there are 7 or fewer entries, otherwise keep the latest 7
+    const logsForChart = dailyLogs.length <= 7 ? dailyLogs : dailyLogs.slice(-7);
     
     // Extract weight data
     const weightData = logsForChart.map(log => {
