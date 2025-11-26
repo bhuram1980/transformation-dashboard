@@ -361,14 +361,17 @@ function renderWeightChart(dailyLogs = [], baseline = {}) {
         window.weightChartInstance.destroy();
     }
     
+    // Use the last 7 days (or fewer if less data) for readability on mobile
+    const logsForChart = dailyLogs.length > 7 ? dailyLogs.slice(-7) : dailyLogs;
+    
     // Extract weight data
-    const weightData = dailyLogs.map(log => {
+    const weightData = logsForChart.map(log => {
         const weight = parseWeight(log?.fastedWeight ?? log?.fasted_weight);
         return weight;
     });
     
     // Create labels (Day X or date)
-    const labels = dailyLogs.map(log => {
+    const labels = logsForChart.map(log => {
         if (log.day) return `Day ${log.day}`;
         if (log.date_display) return log.date_display;
         if (log.date) {
@@ -1365,8 +1368,8 @@ function toggleWeightGraph() {
         toggleBtn.querySelector('.toggle-btn-text').textContent = 'Hide Weight Trend Graph';
         toggleBtn.querySelector('.toggle-btn-icon').textContent = '📉';
         
-        // Render chart if not already rendered
-        if (!window.weightChartInstance && dashboardData && dashboardData.daily_logs && dashboardData.daily_logs.length > 0) {
+        // Always render to ensure latest data is shown
+        if (dashboardData && dashboardData.daily_logs && dashboardData.daily_logs.length > 0) {
             renderWeightChart(dashboardData.daily_logs, dashboardData.baseline || {});
         }
     }
