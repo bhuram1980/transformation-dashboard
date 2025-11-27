@@ -1295,12 +1295,216 @@ function renderDayDetailView(dayData, totals) {
         </div>
     `;
     
+    const activityHtml = renderActivityCard(dayData);
     const macroHtml = renderMacroGrid(totals);
     const mealsHtml = renderMealCards(dayData.meals || {});
     const supplementsHtml = renderSupplementsSection(dayData.supplements || {});
     const infoHtml = renderDayInfoCards(dayData);
     
-    return `${headerHtml}${macroHtml}${mealsHtml}${supplementsHtml}${infoHtml}`;
+    return `${headerHtml}${activityHtml}${macroHtml}${mealsHtml}${supplementsHtml}${infoHtml}`;
+}
+
+function renderActivityCard(dayData = {}) {
+    const training = (dayData.training || '').trim();
+    const surfingNotes = (dayData.notes || '').toLowerCase().includes('surf') ? dayData.notes : '';
+    if (!training && !surfingNotes) {
+        return '';
+    }
+    
+    const analysis = analyzeTraining(training || surfingNotes || '');
+    if (!analysis.surfing && analysis.workouts.length === 0) {
+        return '';
+    }
+    
+    let surfingHtml = '';
+    if (analysis.surfing) {
+        surfingHtml = `
+            <div class="activity-surfing">
+                <div class="surfing-logo" aria-hidden="true">${generateSurfingLogo()}</div>
+                <div>
+                    <p class="activity-label">Surf session</p>
+                    <h4 class="activity-title">${analysis.surfing.durationText || 'Session logged'}</h4>
+                    ${analysis.surfing.description ? `<p class="activity-caption">${analysis.surfing.description}</p>` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    let workoutsHtml = '';
+    if (analysis.workouts.length) {
+        const rows = analysis.workouts.map(workout => {
+            const chips = workout.bodyParts.length
+                ? `<div class="workout-bodyparts">${workout.bodyParts.map(part => `<span class="bodypart-chip">${part}</span>`).join('')}</div>`
+                : '';
+            return `
+                <div class="workout-row">
+                    <div class="workout-heading">
+                        <span class="workout-name">${workout.name}</span>
+                        ${workout.weight ? `<span class="workout-weight">${workout.weight}</span>` : ''}
+                    </div>
+                    ${workout.setsReps ? `<div class="workout-meta">${workout.setsReps}</div>` : ''}
+                    ${chips}
+                    ${workout.notes ? `<p class="workout-notes">${workout.notes}</p>` : ''}
+                </div>
+            `;
+        }).join('');
+        
+        workoutsHtml = `
+            <div class="workout-stack">
+                <p class="activity-label">Gym intel</p>
+                ${rows}
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="activity-card">
+            <div class="activity-card-header">
+                <p class="section-eyebrow">Daily activity intel</p>
+                <h3>COMPOUND MACHINE</h3>
+            </div>
+            ${surfingHtml}
+            ${workoutsHtml}
+        </div>
+    `;
+}
+
+function analyzeTraining(trainingStr = '') {
+    const result = {
+        surfing: null,
+        workouts: []
+    };
+    
+    if (!trainingStr) return result;
+    
+    const segments = trainingStr
+        .split(/[\+\|\/]/)
+        .map(seg => seg.trim())
+        .filter(Boolean);
+    
+    segments.forEach(segment => {
+        const lower = segment.toLowerCase();
+        if (lower.includes('surf')) {
+            result.surfing = parseSurfSession(segment);
+            return;
+        }
+        
+        const workout = parseWorkoutSegment(segment);
+        if (workout) {
+            result.workouts.push(workout);
+        }
+    });
+    
+    if (!result.surfing && trainingStr.toLowerCase().includes('surf')) {
+        result.surfing = parseSurfSession(trainingStr);
+    }
+    
+    return result;
+}
+
+function parseSurfSession(segment) {
+    const duration = extractDuration(segment);
+    return {
+        durationText: duration.text || 'Surf logged',
+        hours: duration.hours,
+        description: segment
+    };
+}
+
+function parseWorkoutSegment(segment) {
+    if (!segment) return null;
+    const lower = segment.toLowerCase();
+    if (!/[a-z]/i.test(lower)) return null;
+    
+    const weightMatch = segment.match(/(\d+(?:\.\d+)?)\s*(kg|kgs|kilograms|lb|lbs|pounds)/i);
+    const setRepMatch = segment.match(/(\d+)\s*[x×]\s*(\d+)/i);
+    
+    // Name heuristics: text before weight or set notation
+    let name = segment;
+    if (weightMatch) {
+        name = segment.slice(0, weightMatch.index).trim();
+    } else if (setRepMatch) {
+        name = segment.slice(0, setRepMatch.index).trim();
+    }
+    name = name.replace(/@.*$/, '').trim();
+    if (!name) {
+        name = segment.trim();
+    }
+    name = name.replace(/^\d+\s*/, '');
+    
+    const bodyParts = getBodyPartsForExercise(lower);
+    const notes = [];
+    if (weightMatch) {
+        notes.push(segment.slice(weightMatch.index).trim());
+    }
+    
+    return {
+        name: titleCase(name),
+        weight: weightMatch ? `${weightMatch[1]} ${weightMatch[2].toUpperCase()}` : '',
+        setsReps: setRepMatch ? `${setRepMatch[1]} × ${setRepMatch[2]}` : '',
+        bodyParts,
+        notes: notes.length ? notes.join(' • ') : ''
+    };
+}
+
+function extractDuration(text = '') {
+    const match = text.match(/(\d+(?:\.\d+)?)\s*(hr|hrs|hour|hours|h|min|mins|minutes)/i);
+    if (!match) {
+        return { hours: null, text: '' };
+    }
+    const value = parseFloat(match[1]);
+    const unit = match[2].toLowerCase();
+    if (unit.startsWith('h')) {
+        const minutes = value * 60;
+        const formatted = value % 1 === 0 ? `${value.toFixed(0)} hr` : `${value.toFixed(1)} hr`;
+        return { hours: value, text: `${formatted} surf` };
+    }
+    const hours = value / 60;
+    return { hours, text: `${value.toFixed(0)} min surf` };
+}
+
+function getBodyPartsForExercise(lowerName = '') {
+    const mapping = [
+        { keywords: ['chest press', 'bench'], parts: ['Chest', 'Triceps'] },
+        { keywords: ['leg press', 'smith squat', 'squat', 'deadlift', 'lunges'], parts: ['Quads', 'Glutes'] },
+        { keywords: ['shoulder', 'overhead', 'military'], parts: ['Shoulders', 'Traps'] },
+        { keywords: ['row', 'pull', 'lat'], parts: ['Back', 'Biceps'] },
+        { keywords: ['curl'], parts: ['Biceps'] },
+        { keywords: ['tricep', 'dip'], parts: ['Triceps'] },
+        { keywords: ['core', 'abs', 'plank'], parts: ['Core'] },
+        { keywords: ['cardio', 'treadmill'], parts: ['Cardio Engine'] }
+    ];
+    const parts = new Set();
+    mapping.forEach(map => {
+        if (map.keywords.some(keyword => lowerName.includes(keyword))) {
+            map.parts.forEach(part => parts.add(part));
+        }
+    });
+    if (parts.size === 0) {
+        parts.add('Full body');
+    }
+    return Array.from(parts);
+}
+
+function generateSurfingLogo() {
+    return `
+        <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="surfGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#4ac5ff"/>
+                    <stop offset="100%" stop-color="#0066ff"/>
+                </linearGradient>
+            </defs>
+            <circle cx="48" cy="48" r="45" stroke="url(#surfGrad)" stroke-width="4" fill="rgba(74,197,255,0.12)"/>
+            <path d="M20 60 C32 72, 52 72, 66 60 C72 54, 78 52, 85 58" stroke="url(#surfGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M30 42 C34 34, 44 28, 55 32 C64 36, 70 44, 70 54" stroke="#1d4ed8" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M40 56 L52 28 L60 38 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="2" opacity="0.9"/>
+        </svg>
+    `;
+}
+
+function titleCase(str = '') {
+    return str.replace(/\w\S*/g, word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
 }
 
 function renderMacroGrid(totals = {}) {

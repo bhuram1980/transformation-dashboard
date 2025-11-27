@@ -1213,6 +1213,138 @@ body {
     margin: 0;
 }
 
+.activity-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    box-shadow: 0 18px 60px rgba(13, 27, 62, 0.08);
+    margin-bottom: 24px;
+    animation: fadeInUp 0.4s ease;
+}
+
+.activity-card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.activity-card-header h3 {
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: #1d3557;
+}
+
+.activity-surfing {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(74, 197, 255, 0.15), rgba(0, 102, 255, 0.08));
+    margin-bottom: 24px;
+}
+
+.surfing-logo {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.activity-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0f4c81;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.activity-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: #0f172a;
+}
+
+.activity-caption {
+    margin: 0;
+    font-size: 14px;
+    color: #4c5a73;
+}
+
+.workout-stack {
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    padding-top: 18px;
+}
+
+.workout-row {
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.workout-row:last-child {
+    border-bottom: none;
+}
+
+.workout-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.workout-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.workout-weight {
+    font-size: 14px;
+    font-weight: 800;
+    color: #D4AF37;
+}
+
+.workout-meta {
+    font-size: 13px;
+    color: #4c5a73;
+    margin-top: 4px;
+}
+
+.workout-bodyparts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.bodypart-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(23, 37, 84, 0.08);
+    font-size: 12px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.workout-notes {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .meals-macros {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
