@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transformation Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="/static/css/style.css?v=20251126a">
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css?v=20251127a">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="alternate icon" type="image/png" href="/static/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,15 +48,43 @@
                     <div class="card-surface weight-graph-card col-span-12" id="weightGraphCard" style="display: none;">
                         <div class="weight-graph-header">
                             <div>
-                                <p class="hero-card-label">Weight Trend</p>
-                                <p class="weight-graph-subtitle">Daily fasted weight over time</p>
+                                <p class="hero-card-label">Progress Analytics</p>
+                                <p class="weight-graph-subtitle">Interactive chart with drag & zoom</p>
                             </div>
                             <button class="weight-graph-close-btn" onclick="toggleWeightGraph()" aria-label="Close graph">
                                 ✕
                             </button>
                         </div>
+                        <div class="weight-graph-controls">
+                            <div class="graph-timeframe-buttons">
+                                <button class="timeframe-btn active" data-timeframe="7" onclick="setTimeframe(7)">7d</button>
+                                <button class="timeframe-btn" data-timeframe="30" onclick="setTimeframe(30)">30d</button>
+                                <button class="timeframe-btn" data-timeframe="90" onclick="setTimeframe(90)">90d</button>
+                                <button class="timeframe-btn" data-timeframe="all" onclick="setTimeframe('all')">All</button>
+                            </div>
+                            <div class="graph-metric-toggles">
+                                <label class="metric-toggle">
+                                    <input type="checkbox" checked data-metric="weight" onchange="toggleMetric('weight', this.checked)">
+                                    <span>Weight</span>
+                                </label>
+                                <label class="metric-toggle">
+                                    <input type="checkbox" data-metric="waist" onchange="toggleMetric('waist', this.checked)">
+                                    <span>Waist</span>
+                                </label>
+                                <label class="metric-toggle">
+                                    <input type="checkbox" data-metric="protein" onchange="toggleMetric('protein', this.checked)">
+                                    <span>Protein</span>
+                                </label>
+                            </div>
+                            <button class="graph-reset-btn" onclick="resetChartZoom()" title="Reset zoom">
+                                🔍 Reset
+                            </button>
+                        </div>
                         <div class="weight-graph-container">
                             <canvas id="weightChart"></canvas>
+                        </div>
+                        <div class="graph-legend">
+                            <p class="graph-hint">💡 Drag to pan • Scroll to zoom • Click points for details</p>
                         </div>
                     </div>
                     <div class="card-surface fish-total-card col-span-12">

@@ -312,25 +312,46 @@ function updateWeightHighlights(dailyLogs = [], baseline = {}) {
     fishTotalEl.textContent = `${fishTotal.toFixed(2)} kg`;
 }
 
+// Chart state management
+window.chartState = {
+    timeframe: 7,
+    enabledMetrics: { weight: true, waist: false, protein: false },
+    allLogs: [],
+    baseline: {}
+};
+
+function filterLogsByTimeframe(logs, timeframe) {
+    if (!logs || logs.length === 0) return [];
+    if (timeframe === 'all') return logs;
+    
+    const numDays = parseInt(timeframe);
+    if (isNaN(numDays) || numDays <= 0) return logs.slice(-7);
+    
+    return logs.slice(-numDays);
+}
+
 function renderWeightChart(dailyLogs = [], baseline = {}) {
     const canvas = document.getElementById('weightChart');
     if (!canvas) return;
+    
+    // Store data globally for filtering
+    window.chartState.allLogs = dailyLogs;
+    window.chartState.baseline = baseline;
     
     // Destroy existing chart if it exists
     if (window.weightChartInstance) {
         window.weightChartInstance.destroy();
     }
     
-    // Show every day if there are 7 or fewer entries, otherwise keep the latest 7
-    const logsForChart = dailyLogs.length <= 7 ? dailyLogs : dailyLogs.slice(-7);
+    // Filter logs based on timeframe
+    const logsForChart = filterLogsByTimeframe(dailyLogs, window.chartState.timeframe);
     
-    // Extract weight data
-    const weightData = logsForChart.map(log => {
-        const weight = parseWeight(log?.fastedWeight ?? log?.fasted_weight);
-        return weight;
-    });
+    if (logsForChart.length === 0) {
+        canvas.parentElement.innerHTML = '<p style="text-align: center; color: #999; padding: 40px; font-size: 14px;">Add data to see trend</p>';
+        return;
+    }
     
-    // Create labels (Day X or date)
+    // Create labels with full date info
     const labels = logsForChart.map(log => {
         if (log.day) return `Day ${log.day}`;
         if (log.date_display) return log.date_display;
@@ -345,103 +366,216 @@ function renderWeightChart(dailyLogs = [], baseline = {}) {
         return '';
     });
     
-    // Filter out null weights
-    const validIndices = [];
-    const validWeights = [];
-    const validLabels = [];
+    // Build datasets based on enabled metrics
+    const datasets = [];
     
-    weightData.forEach((weight, index) => {
-        if (weight !== null && !isNaN(weight)) {
-            validIndices.push(index);
-            validWeights.push(weight);
-            validLabels.push(labels[index]);
-        }
-    });
-    
-    if (validWeights.length === 0) {
-        canvas.parentElement.innerHTML = '<p style="text-align: center; color: #999; padding: 40px; font-size: 14px;">Add weight data to see trend</p>';
-        return;
-    }
-    
-    // Get baseline weight for reference line
-    const baselineWeight = parseWeight(
-        baseline?.weight ??
-        baseline?.weightKg ??
-        (dailyLogs[0] ? (dailyLogs[0]?.fastedWeight ?? dailyLogs[0]?.fasted_weight) : null)
-    );
-    
-    const datasets = [
-        {
-            label: 'Fasted Weight (kg)',
-            data: validWeights,
+    if (window.chartState.enabledMetrics.weight) {
+        const weightData = logsForChart.map(log => parseWeight(log?.fastedWeight ?? log?.fasted_weight));
+        datasets.push({
+            label: 'Weight (kg)',
+            data: weightData,
             borderColor: '#0066ff',
-            backgroundColor: 'rgba(0, 102, 255, 0.1)',
+            backgroundColor: 'rgba(0, 102, 255, 0.15)',
             borderWidth: 3,
             tension: 0.4,
             fill: true,
-            pointRadius: 5,
-            pointHoverRadius: 7,
+            pointRadius: 4,
+            pointHoverRadius: 8,
             pointBackgroundColor: '#0066ff',
             pointBorderColor: '#fff',
             pointBorderWidth: 2,
-        }
-    ];
-    
-    // Add baseline reference line if available
-    if (baselineWeight !== null && !isNaN(baselineWeight)) {
-        datasets.push({
-            label: 'Baseline',
-            data: new Array(validWeights.length).fill(baselineWeight),
-            borderColor: '#999',
-            borderWidth: 1.5,
-            borderDash: [5, 5],
-            fill: false,
-            pointRadius: 0,
-            tension: 0,
+            yAxisID: 'y',
+            order: 1
         });
+    }
+    
+    if (window.chartState.enabledMetrics.waist) {
+        const waistData = logsForChart.map(log => {
+            const waist = parseNumber(log?.waist);
+            return waist > 0 ? waist : null;
+        });
+        datasets.push({
+            label: 'Waist (cm)',
+            data: waistData,
+            borderColor: '#00a3ff',
+            backgroundColor: 'rgba(0, 163, 255, 0.15)',
+            borderWidth: 2.5,
+            tension: 0.4,
+            fill: true,
+            pointRadius: 4,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#00a3ff',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            yAxisID: 'y',
+            order: 2
+        });
+    }
+    
+    if (window.chartState.enabledMetrics.protein) {
+        const proteinData = logsForChart.map(log => {
+            const totals = getDailyTotals(log);
+            return totals.protein > 0 ? totals.protein : null;
+        });
+        datasets.push({
+            label: 'Protein (g)',
+            data: proteinData,
+            borderColor: '#ff6b00',
+            backgroundColor: 'rgba(255, 107, 0, 0.15)',
+            borderWidth: 2.5,
+            tension: 0.4,
+            fill: false,
+            pointRadius: 4,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#ff6b00',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            yAxisID: 'y1',
+            order: 3
+        });
+    }
+    
+    // Add baseline reference line for weight if enabled
+    if (window.chartState.enabledMetrics.weight) {
+        const baselineWeight = parseWeight(
+            baseline?.weight ?? baseline?.weightKg ??
+            (dailyLogs[0] ? (dailyLogs[0]?.fastedWeight ?? dailyLogs[0]?.fasted_weight) : null)
+        );
+        if (baselineWeight !== null && !isNaN(baselineWeight)) {
+            datasets.push({
+                label: 'Baseline Weight',
+                data: new Array(logsForChart.length).fill(baselineWeight),
+                borderColor: 'rgba(150, 150, 150, 0.6)',
+                borderWidth: 1.5,
+                borderDash: [8, 4],
+                fill: false,
+                pointRadius: 0,
+                tension: 0,
+                yAxisID: 'y',
+                order: 0
+            });
+        }
+    }
+    
+    if (datasets.length === 0) {
+        canvas.parentElement.innerHTML = '<p style="text-align: center; color: #999; padding: 40px; font-size: 14px;">Enable at least one metric to view</p>';
+        return;
     }
     
     window.weightChartInstance = new Chart(canvas, {
         type: 'line',
         data: {
-            labels: validLabels,
+            labels: labels,
             datasets: datasets
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
             plugins: {
                 legend: {
                     display: true,
                     position: 'top',
                     labels: {
                         usePointStyle: true,
-                        padding: 15,
+                        padding: 12,
                         font: {
                             size: 12,
                             weight: 600,
                             family: "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
                         },
-                        color: '#666'
+                        color: '#333'
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12,
+                    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                    padding: 14,
                     titleFont: {
                         size: 13,
                         weight: 600,
                         family: "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
                     },
                     bodyFont: {
-                        size: 13,
+                        size: 12,
                         family: "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
                     },
                     displayColors: true,
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1,
                     callbacks: {
+                        title: function(context) {
+                            const idx = context[0].dataIndex;
+                            const log = logsForChart[idx];
+                            if (log?.date) {
+                                try {
+                                    const date = new Date(log.date);
+                                    return date.toLocaleDateString('en-US', { 
+                                        weekday: 'short', 
+                                        month: 'short', 
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                    });
+                                } catch (e) {
+                                    return log.date;
+                                }
+                            }
+                            return labels[idx] || `Day ${idx + 1}`;
+                        },
                         label: function(context) {
-                            return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} kg`;
+                            const value = context.parsed.y;
+                            if (value === null || isNaN(value)) return '';
+                            const label = context.dataset.label || '';
+                            if (label.includes('Protein')) {
+                                return `${label}: ${value.toFixed(0)} g`;
+                            } else if (label.includes('Waist')) {
+                                return `${label}: ${value.toFixed(1)} cm`;
+                            } else {
+                                return `${label}: ${value.toFixed(2)} kg`;
+                            }
+                        },
+                        afterBody: function(context) {
+                            const idx = context[0].dataIndex;
+                            const log = logsForChart[idx];
+                            if (!log) return [];
+                            
+                            const extras = [];
+                            const totals = getDailyTotals(log);
+                            
+                            if (totals.seafoodKg > 0) {
+                                extras.push(`🐟 Seafood: ${totals.seafoodKg.toFixed(2)} kg`);
+                            }
+                            if (log.training) {
+                                extras.push(`💪 ${log.training}`);
+                            }
+                            if (log.feeling) {
+                                extras.push(`😊 Feeling: ${log.feeling}/10`);
+                            }
+                            
+                            return extras;
                         }
+                    }
+                },
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                            speed: 0.1
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x'
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                        modifierKey: null
+                    },
+                    limits: {
+                        x: { min: 0, max: labels.length - 1 }
                     }
                 }
             },
@@ -456,17 +590,21 @@ function renderWeightChart(dailyLogs = [], baseline = {}) {
                             family: "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
                         },
                         color: '#666',
-                        maxRotation: 0,
-                        autoSkip: true
+                        maxRotation: 45,
+                        minRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: window.chartState.timeframe === 'all' ? 20 : 15
                     },
                     border: {
                         display: false
                     }
                 },
                 y: {
+                    type: 'linear',
+                    position: 'left',
                     beginAtZero: false,
                     grid: {
-                        color: '#f0f0f0',
+                        color: 'rgba(0, 0, 0, 0.05)',
                         drawBorder: false
                     },
                     ticks: {
@@ -476,7 +614,31 @@ function renderWeightChart(dailyLogs = [], baseline = {}) {
                         },
                         color: '#666',
                         callback: function(value) {
-                            return value.toFixed(1) + ' kg';
+                            if (window.chartState.enabledMetrics.weight || window.chartState.enabledMetrics.waist) {
+                                return value.toFixed(1) + (window.chartState.enabledMetrics.weight ? ' kg' : ' cm');
+                            }
+                            return value.toFixed(1);
+                        }
+                    },
+                    border: {
+                        display: false
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    position: 'right',
+                    beginAtZero: true,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11,
+                            family: "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
+                        },
+                        color: '#666',
+                        callback: function(value) {
+                            return value.toFixed(0) + ' g';
                         }
                     },
                     border: {
@@ -486,6 +648,38 @@ function renderWeightChart(dailyLogs = [], baseline = {}) {
             }
         }
     });
+}
+
+function setTimeframe(days) {
+    window.chartState.timeframe = days;
+    
+    // Update button states
+    document.querySelectorAll('.timeframe-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.timeframe === String(days)) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Re-render chart
+    if (window.chartState.allLogs.length > 0) {
+        renderWeightChart(window.chartState.allLogs, window.chartState.baseline);
+    }
+}
+
+function toggleMetric(metric, enabled) {
+    window.chartState.enabledMetrics[metric] = enabled;
+    
+    // Re-render chart
+    if (window.chartState.allLogs.length > 0) {
+        renderWeightChart(window.chartState.allLogs, window.chartState.baseline);
+    }
+}
+
+function resetChartZoom() {
+    if (window.weightChartInstance && window.weightChartInstance.resetZoom) {
+        window.weightChartInstance.resetZoom();
+    }
 }
 
 function updateFishRing(dailyLogs = []) {
@@ -1297,7 +1491,7 @@ function toggleWeightGraph() {
     
     if (!graphCard || !toggleBtn) return;
     
-    const isVisible = graphCard.style.display !== 'none';
+    const isVisible = graphCard.style.display !== 'none' && graphCard.style.display !== '';
     
     if (isVisible) {
         // Hide graph
@@ -1306,7 +1500,7 @@ function toggleWeightGraph() {
         toggleBtn.querySelector('.toggle-btn-icon').textContent = '📊';
     } else {
         // Show graph
-        graphCard.style.display = 'block';
+        graphCard.style.display = 'flex';
         toggleBtn.querySelector('.toggle-btn-text').textContent = 'Hide Weight Trend Graph';
         toggleBtn.querySelector('.toggle-btn-icon').textContent = '📉';
         
