@@ -168,47 +168,7 @@ function updateGoalCards(baseline = {}, targets = {}, dailyLogs = []) {
         snap.targetValue = parseTargetValue(snap.targetRaw);
     });
     
-    updateBaselineCompareCards(snapshots);
     updateMetricCardsUI(snapshots);
-}
-
-function updateBaselineCompareCards(snapshots = {}) {
-    const compareConfig = [
-        { key: 'weight', unit: 'kg', decimals: 1, fallback: 'Log a new weigh-in' },
-        { key: 'android', unit: '%', decimals: 1, fallback: 'Need Android update' },
-        { key: 'bodyFat', unit: '%', decimals: 1, fallback: 'Need updated DEXA' },
-        { key: 'alt', unit: '', decimals: 0, fallback: 'Need new labs' },
-        { key: 'glucose', unit: 'mg/dL', decimals: 0, fallback: 'Need new labs' },
-    ];
-    
-    compareConfig.forEach(({ key, unit, decimals, fallback }) => {
-        const snap = snapshots[key];
-        if (!snap) return;
-        const baselineEl = document.getElementById(`${key}BaselineValue`);
-        const currentEl = document.getElementById(`${key}CurrentValue`);
-        const changeEl = document.getElementById(`${key}CompareDelta`);
-        
-        if (baselineEl) baselineEl.textContent = formatMetricValue(snap.baseline, unit, decimals);
-        if (currentEl) currentEl.textContent = formatMetricValue(snap.current, unit, decimals);
-        
-        if (!changeEl) return;
-        changeEl.classList.remove('positive', 'negative');
-        
-        if (snap.baseline === null || snap.current === null) {
-            changeEl.textContent = fallback;
-            return;
-        }
-        
-        if (!snap.hasCurrent || Math.abs(snap.current - snap.baseline) < 0.01) {
-            changeEl.textContent = snap.hasCurrent ? 'Holding baseline' : fallback;
-            return;
-        }
-        
-        const delta = snap.current - snap.baseline;
-        const goodDirection = snap.direction === 'down' ? delta <= 0 : delta >= 0;
-        changeEl.textContent = `${goodDirection ? '↓' : '↑'} ${Math.abs(delta).toFixed(decimals)}${unit ? ` ${unit}` : ''} since baseline`;
-        changeEl.classList.add(goodDirection ? 'positive' : 'negative');
-    });
 }
 
 function updateMetricCardsUI(snapshots = {}) {
@@ -245,7 +205,7 @@ function updateMetricCardsUI(snapshots = {}) {
                     changeEl.classList.add(good ? 'positive' : 'negative');
                 }
             } else {
-                changeEl.textContent = config.key === 'weight' ? 'Weigh-in to unlock change' : 'Need updated labs';
+                changeEl.textContent = '';
             }
         }
         
@@ -299,9 +259,9 @@ function updateWeightHighlights(dailyLogs = [], baseline = {}) {
     
     if (!dailyLogs.length) {
         weightValueEl.textContent = '-- kg';
-        weightMetaEl.textContent = 'Awaiting latest log';
+        weightMetaEl.textContent = '';
         weightDeltaArrow.textContent = '—';
-        weightDeltaText.textContent = 'Need Day 1 + latest weight to compare';
+        weightDeltaText.textContent = '';
         weightDeltaWrapper.classList.remove('delta-positive', 'delta-negative');
         fishTotalEl.textContent = '0.00 kg';
         return;
@@ -340,7 +300,7 @@ function updateWeightHighlights(dailyLogs = [], baseline = {}) {
         weightDeltaWrapper.classList.add(delta <= 0 ? 'delta-positive' : 'delta-negative');
     } else {
         weightDeltaArrow.textContent = '—';
-        weightDeltaText.textContent = 'Need Day 1 + latest weight to compare';
+        weightDeltaText.textContent = '';
         weightDeltaWrapper.classList.remove('delta-positive', 'delta-negative');
     }
     
@@ -560,15 +520,9 @@ function updateTodayScore(dailyLogs = []) {
         scoreValueEl.textContent = '-- / 5';
         scoreRingValue.textContent = '0';
         scoreRingProgress.style.strokeDashoffset = RING_CIRCUMFERENCE;
-        criteriaListEl.innerHTML = `
-            <li><span class="criteria-dot"></span><div class="criteria-text"><span class="criteria-title">Protein target</span><span class="criteria-detail">350 g goal</span></div></li>
-            <li><span class="criteria-dot"></span><div class="criteria-text"><span class="criteria-title">Seafood goal</span><span class="criteria-detail">1.0 kg</span></div></li>
-            <li><span class="criteria-dot"></span><div class="criteria-text"><span class="criteria-title">Supplements</span><span class="criteria-detail">Full stack</span></div></li>
-            <li><span class="criteria-dot"></span><div class="criteria-text"><span class="criteria-title">Training logged</span><span class="criteria-detail">Surf / gym</span></div></li>
-            <li><span class="criteria-dot"></span><div class="criteria-text"><span class="criteria-title">Feeling 8+</span><span class="criteria-detail">Energy check-in</span></div></li>
-        `;
+        criteriaListEl.innerHTML = '';
         if (scoreMetaEl) {
-            scoreMetaEl.textContent = 'Score updates with new log';
+            scoreMetaEl.textContent = '';
         }
         return;
     }
@@ -911,18 +865,6 @@ function updateGoalAndBaseline(goalInfo, baseline) {
     const goalDescEl = document.getElementById('goalDescription');
     if (goalDescEl && goalInfo && goalInfo.goal) {
         goalDescEl.textContent = goalInfo.goal;
-    }
-    
-    // Update baseline date
-    const baselineDateEl = document.getElementById('baselineDate');
-    if (baselineDateEl && goalInfo && goalInfo.started) {
-        // Extract date from "November 21, 2025 (Sri Lanka)" format
-        const dateMatch = goalInfo.started.match(/([A-Za-z]+ \d+, \d{4})/);
-        if (dateMatch) {
-            baselineDateEl.textContent = `(${dateMatch[1]})`;
-        } else {
-            baselineDateEl.textContent = `(${goalInfo.started})`;
-        }
     }
 }
 

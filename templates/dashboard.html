@@ -38,7 +38,7 @@
                             <span class="delta-arrow" id="weightDeltaArrow">—</span>
                             <span class="delta-text" id="weightDeltaText">Need Day 1 + latest weight to compare</span>
                         </div>
-                        <p class="weight-highlight-meta" id="weightMeta">Upload today's file to see changes</p>
+                        <p class="weight-highlight-meta" id="weightMeta"></p>
                         <button class="weight-graph-toggle-btn" id="weightGraphToggle" onclick="toggleWeightGraph()">
                             <span class="toggle-btn-icon">📊</span>
                             <span class="toggle-btn-text">View Weight Trend Graph</span>
@@ -85,11 +85,7 @@
                             </div>
                         </div>
                         <ul class="score-criteria" id="scoreCriteriaList">
-                            <li>Protein target</li>
-                            <li>Seafood goal</li>
-                            <li>Supplements</li>
-                            <li>Training logged</li>
-                            <li>Feeling 8+</li>
+                            <!-- Criteria will be populated dynamically -->
                         </ul>
                     </div>
                 </div>
@@ -103,91 +99,11 @@
                     <h2 class="section-title">Mission progress</h2>
                 </div>
                 <div class="grid-12 long-term-grid">
-                    <div class="goal-baseline-section card-surface col-span-12 col-lg-7">
+                    <div class="goal-baseline-section card-surface col-span-12">
                         <h3 class="section-subtitle">Main Goal</h3>
                         <div class="goal-description" id="goalDescription">Loading...</div>
-                        <div class="baseline-metrics">
-                            <h4 class="baseline-title">Baseline vs Current <span class="baseline-date" id="baselineDate">(Nov 21, 2025)</span></h4>
-                            <div class="baseline-compare-grid">
-                                <div class="baseline-compare-card">
-                                    <div class="compare-label">Weight</div>
-                                    <div class="compare-values">
-                                        <div>
-                                            <span class="compare-caption">Baseline</span>
-                                            <span class="compare-value" id="weightBaselineValue">-</span>
-                                        </div>
-                                        <span class="compare-arrow">→</span>
-                                        <div>
-                                            <span class="compare-caption">Current</span>
-                                            <span class="compare-value" id="weightCurrentValue">-</span>
-                                        </div>
-                                    </div>
-                                    <div class="compare-change" id="weightCompareDelta">Awaiting data</div>
-                                </div>
-                                <div class="baseline-compare-card">
-                                    <div class="compare-label">Body Fat</div>
-                                    <div class="compare-values">
-                                        <div>
-                                            <span class="compare-caption">Baseline</span>
-                                            <span class="compare-value" id="bodyFatBaselineValue">-</span>
-                                        </div>
-                                        <span class="compare-arrow">→</span>
-                                        <div>
-                                            <span class="compare-caption">Current</span>
-                                            <span class="compare-value" id="bodyFatCurrentValue">-</span>
-                                        </div>
-                                    </div>
-                                    <div class="compare-change" id="bodyFatCompareDelta">Need new DEXA</div>
-                                </div>
-                                <div class="baseline-compare-card">
-                                    <div class="compare-label">Android Fat</div>
-                                    <div class="compare-values">
-                                        <div>
-                                            <span class="compare-caption">Baseline</span>
-                                            <span class="compare-value" id="androidBaselineValue">-</span>
-                                        </div>
-                                        <span class="compare-arrow">→</span>
-                                        <div>
-                                            <span class="compare-caption">Current</span>
-                                            <span class="compare-value" id="androidCurrentValue">-</span>
-                                        </div>
-                                    </div>
-                                    <div class="compare-change" id="androidCompareDelta">Need new DEXA</div>
-                                </div>
-                                <div class="baseline-compare-card">
-                                    <div class="compare-label">ALT</div>
-                                    <div class="compare-values">
-                                        <div>
-                                            <span class="compare-caption">Baseline</span>
-                                            <span class="compare-value" id="altBaselineValue">-</span>
-                                        </div>
-                                        <span class="compare-arrow">→</span>
-                                        <div>
-                                            <span class="compare-caption">Current</span>
-                                            <span class="compare-value" id="altCurrentValue">-</span>
-                                        </div>
-                                    </div>
-                                    <div class="compare-change" id="altCompareDelta">Need new labs</div>
-                                </div>
-                                <div class="baseline-compare-card">
-                                    <div class="compare-label">Glucose</div>
-                                    <div class="compare-values">
-                                        <div>
-                                            <span class="compare-caption">Baseline</span>
-                                            <span class="compare-value" id="glucoseBaselineValue">-</span>
-                                        </div>
-                                        <span class="compare-arrow">→</span>
-                                        <div>
-                                            <span class="compare-caption">Current</span>
-                                            <span class="compare-value" id="glucoseCurrentValue">-</span>
-                                        </div>
-                                    </div>
-                                    <div class="compare-change" id="glucoseCompareDelta">Need new labs</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <div class="goals-section card-surface col-span-12 col-lg-5">
+                    <div class="goals-section card-surface col-span-12">
                         <h3 class="section-subtitle">Targets</h3>
                         <div class="metric-progress-grid">
                             <div class="metric-card has-trend" id="metricWeightCard">
