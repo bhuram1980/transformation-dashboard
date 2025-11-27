@@ -1,0 +1,451 @@
+/* V4 - Clean & Attractive Layout */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: #FAFAFA;
+    color: #1a1a1a;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding-top: 80px; /* Space for fixed header */
+}
+
+/* Fixed Header */
+.v4-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.v4-header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.v4-logo {
+    font-size: 14px;
+    font-weight: 700;
+    color: #D4AF37;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.v4-title {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #1a3a5f;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.v4-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+}
+
+.v4-progress-pic {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #D4AF37;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.v4-pic-placeholder {
+    font-size: 20px;
+}
+
+/* Hero Section */
+.v4-hero {
+    padding: 60px 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.v4-slider-container {
+    position: relative;
+}
+
+.v4-slider-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    background: #fff;
+    aspect-ratio: 4/3;
+}
+
+.v4-slider-before,
+.v4-slider-after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.v4-slider-before {
+    width: 50%;
+    z-index: 2;
+    filter: grayscale(100%);
+}
+
+.v4-slider-after {
+    z-index: 1;
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.v4-slider-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #999;
+    font-weight: 600;
+}
+
+.v4-slider-overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.v4-slider-control {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    z-index: 10;
+}
+
+.v4-hero-stats {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #D4AF37;
+    letter-spacing: 0.5px;
+}
+
+.v4-stat-item {
+    display: inline-block;
+}
+
+.v4-stat-separator {
+    margin: 0 12px;
+    color: #999;
+}
+
+/* Main Dashboard */
+.v4-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 32px;
+}
+
+.v4-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.v4-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.v4-card-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Card 1: Physique */
+.v4-card-physique {
+    grid-column: span 2;
+}
+
+.v4-physique-image {
+    width: 100%;
+    min-height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.v4-physique-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 40%, rgba(255, 255, 255, 0.3) 100%);
+    pointer-events: none;
+}
+
+.v4-image-placeholder {
+    font-size: 18px;
+    color: #999;
+    font-weight: 600;
+}
+
+/* Card 2: Metrics */
+.v4-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.v4-metric-item {
+    text-align: center;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.v4-metric-item:hover {
+    background: #f5f5f5;
+    transform: translateY(-2px);
+}
+
+.v4-metric-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.v4-metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.v4-metric-value .v4-gold {
+    color: #D4AF37;
+}
+
+/* Card 3: Doomsday Clock */
+.v4-card-clock {
+    text-align: center;
+}
+
+.v4-clock-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.v4-clock-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.v4-ring-bg {
+    stroke: #e5e5e5;
+}
+
+.v4-ring-progress {
+    stroke: #D4AF37;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.v4-ring-progress.warning {
+    stroke: #ff9500;
+}
+
+.v4-ring-progress.danger {
+    stroke: #c62828;
+}
+
+.v4-clock-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.v4-clock-days {
+    font-size: 48px;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.v4-clock-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.v4-clock-subtitle {
+    font-size: 11px;
+    color: #999;
+    font-style: italic;
+}
+
+/* Footer */
+.v4-footer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    text-align: center;
+}
+
+.v4-footer-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a3a5f;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .v4-main {
+        grid-template-columns: 1fr;
+    }
+    
+    .v4-card-physique {
+        grid-column: span 1;
+    }
+    
+    .v4-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .v4-header-content {
+        flex-wrap: wrap;
+    }
+    
+    .v4-title {
+        order: 3;
+        width: 100%;
+        margin-top: 8px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding-top: 100px;
+    }
+    
+    .v4-header-content {
+        padding: 12px 16px;
+    }
+    
+    .v4-logo {
+        font-size: 12px;
+    }
+    
+    .v4-title {
+        font-size: 12px;
+    }
+    
+    .v4-hero {
+        padding: 40px 16px;
+    }
+    
+    .v4-main {
+        padding: 0 16px 60px;
+        gap: 24px;
+    }
+    
+    .v4-card {
+        padding: 24px;
+    }
+    
+    .v4-physique-image {
+        min-height: 400px;
+    }
+    
+    .v4-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .v4-hero-stats {
+        font-size: 14px;
+    }
+    
+    .v4-stat-separator {
+        margin: 0 8px;
+    }
+}
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMPOUNDMACHINE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style-v4.css?v=20251127b">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/static/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header class="v4-header">
+        <div class="v4-header-content">
+            <div class="v4-logo">COMPOUNDMACHINE</div>
+            <div class="v4-title">IF I'M NOT SHREDDED I'M DEAD</div>
+            <div class="v4-progress-pic" id="v4ProgressPic">
+                <div class="v4-pic-placeholder">📸</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section - Before/After Slider -->
+    <section class="v4-hero">
+        <div class="v4-slider-container">
+            <div class="v4-slider-wrapper">
+                <div class="v4-slider-before" id="v4SliderBefore">
+                    <div class="v4-slider-image-placeholder">Day 1 Photo</div>
+                    <div class="v4-slider-overlay">Before</div>
+                </div>
+                <div class="v4-slider-after" id="v4SliderAfter">
+                    <div class="v4-slider-image-placeholder">Latest Photo</div>
+                    <div class="v4-slider-overlay">After</div>
+                </div>
+                <input type="range" min="0" max="100" value="50" class="v4-slider-control" id="v4SliderControl">
+            </div>
+            <div class="v4-hero-stats">
+                <span class="v4-stat-item" id="v4WeightLoss">–19.4 kg</span>
+                <span class="v4-stat-separator">•</span>
+                <span class="v4-stat-item" id="v4BodyFat">11.2% body fat</span>
+                <span class="v4-stat-separator">•</span>
+                <span class="v4-stat-item" id="v4FishCount">1,837 fish sacrificed</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Dashboard - 3 Cards -->
+    <main class="v4-main">
+        <!-- Card 1: Physique -->
+        <div class="v4-card v4-card-physique">
+            <div class="v4-card-label">Current Form · <span id="v4CurrentBodyFat">11.2%</span></div>
+            <div class="v4-physique-image" id="v4PhysiqueImage">
+                <div class="v4-image-placeholder">Latest Mirror Selfie</div>
+            </div>
+        </div>
+
+        <!-- Card 2: The Compound Machine -->
+        <div class="v4-card v4-card-metrics">
+            <div class="v4-card-label">The Compound Machine</div>
+            <div class="v4-metrics-grid">
+                <div class="v4-metric-item">
+                    <div class="v4-metric-label">Weight</div>
+                    <div class="v4-metric-value" id="v4MetricWeight">-- kg</div>
+                </div>
+                <div class="v4-metric-item">
+                    <div class="v4-metric-label">Body Fat</div>
+                    <div class="v4-metric-value" id="v4MetricBodyFat">--%</div>
+                </div>
+                <div class="v4-metric-item">
+                    <div class="v4-metric-label">Muscle Mass</div>
+                    <div class="v4-metric-value" id="v4MetricMuscle">-- kg</div>
+                </div>
+                <div class="v4-metric-item">
+                    <div class="v4-metric-label">Daily Protein</div>
+                    <div class="v4-metric-value" id="v4MetricProtein">-- g</div>
+                </div>
+                <div class="v4-metric-item">
+                    <div class="v4-metric-label">Fish This Week</div>
+                    <div class="v4-metric-value" id="v4MetricFishWeek">-- kg</div>
+                </div>
+                <div class="v4-metric-item">
+                    <div class="v4-metric-label">Streak</div>
+                    <div class="v4-metric-value" id="v4MetricStreak">-- days</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Doomsday Clock -->
+        <div class="v4-card v4-card-clock">
+            <div class="v4-card-label">Doomsday Clock</div>
+            <div class="v4-clock-container">
+                <svg class="v4-clock-ring" width="200" height="200" viewBox="0 0 200 200">
+                    <circle class="v4-ring-bg" cx="100" cy="100" r="90" fill="none" stroke="#e5e5e5" stroke-width="8"/>
+                    <circle class="v4-ring-progress" cx="100" cy="100" r="90" fill="none" stroke="#D4AF37" stroke-width="8" 
+                            stroke-dasharray="565.48" stroke-dashoffset="565.48" transform="rotate(-90 100 100)"/>
+                </svg>
+                <div class="v4-clock-content">
+                    <div class="v4-clock-days" id="v4ClockDays">23</div>
+                    <div class="v4-clock-label">days until sub-10%</div>
+                    <div class="v4-clock-subtitle">or I delete this site forever</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Section -->
+    <footer class="v4-footer">
+        <p class="v4-footer-text">Built with discipline. Fueled by fish. No plan B.</p>
+    </footer>
+
+    <script src="/static/js/dashboard-v4.js?v=20251127b"></script>
+</body>
+</html>
+
