@@ -785,8 +785,7 @@ function updateTodayScore(dailyLogs = []) {
     };
     const label = scoreLabels[score] || 'Keep stacking data';
     if (scoreMetaEl) {
-        const noteSnippet = (today.notes || '').split('\n')[0].trim();
-        scoreMetaEl.textContent = noteSnippet ? `${label} • ${noteSnippet}` : label;
+        scoreMetaEl.textContent = label;
     }
     
     criteriaListEl.innerHTML = criteria.map(c => `
