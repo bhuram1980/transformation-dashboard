@@ -632,6 +632,11 @@ def index():
     """Main dashboard - public access, all features enabled"""
     return render_template('dashboard.html', user_role='viewer', is_admin=True)
 
+@app.route('/v4')
+def dashboard_v4():
+    """V4 dashboard - clean & attractive layout"""
+    return render_template('dashboard-v4.html')
+
 
 @app.route('/api/data')
 def get_data():
