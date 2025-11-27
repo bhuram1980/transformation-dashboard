@@ -1,0 +1,63 @@
+{
+  "date": "2025-11-27",
+  "fastedWeight": 86.4,
+  "waist": null,
+  "total": {
+    "protein": 633,
+    "carbs": 36,
+    "fat": 207,
+    "kcal": 4145,
+    "seafoodKg": 1.45
+  },
+  "meals": {
+    "breakfast": {
+      "description": "6 whole eggs + shrimp omelette + veggies",
+      "protein": 78,
+      "carbs": 8,
+      "fat": 42,
+      "kcal": 710
+    },
+    "postTrainingShake1": {
+      "description": "1 scoop Critical Whey + 5 g creatine",
+      "protein": 27,
+      "carbs": 3,
+      "fat": 2,
+      "kcal": 130
+    },
+    "postGymShake2": {
+      "description": "1 scoop Critical Whey + 5 g creatine",
+      "protein": 27,
+      "carbs": 3,
+      "fat": 2,
+      "kcal": 130
+    },
+    "lunch": {
+      "description": "450 g salmon steak (skin on) + grilled veggies + sauerkraut",
+      "protein": 110,
+      "carbs": 15,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    },
+    "dinner": {
+      "description": "1 medium Red Snapper + 1 whole Rock Lobster (both plain grilled, skin/shell on) + Diet Coke Zero",
+      "protein": 391,
+      "carbs": 7,
+      "fat": 80,
+      "kcal": 1960,
+      "seafoodKg": 1.00
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps with lunch salmon – locked" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
+    "whey":     { "taken": true,  "scoops": 2 },
+    "creatine": { "taken": true,  "dose": "10 g total (2×5 g)" }
+  },
+  "training": "Upper body gym (chest press 3×8 @ 195 lbs + light bicep work)",
+  "feeling": 10,
+  "notes": "DAY 7 WORLD RECORD – Fasted 86.4 kg (-3.6 kg from Day 1). 633 g protein, 1.45 kg edible seafood demolished. New all-time high. Streak = 7."
+}
+
