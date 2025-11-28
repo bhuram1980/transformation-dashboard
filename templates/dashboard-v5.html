@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Machine - Transformation Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style-v5.css?v=20251127c">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/static/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sticky Navigation -->
+    <nav class="v5-nav" id="v5Nav">
+        <div class="v5-nav-container">
+            <div class="v5-nav-left">
+                <div class="v5-logo">Compound Machine</div>
+            </div>
+            <div class="v5-nav-center">
+                <a href="#hero" class="v5-tagline">If I'm Not Shredded I'm Dead</a>
+            </div>
+            <div class="v5-nav-right">
+                <select id="v5DaySelector" class="v5-day-select" onchange="v5LoadDay()">
+                    <option value="">Select Day</option>
+                </select>
+                <button class="v5-upload-btn" onclick="v5ScrollToLog()">Upload Log</button>
+            </div>
+        </div>
+        <div class="v5-nav-pills">
+            <a href="#stats" class="v5-nav-pill">Stats</a>
+            <a href="#log" class="v5-nav-pill">Log</a>
+            <a href="#progress" class="v5-nav-pill">Progress</a>
+            <a href="#share" class="v5-nav-pill">Share</a>
+        </div>
+    </nav>
+
+    <!-- Section 1: Hero -->
+    <section id="hero" class="v5-hero">
+        <div class="v5-hero-carousel" id="v5HeroCarousel">
+            <div class="v5-carousel-slide v5-carousel-before">
+                <div class="v5-hero-placeholder">Day 1 Photo</div>
+                <div class="v5-hero-overlay">
+                    <h1 class="v5-hero-title">If I'm Not Shredded I'm Dead</h1>
+                    <p class="v5-hero-subtitle" id="v5HeroStreak">Streak: 0 Days → Let's Break It</p>
+                    <button class="v5-hero-cta" onclick="v5ScrollToLog()">Start Logging</button>
+                </div>
+            </div>
+            <div class="v5-carousel-slide v5-carousel-after">
+                <div class="v5-hero-placeholder">Latest Photo</div>
+                <div class="v5-hero-overlay">
+                    <h1 class="v5-hero-title">If I'm Not Shredded I'm Dead</h1>
+                    <p class="v5-hero-subtitle" id="v5HeroStreak2">Streak: 0 Days → Let's Break It</p>
+                    <button class="v5-hero-cta" onclick="v5ScrollToLog()">Start Logging</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Quick Stats Dashboard -->
+    <section id="stats" class="v5-section v5-stats">
+        <div class="v5-container">
+            <h2 class="v5-section-title">At a Glance</h2>
+            <div class="v5-stats-grid">
+                <div class="v5-stat-card">
+                    <div class="v5-stat-icon">🏋️</div>
+                    <div class="v5-stat-content">
+                        <div class="v5-stat-label">Streak</div>
+                        <div class="v5-stat-value" id="v5StatStreak">Fire it up!</div>
+                        <div class="v5-stat-progress">
+                            <div class="v5-progress-bar">
+                                <div class="v5-progress-fill" id="v5StreakProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="v5-stat-card">
+                    <div class="v5-stat-icon">⚖️</div>
+                    <div class="v5-stat-content">
+                        <div class="v5-stat-label">Weight</div>
+                        <div class="v5-stat-value" id="v5StatWeight">Upload to unlock</div>
+                        <div class="v5-stat-progress">
+                            <div class="v5-progress-bar">
+                                <div class="v5-progress-fill" id="v5WeightProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="v5-stat-card">
+                    <div class="v5-stat-icon">🐟</div>
+                    <div class="v5-stat-content">
+                        <div class="v5-stat-label">Fish Demolished</div>
+                        <div class="v5-stat-value" id="v5StatFish">0 kg</div>
+                        <div class="v5-stat-progress">
+                            <div class="v5-progress-bar">
+                                <div class="v5-progress-fill" id="v5FishProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="v5-stat-card">
+                    <div class="v5-stat-icon">⭐</div>
+                    <div class="v5-stat-content">
+                        <div class="v5-stat-label">Today Score</div>
+                        <div class="v5-stat-value" id="v5StatScore">0 / 5</div>
+                        <div class="v5-stat-progress">
+                            <div class="v5-progress-bar v5-progress-radial">
+                                <svg class="v5-radial-chart" viewBox="0 0 60 60">
+                                    <circle class="v5-radial-bg" cx="30" cy="30" r="26"></circle>
+                                    <circle class="v5-radial-progress" id="v5ScoreRadial" cx="30" cy="30" r="26"></circle>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="v5-update-hint">💡 Upload to refresh stats</p>
+        </div>
+    </section>
+
+    <!-- Section 3: Daily Log & Input -->
+    <section id="log" class="v5-section v5-log">
+        <div class="v5-container">
+            <h2 class="v5-section-title">Daily Log</h2>
+            <div class="v5-log-tabs">
+                <button class="v5-tab active" data-tab="meals" onclick="v5SwitchTab('meals')">Meals</button>
+                <button class="v5-tab" data-tab="workouts" onclick="v5SwitchTab('workouts')">Workouts</button>
+                <button class="v5-tab" data-tab="surf" onclick="v5SwitchTab('surf')">Surf</button>
+                <button class="v5-tab" data-tab="supplements" onclick="v5SwitchTab('supplements')">Supplements</button>
+            </div>
+            <div class="v5-tab-content active" id="v5TabMeals">
+                <div class="v5-day-selector-inline">
+                    <label>Select Day:</label>
+                    <select id="v5DaySelectInline" onchange="v5LoadDayData()">
+                        <option value="">Today</option>
+                    </select>
+                </div>
+                <div id="v5MealsContent" class="v5-meals-content">
+                    <div class="v5-empty-state">
+                        <p>Upload to unlock meals</p>
+                    </div>
+                </div>
+            </div>
+            <div class="v5-tab-content" id="v5TabWorkouts">
+                <div id="v5WorkoutsContent" class="v5-workouts-content">
+                    <div class="v5-empty-state">
+                        <p>No workouts logged yet</p>
+                    </div>
+                </div>
+            </div>
+            <div class="v5-tab-content" id="v5TabSurf">
+                <div id="v5SurfContent" class="v5-surf-content">
+                    <div class="v5-empty-state">
+                        <p>Log your surf sessions here</p>
+                    </div>
+                </div>
+            </div>
+            <div class="v5-tab-content" id="v5TabSupplements">
+                <div id="v5SupplementsContent" class="v5-supplements-content">
+                    <div class="v5-empty-state">
+                        <p>Supplement stack will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Mission Progress -->
+    <section id="progress" class="v5-section v5-progress">
+        <div class="v5-container">
+            <h2 class="v5-section-title">Mission Progress</h2>
+            <div class="v5-progress-filter">
+                <label>Filter:</label>
+                <select id="v5ProgressFilter" onchange="v5FilterProgress()">
+                    <option value="all">All Metrics</option>
+                    <option value="weight">Weight</option>
+                    <option value="bodyfat">Body Fat</option>
+                    <option value="android">Android Fat</option>
+                    <option value="alt">ALT</option>
+                </select>
+            </div>
+            <div class="v5-progress-table-wrapper">
+                <table class="v5-progress-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Baseline</th>
+                            <th>Current</th>
+                            <th>Target</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody id="v5ProgressTableBody">
+                        <tr>
+                            <td>Weight</td>
+                            <td>-- kg</td>
+                            <td>-- kg</td>
+                            <td>82-85 kg</td>
+                            <td><canvas class="v5-sparkline" width="80" height="20"></canvas></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="v5-progress-chart">
+                <canvas id="v5ProgressChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Motivation Footer -->
+    <footer id="share" class="v5-footer">
+        <div class="v5-container">
+            <div class="v5-footer-content">
+                <h3 class="v5-footer-title">Built with discipline. Fueled by fish. No plan B.</h3>
+                <button class="v5-share-btn" onclick="v5GenerateShareLink()">Flex This</button>
+                <p class="v5-footer-teaser" id="v5LastLogTease">Last log: Upload to see your progress</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/dashboard-v5.js?v=20251127c"></script>
+</body>
+</html>
+

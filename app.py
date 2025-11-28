@@ -637,6 +637,11 @@ def dashboard_v4():
     """V4 dashboard - clean & attractive layout"""
     return render_template('dashboard-v4.html')
 
+@app.route('/v5')
+def dashboard_v5():
+    """V5 dashboard - Stripe-inspired layout with proper section order"""
+    return render_template('dashboard-v5.html')
+
 
 @app.route('/api/data')
 def get_data():
