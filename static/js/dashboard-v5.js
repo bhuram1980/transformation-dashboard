@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     await v5LoadData();
     v5SetupNavigation();
     v5SetupSmoothScroll();
-    v5InitializeHeroCarousel();
 });
 
 async function v5LoadData() {
@@ -150,10 +149,8 @@ function v5UpdateHero(data) {
     const streak = data.streak || 0;
     const streakText = streak > 0 ? `Streak: ${streak} Days 🔥` : 'Streak: 0 Days → Let\'s Break It';
     
-    const heroStreak1 = document.getElementById('v5HeroStreak');
-    const heroStreak2 = document.getElementById('v5HeroStreak2');
-    if (heroStreak1) heroStreak1.textContent = streakText;
-    if (heroStreak2) heroStreak2.textContent = streakText;
+    const heroStreak = document.getElementById('v5HeroStreak');
+    if (heroStreak) heroStreak.textContent = streakText;
 }
 
 function v5PopulateDaySelectors(data) {
@@ -541,28 +538,6 @@ function v5SetupSmoothScroll() {
     });
 }
 
-function v5InitializeHeroCarousel() {
-    const carousel = document.getElementById('v5HeroCarousel');
-    if (!carousel) return;
-    
-    // Simple slider control
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.min = '0';
-    slider.max = '100';
-    slider.value = '50';
-    slider.className = 'v5-carousel-slider';
-    slider.style.cssText = 'position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10; width: 300px;';
-    
-    slider.addEventListener('input', function(e) {
-        const before = document.querySelector('.v5-carousel-before');
-        if (before) {
-            before.style.width = e.target.value + '%';
-        }
-    });
-    
-    carousel.appendChild(slider);
-}
 
 // Training analysis functions (reused from main dashboard)
 function analyzeTraining(trainingStr = '') {

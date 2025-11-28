@@ -27,7 +27,6 @@
                 <select id="v5DaySelector" class="v5-day-select" onchange="v5LoadDay()">
                     <option value="">Select Day</option>
                 </select>
-                <button class="v5-upload-btn" onclick="v5ScrollToLog()">Upload Log</button>
             </div>
         </div>
         <div class="v5-nav-pills">
@@ -40,22 +39,11 @@
 
     <!-- Section 1: Hero -->
     <section id="hero" class="v5-hero">
-        <div class="v5-hero-carousel" id="v5HeroCarousel">
-            <div class="v5-carousel-slide v5-carousel-before">
-                <div class="v5-hero-placeholder">Day 1 Photo</div>
-                <div class="v5-hero-overlay">
-                    <h1 class="v5-hero-title">If I'm Not Shredded I'm Dead</h1>
-                    <p class="v5-hero-subtitle" id="v5HeroStreak">Streak: 0 Days → Let's Break It</p>
-                    <button class="v5-hero-cta" onclick="v5ScrollToLog()">Start Logging</button>
-                </div>
-            </div>
-            <div class="v5-carousel-slide v5-carousel-after">
-                <div class="v5-hero-placeholder">Latest Photo</div>
-                <div class="v5-hero-overlay">
-                    <h1 class="v5-hero-title">If I'm Not Shredded I'm Dead</h1>
-                    <p class="v5-hero-subtitle" id="v5HeroStreak2">Streak: 0 Days → Let's Break It</p>
-                    <button class="v5-hero-cta" onclick="v5ScrollToLog()">Start Logging</button>
-                </div>
+        <div class="v5-hero-content">
+            <div class="v5-hero-placeholder">Latest Photo</div>
+            <div class="v5-hero-overlay">
+                <h1 class="v5-hero-title">If I'm Not Shredded I'm Dead</h1>
+                <p class="v5-hero-subtitle" id="v5HeroStreak">Streak: 0 Days → Let's Break It</p>
             </div>
         </div>
     </section>
