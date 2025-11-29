@@ -1327,6 +1327,85 @@ function navigateDay(direction) {
     }
 }
 
+function updateDayDisplay(dayData) {
+    const valueEl = document.getElementById('dayCurrentValue');
+    const dateEl = document.getElementById('dayCurrentDate');
+    
+    if (valueEl && dayData) {
+        valueEl.textContent = dayData.day || '--';
+    }
+    
+    if (dateEl && dayData) {
+        dateEl.textContent = dayData.date_display || dayData.date || '';
+    }
+}
+
+function setupSwipeGestures() {
+    const swipeContainer = document.getElementById('daySelectorSticky');
+    if (!swipeContainer) return;
+    
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let isSwiping = false;
+    
+    swipeContainer.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+        isSwiping = true;
+    }, { passive: true });
+    
+    swipeContainer.addEventListener('touchmove', function(e) {
+        if (!isSwiping) return;
+        const currentX = e.changedTouches[0].screenX;
+        const diff = currentX - touchStartX;
+        
+        // Visual feedback during swipe
+        if (Math.abs(diff) > 10) {
+            swipeContainer.style.transform = `translateX(${diff * 0.3}px)`;
+            swipeContainer.style.opacity = `${1 - Math.abs(diff) / 200}`;
+        }
+    }, { passive: true });
+    
+    swipeContainer.addEventListener('touchend', function(e) {
+        if (!isSwiping) return;
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        
+        // Reset transform
+        swipeContainer.style.transform = '';
+        swipeContainer.style.opacity = '';
+        
+        // Swipe threshold: 50px
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                // Swipe right = previous day
+                navigateDay(-1);
+            } else {
+                // Swipe left = next day
+                navigateDay(1);
+            }
+        }
+        
+        isSwiping = false;
+    }, { passive: true });
+}
+
+function setupKeyboardNavigation() {
+    document.addEventListener('keydown', function(e) {
+        // Only handle arrow keys when not typing in an input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+            return;
+        }
+        
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            navigateDay(-1);
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            navigateDay(1);
+        }
+    });
+}
+
 function updateNavButtons() {
     const selector = document.getElementById('daySelect');
     if (!selector || dailyLogsCache.length === 0) {
@@ -1365,10 +1444,6 @@ function updateNavButtons() {
         const currentDayData = dailyLogsCache[currentIndex];
         updateDayDisplay(currentDayData);
     }
-    
-    // Disable prev if at first day, disable next if at last day
-    prevBtn.disabled = currentIndex <= 0;
-    nextBtn.disabled = currentIndex >= dailyLogsCache.length - 1;
 }
 
 function loadDayMeals() {
