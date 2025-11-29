@@ -1500,18 +1500,16 @@ function renderDayDetailView(dayData, totals) {
         </div>
     `;
     
+    const activityHtml = renderActivityCard(dayData);
     const macroHtml = renderMacroGrid(totals);
     const mealsHtml = renderMealCards(dayData.meals || {});
     const supplementsHtml = renderSupplementsSection(dayData.supplements || {});
     const infoHtml = renderDayInfoCards(dayData);
     
-    return `${headerHtml}${macroHtml}${mealsHtml}${supplementsHtml}${infoHtml}`;
+    return `${headerHtml}${activityHtml}${macroHtml}${mealsHtml}${supplementsHtml}${infoHtml}`;
 }
 
-// Activity card removed - function kept for compatibility but returns empty
 function renderActivityCard(dayData = {}) {
-    return '';
-}
     const training = (dayData.training || '').trim();
     const surfingNotes = (dayData.notes || '').toLowerCase().includes('surf') ? dayData.notes : '';
     if (!training && !surfingNotes) {
