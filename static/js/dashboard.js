@@ -211,16 +211,34 @@ function updateMetricCardsUI(snapshots = {}) {
             valueEl.textContent = formatMetricValue(snap.current, config.unit, config.decimals);
         }
         
-        // Update target
+        // Update target - display the raw target string
         const targetEl = document.getElementById(config.targetId);
         if (targetEl) {
-            targetEl.textContent = snap.targetRaw || `≤${snap.targetValue || '—'}${config.unit ? ` ${config.unit}` : ''}`;
+            // Use targetRaw if available, otherwise format from targetValue
+            if (snap.targetRaw) {
+                targetEl.textContent = snap.targetRaw;
+            } else if (snap.targetValue !== null && snap.targetValue !== undefined) {
+                const prefix = snap.direction === 'down' ? '≤' : '≥';
+                targetEl.textContent = `${prefix}${snap.targetValue}${config.unit ? ` ${config.unit}` : ''}`;
+            } else {
+                targetEl.textContent = '--';
+            }
         }
         
         // Update ring progress
         const ringEl = document.getElementById(config.ringId);
         if (ringEl) {
-            const percent = computeProgressPercentage(snap.baseline, snap.current, snap.targetValue, snap.direction);
+            // For weight with range target (e.g., "82-85 kg"), use the upper bound for progress calculation
+            let targetForProgress = snap.targetValue;
+            if (config.key === 'weight' && snap.targetRaw && snap.targetRaw.includes('-')) {
+                // Parse range like "82-85 kg" - use upper bound (85) for progress
+                const rangeMatch = snap.targetRaw.match(/(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/);
+                if (rangeMatch) {
+                    targetForProgress = parseFloat(rangeMatch[2]); // Use upper bound
+                }
+            }
+            
+            const percent = computeProgressPercentage(snap.baseline, snap.current, targetForProgress, snap.direction);
             const circumference = 263.9; // 2 * PI * 42
             const progress = percent !== null ? Math.max(0, Math.min(percent, 100)) : 0;
             const offset = circumference - (progress / 100) * circumference;
@@ -251,13 +269,42 @@ function toggleTargets() {
 }
 
 function computeProgressPercentage(baseline, current, target, direction = 'down') {
-    if (baseline === null || current === null || target === null) return null;
-    if (direction === 'down') {
-        if (baseline <= target) return current <= target ? 100 : 0;
-        return ((baseline - current) / (baseline - target)) * 100;
+    if (baseline === null || current === null || target === null || isNaN(baseline) || isNaN(current) || isNaN(target)) {
+        return null;
     }
-    if (baseline >= target) return current >= target ? 100 : 0;
-    return ((current - baseline) / (target - baseline)) * 100;
+    
+    if (direction === 'down') {
+        // For decreasing metrics (weight, body fat, ALT, etc.)
+        // Progress = how much we've lost / how much we need to lose
+        if (baseline <= target) {
+            // Already at or below target
+            return current <= target ? 100 : 0;
+        }
+        if (current <= target) {
+            // Already reached target
+            return 100;
+        }
+        if (current >= baseline) {
+            // Gained weight/regressed
+            return 0;
+        }
+        // Calculate progress: (baseline - current) / (baseline - target) * 100
+        const progress = ((baseline - current) / (baseline - target)) * 100;
+        return Math.max(0, Math.min(100, progress));
+    } else {
+        // For increasing metrics
+        if (baseline >= target) {
+            return current >= target ? 100 : 0;
+        }
+        if (current >= target) {
+            return 100;
+        }
+        if (current <= baseline) {
+            return 0;
+        }
+        const progress = ((current - baseline) / (target - baseline)) * 100;
+        return Math.max(0, Math.min(100, progress));
+    }
 }
 
 function renderMetricTrend() {
