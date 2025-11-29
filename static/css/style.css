@@ -1495,7 +1495,6 @@ body {
 .meals-day-header {
     margin-bottom: 12px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #e5e5e5;
 }
 
 .meals-day-header h3 {
@@ -2033,7 +2032,6 @@ body {
     color: #666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid #e5e5e5;
 }
 
 .meals-table th.meal-col-name {
@@ -2090,7 +2088,6 @@ body {
 }
 
 .meals-table tfoot {
-    border-top: 2px solid #e5e5e5;
     background: #f8f9fa;
 }
 
