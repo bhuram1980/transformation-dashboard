@@ -113,6 +113,7 @@ function animateStreak(element, start, end) {
 }
 
 function updateGoalCards(baseline = {}, targets = {}, dailyLogs = []) {
+    console.log('updateGoalCards called with:', { baseline, targets, dailyLogsCount: dailyLogs.length });
     const latestLog = dailyLogs.length ? dailyLogs[dailyLogs.length - 1] : null;
     
     const snapshots = {
@@ -175,6 +176,13 @@ function updateGoalCards(baseline = {}, targets = {}, dailyLogs = []) {
         snap.current = snap.currentRaw !== null && snap.currentRaw !== undefined ? snap.currentRaw : snap.baseline;
         snap.hasCurrent = snap.currentRaw !== null && snap.currentRaw !== undefined;
         snap.targetValue = parseTargetValue(snap.targetRaw);
+        console.log(`${key} snapshot:`, {
+            baseline: snap.baseline,
+            current: snap.current,
+            currentRaw: snap.currentRaw,
+            targetRaw: snap.targetRaw,
+            targetValue: snap.targetValue
+        });
     });
     
     updateMetricCardsUI(snapshots);
