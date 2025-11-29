@@ -1210,6 +1210,12 @@ function setDaySelectorOptions(selector, dailyLogs) {
     
     updateNavButtons();
     loadDayMeals();
+    
+    // Initialize day display
+    if (dailyLogs.length > 0) {
+        const today = dailyLogs[dailyLogs.length - 1];
+        updateDayDisplay(today);
+    }
 }
 
 function renderDayPills(dailyLogs = []) {
