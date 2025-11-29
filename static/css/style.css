@@ -1020,6 +1020,7 @@ body {
 
 .ring-progress {
     fill: none;
+    stroke: #0066ff; /* Default color - will be overridden by specific classes */
     stroke-width: 6;
     stroke-linecap: round;
     stroke-dasharray: 263.9; /* 2 * PI * 42 */

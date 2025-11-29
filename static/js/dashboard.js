@@ -259,12 +259,17 @@ function updateMetricCardsUI(snapshots = {}) {
             const progress = percent !== null ? Math.max(0, Math.min(percent, 100)) : 0;
             const offset = circumference - (progress / 100) * circumference;
             
-            ringEl.style.strokeDashoffset = offset;
+            // Apply styles with !important to ensure they override CSS
+            ringEl.style.strokeDashoffset = `${offset}px`;
+            ringEl.style.strokeDasharray = `${circumference}px`;
             ringEl.className = `ring-progress ${config.ringClass}`;
+            
+            // Force a reflow to trigger animation
+            ringEl.offsetHeight;
             
             // Debug logging
             if (config.key === 'weight') {
-                console.log(`Weight ring: baseline=${snap.baseline}, current=${snap.current}, target=${targetForProgress}, progress=${progress}%, offset=${offset}`);
+                console.log(`Weight ring: baseline=${snap.baseline}, current=${snap.current}, target=${targetForProgress}, progress=${progress}%, offset=${offset}, className=${ringEl.className}`);
             }
         }
     });
