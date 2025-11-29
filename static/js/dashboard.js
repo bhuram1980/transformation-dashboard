@@ -173,62 +173,72 @@ function updateGoalCards(baseline = {}, targets = {}, dailyLogs = []) {
 
 function updateMetricCardsUI(snapshots = {}) {
     const metricConfig = [
-        { key: 'weight', label: 'Weight', unit: 'kg', decimals: 1, targetId: 'metricWeightTarget', changeId: 'metricWeightChange', progressId: 'metricWeightProgress', currentId: 'metricWeightCurrent' },
-        { key: 'android', label: 'Android Fat', unit: '%', decimals: 1, targetId: 'metricAndroidTarget', changeId: 'metricAndroidChange', progressId: 'metricAndroidProgress', currentId: 'metricAndroidCurrent' },
-        { key: 'bodyFat', label: 'Body Fat', unit: '%', decimals: 1, targetId: 'metricBodyFatTarget', changeId: 'metricBodyFatChange', progressId: 'metricBodyFatProgress', currentId: 'metricBodyFatCurrent' },
-        { key: 'alt', label: 'ALT', unit: '', decimals: 0, targetId: 'metricAltTarget', changeId: 'metricAltChange', progressId: 'metricAltProgress', currentId: 'metricAltCurrent' },
-        { key: 'glucose', label: 'Fasting Glucose', unit: 'mg/dL', decimals: 0, targetId: 'metricGlucoseTarget', changeId: 'metricGlucoseChange', progressId: 'metricGlucoseProgress', currentId: 'metricGlucoseCurrent' },
+        { key: 'weight', ringId: 'weightRingProgress', valueId: 'weightRingValue', targetId: 'weightRingTarget', ringClass: 'weight-ring', unit: 'kg', decimals: 1 },
+        { key: 'bodyFat', ringId: 'bodyFatRingProgress', valueId: 'bodyFatRingValue', targetId: 'bodyFatRingTarget', ringClass: 'bodyfat-ring', unit: '%', decimals: 1 },
+        { key: 'android', ringId: 'androidRingProgress', valueId: 'androidRingValue', targetId: 'androidRingTarget', ringClass: 'android-ring', unit: '%', decimals: 1 },
+        { key: 'alt', ringId: 'altRingProgress', valueId: 'altRingValue', targetId: 'altRingTarget', ringClass: 'alt-ring', unit: '', decimals: 0 },
+        { key: 'glucose', ringId: 'glucoseRingProgress', valueId: 'glucoseRingValue', targetId: 'glucoseRingTarget', ringClass: 'glucose-ring', unit: 'mg/dL', decimals: 0 },
     ];
     
     metricConfig.forEach(config => {
         const snap = snapshots[config.key];
-        if (!snap) return;
+        if (!snap) {
+            // Set defaults for missing data
+            const valueEl = document.getElementById(config.valueId);
+            const targetEl = document.getElementById(config.targetId);
+            const ringEl = document.getElementById(config.ringId);
+            if (valueEl) valueEl.textContent = '--';
+            if (targetEl) targetEl.textContent = snap?.targetRaw || '--';
+            if (ringEl) {
+                ringEl.style.strokeDashoffset = '263.9';
+                ringEl.className = 'ring-progress';
+            }
+            return;
+        }
         
-        const currentEl = document.getElementById(config.currentId);
-        if (currentEl) currentEl.textContent = formatMetricValue(snap.current, config.unit, config.decimals);
+        // Update value
+        const valueEl = document.getElementById(config.valueId);
+        if (valueEl) {
+            valueEl.textContent = formatMetricValue(snap.current, config.unit, config.decimals);
+        }
         
+        // Update target
         const targetEl = document.getElementById(config.targetId);
         if (targetEl) {
-            targetEl.textContent = snap.targetRaw || `Target ${snap.direction === 'down' ? '≤' : '≥'} ${snap.targetValue || '—'}${config.unit ? ` ${config.unit}` : ''}`;
+            targetEl.textContent = snap.targetRaw || `≤${snap.targetValue || '—'}${config.unit ? ` ${config.unit}` : ''}`;
         }
         
-        const changeEl = document.getElementById(config.changeId);
-        if (changeEl) {
-            changeEl.classList.remove('positive', 'negative');
-            if (snap.baseline !== null && snap.current !== null) {
-                const delta = snap.current - snap.baseline;
-                if (Math.abs(delta) < 0.01) {
-                    changeEl.textContent = 'No change yet';
-                } else {
-                    const good = snap.direction === 'down' ? delta <= 0 : delta >= 0;
-                    changeEl.textContent = `${good ? '↓' : '↑'} ${Math.abs(delta).toFixed(config.decimals)}${config.unit ? ` ${config.unit}` : ''} since baseline`;
-                    changeEl.classList.add(good ? 'positive' : 'negative');
-                }
-            } else {
-                changeEl.textContent = '';
-            }
-        }
-        
-        const progressEl = document.getElementById(config.progressId);
-        if (progressEl) {
+        // Update ring progress
+        const ringEl = document.getElementById(config.ringId);
+        if (ringEl) {
             const percent = computeProgressPercentage(snap.baseline, snap.current, snap.targetValue, snap.direction);
-            progressEl.style.width = percent !== null ? `${Math.max(0, Math.min(percent, 120))}%` : '0%';
-            progressEl.classList.remove('positive', 'warning', 'danger');
-            if (percent === null) {
-                progressEl.classList.add('warning');
-            } else if (percent >= 100) {
-                progressEl.classList.add('positive');
-            } else if (percent >= 60) {
-                progressEl.classList.add('warning');
-            } else {
-                progressEl.classList.add('danger');
-            }
-        }
-        
-        if (config.trendCanvas) {
-            renderMetricTrend(config.trendCanvas, config.trendLabel, snap.history);
+            const circumference = 263.9; // 2 * PI * 42
+            const progress = percent !== null ? Math.max(0, Math.min(percent, 100)) : 0;
+            const offset = circumference - (progress / 100) * circumference;
+            
+            ringEl.style.strokeDashoffset = offset;
+            ringEl.className = `ring-progress ${config.ringClass}`;
         }
     });
+}
+
+function toggleTargets() {
+    const container = document.getElementById('targetsContainer');
+    const icon = document.getElementById('targetsToggleIcon');
+    
+    if (!container || !icon) return;
+    
+    const isCollapsed = container.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+        container.classList.remove('collapsed');
+        icon.textContent = '▼';
+        icon.classList.remove('collapsed');
+    } else {
+        container.classList.add('collapsed');
+        icon.textContent = '▶';
+        icon.classList.add('collapsed');
+    }
 }
 
 function computeProgressPercentage(baseline, current, target, direction = 'down') {

@@ -952,26 +952,151 @@ body {
     margin-bottom: 0;
 }
 
-.metric-progress-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-
-@media (min-width: 640px) {
-    .metric-progress-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-.metric-card {
-    border: 1px solid #e7eaf2;
-    border-radius: 14px;
-    padding: 18px;
-    background: #fbfcff;
+.targets-header {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 0;
+    margin-bottom: 12px;
+}
+
+.targets-header:hover {
+    opacity: 0.8;
+}
+
+.targets-toggle-icon {
+    font-size: 12px;
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.targets-toggle-icon.collapsed {
+    transform: rotate(-90deg);
+}
+
+.metric-rings-container {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.metric-rings-container.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.metric-ring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 20px;
+    padding: 8px 0;
+}
+
+.metric-ring-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ring-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.metric-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.ring-bg {
+    fill: none;
+    stroke: #e5e7eb;
+    stroke-width: 6;
+}
+
+.ring-progress {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 263.9; /* 2 * PI * 42 */
+    stroke-dashoffset: 263.9;
+    transition: stroke-dashoffset 0.8s ease, stroke 0.3s ease;
+}
+
+.ring-progress.weight-ring {
+    stroke: #0066ff;
+}
+
+.ring-progress.bodyfat-ring {
+    stroke: #10b981;
+}
+
+.ring-progress.android-ring {
+    stroke: #f59e0b;
+}
+
+.ring-progress.alt-ring {
+    stroke: #ef4444;
+}
+
+.ring-progress.glucose-ring {
+    stroke: #8b5cf6;
+}
+
+.ring-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+}
+
+.ring-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.ring-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.ring-target {
+    font-size: 9px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+@media (max-width: 640px) {
+    .metric-ring-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    
+    .ring-wrapper {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .ring-value {
+        font-size: 14px;
+    }
+    
+    .ring-label {
+        font-size: 9px;
+    }
 }
 
 .metric-card-heading {

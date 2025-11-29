@@ -133,71 +133,76 @@
                         <div class="goal-description" id="goalDescription">Loading...</div>
                     </div>
                     <div class="goals-section card-surface col-span-12">
-                        <h3 class="section-subtitle">Targets</h3>
-                        <div class="metric-progress-grid">
-                            <div class="metric-card has-trend" id="metricWeightCard">
-                                <div class="metric-card-heading">
-                                    <div>
-                                        <p class="metric-name">Weight</p>
-                                        <p class="metric-current" id="metricWeightCurrent">--</p>
+                        <div class="targets-header" onclick="toggleTargets()">
+                            <h3 class="section-subtitle">Targets</h3>
+                            <span class="targets-toggle-icon" id="targetsToggleIcon">▼</span>
+                        </div>
+                        <div class="metric-rings-container" id="targetsContainer">
+                            <div class="metric-ring-grid">
+                                <div class="metric-ring-item" id="metricWeightRing">
+                                    <div class="ring-wrapper">
+                                        <svg class="metric-ring" viewBox="0 0 100 100">
+                                            <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                                            <circle class="ring-progress" id="weightRingProgress" cx="50" cy="50" r="42"></circle>
+                                        </svg>
+                                        <div class="ring-content">
+                                            <div class="ring-value" id="weightRingValue">--</div>
+                                            <div class="ring-label">Weight</div>
+                                            <div class="ring-target" id="weightRingTarget">82-85 kg</div>
+                                        </div>
                                     </div>
-                                    <p class="metric-target-label" id="metricWeightTarget">Target 82-85 kg</p>
                                 </div>
-                                <p class="metric-change-line" id="metricWeightChange">Need more data</p>
-                                <div class="metric-progress-bar">
-                                    <div class="metric-progress-fill" id="metricWeightProgress"></div>
-                                </div>
-                            </div>
-                            <div class="metric-card" id="metricBodyFatCard">
-                                <div class="metric-card-heading">
-                                    <div>
-                                        <p class="metric-name">Body Fat</p>
-                                        <p class="metric-current" id="metricBodyFatCurrent">--</p>
+                                <div class="metric-ring-item" id="metricBodyFatRing">
+                                    <div class="ring-wrapper">
+                                        <svg class="metric-ring" viewBox="0 0 100 100">
+                                            <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                                            <circle class="ring-progress" id="bodyFatRingProgress" cx="50" cy="50" r="42"></circle>
+                                        </svg>
+                                        <div class="ring-content">
+                                            <div class="ring-value" id="bodyFatRingValue">--</div>
+                                            <div class="ring-label">Body Fat</div>
+                                            <div class="ring-target" id="bodyFatRingTarget">≤13%</div>
+                                        </div>
                                     </div>
-                                    <p class="metric-target-label" id="metricBodyFatTarget">Target ≤13%</p>
                                 </div>
-                                <p class="metric-change-line" id="metricBodyFatChange">Awaiting next DEXA</p>
-                                <div class="metric-progress-bar">
-                                    <div class="metric-progress-fill" id="metricBodyFatProgress"></div>
-                                </div>
-                            </div>
-                            <div class="metric-card" id="metricAndroidCard">
-                                <div class="metric-card-heading">
-                                    <div>
-                                        <p class="metric-name">Android Fat</p>
-                                        <p class="metric-current" id="metricAndroidCurrent">--</p>
+                                <div class="metric-ring-item" id="metricAndroidRing">
+                                    <div class="ring-wrapper">
+                                        <svg class="metric-ring" viewBox="0 0 100 100">
+                                            <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                                            <circle class="ring-progress" id="androidRingProgress" cx="50" cy="50" r="42"></circle>
+                                        </svg>
+                                        <div class="ring-content">
+                                            <div class="ring-value" id="androidRingValue">--</div>
+                                            <div class="ring-label">Android Fat</div>
+                                            <div class="ring-target" id="androidRingTarget">≤15%</div>
+                                        </div>
                                     </div>
-                                    <p class="metric-target-label" id="metricAndroidTarget">Target ≤15%</p>
                                 </div>
-                                <p class="metric-change-line" id="metricAndroidChange">Awaiting Android update</p>
-                                <div class="metric-progress-bar">
-                                    <div class="metric-progress-fill" id="metricAndroidProgress"></div>
-                                </div>
-                            </div>
-                            <div class="metric-card" id="metricAltCard">
-                                <div class="metric-card-heading">
-                                    <div>
-                                        <p class="metric-name">ALT</p>
-                                        <p class="metric-current" id="metricAltCurrent">--</p>
+                                <div class="metric-ring-item" id="metricAltRing">
+                                    <div class="ring-wrapper">
+                                        <svg class="metric-ring" viewBox="0 0 100 100">
+                                            <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                                            <circle class="ring-progress" id="altRingProgress" cx="50" cy="50" r="42"></circle>
+                                        </svg>
+                                        <div class="ring-content">
+                                            <div class="ring-value" id="altRingValue">--</div>
+                                            <div class="ring-label">ALT</div>
+                                            <div class="ring-target" id="altRingTarget">&lt;80</div>
+                                        </div>
                                     </div>
-                                    <p class="metric-target-label" id="metricAltTarget">Target &lt;80</p>
                                 </div>
-                                    <p class="metric-change-line" id="metricAltChange">Need new labs</p>
-                                <div class="metric-progress-bar">
-                                    <div class="metric-progress-fill" id="metricAltProgress"></div>
-                                </div>
-                            </div>
-                            <div class="metric-card" id="metricGlucoseCard">
-                                <div class="metric-card-heading">
-                                    <div>
-                                        <p class="metric-name">Fasting Glucose</p>
-                                        <p class="metric-current" id="metricGlucoseCurrent">--</p>
+                                <div class="metric-ring-item" id="metricGlucoseRing">
+                                    <div class="ring-wrapper">
+                                        <svg class="metric-ring" viewBox="0 0 100 100">
+                                            <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                                            <circle class="ring-progress" id="glucoseRingProgress" cx="50" cy="50" r="42"></circle>
+                                        </svg>
+                                        <div class="ring-content">
+                                            <div class="ring-value" id="glucoseRingValue">--</div>
+                                            <div class="ring-label">Glucose</div>
+                                            <div class="ring-target" id="glucoseRingTarget">&lt;95</div>
+                                        </div>
                                     </div>
-                                    <p class="metric-target-label" id="metricGlucoseTarget">Target &lt;95</p>
-                                </div>
-                                <p class="metric-change-line" id="metricGlucoseChange">Need new labs</p>
-                                <div class="metric-progress-bar">
-                                    <div class="metric-progress-fill" id="metricGlucoseProgress"></div>
                                 </div>
                             </div>
                         </div>
