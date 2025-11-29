@@ -138,7 +138,7 @@ function updateGoalCards(baseline = {}, targets = {}, dailyLogs = []) {
             direction: 'down',
             baseline: toNumberOrNull(getBaselineValue(baseline, ['android_fat', 'androidFat'])),
             currentRaw: toNumberOrNull(latestLog?.androidFat ?? latestLog?.android_fat),
-            targetRaw: targets?.android_fat || targets?.androidFat || '≤15%',
+            targetRaw: targets?.android_fat || targets?.androidFat || '≤25-28%',
             history: []
         },
         bodyFat: {
@@ -147,7 +147,7 @@ function updateGoalCards(baseline = {}, targets = {}, dailyLogs = []) {
             direction: 'down',
             baseline: toNumberOrNull(getBaselineValue(baseline, ['body_fat', 'bodyFat'])),
             currentRaw: toNumberOrNull(latestLog?.bodyFat ?? latestLog?.body_fat),
-            targetRaw: targets?.body_fat || targets?.bodyFat || '≤13%',
+            targetRaw: targets?.body_fat || targets?.bodyFat || '≤17-19%',
             history: []
         },
         alt: {
@@ -156,7 +156,7 @@ function updateGoalCards(baseline = {}, targets = {}, dailyLogs = []) {
             direction: 'down',
             baseline: toNumberOrNull(getBaselineValue(baseline, ['alt'])),
             currentRaw: toNumberOrNull(latestLog?.alt ?? latestLog?.ALT ?? latestLog?.labs?.alt),
-            targetRaw: targets?.alt || '<80',
+            targetRaw: targets?.alt || targets?.ALT || '<80',
             history: []
         },
         glucose: {
@@ -238,6 +238,14 @@ function updateMetricCardsUI(snapshots = {}) {
                 }
             }
             
+            // For body fat and android fat with range targets (e.g., "≤17-19%"), use the upper bound
+            if ((config.key === 'bodyFat' || config.key === 'android') && snap.targetRaw && snap.targetRaw.includes('-')) {
+                const rangeMatch = snap.targetRaw.match(/(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/);
+                if (rangeMatch) {
+                    targetForProgress = parseFloat(rangeMatch[2]); // Use upper bound
+                }
+            }
+            
             const percent = computeProgressPercentage(snap.baseline, snap.current, targetForProgress, snap.direction);
             const circumference = 263.9; // 2 * PI * 42
             const progress = percent !== null ? Math.max(0, Math.min(percent, 100)) : 0;
@@ -245,6 +253,11 @@ function updateMetricCardsUI(snapshots = {}) {
             
             ringEl.style.strokeDashoffset = offset;
             ringEl.className = `ring-progress ${config.ringClass}`;
+            
+            // Debug logging
+            if (config.key === 'weight') {
+                console.log(`Weight ring: baseline=${snap.baseline}, current=${snap.current}, target=${targetForProgress}, progress=${progress}%, offset=${offset}`);
+            }
         }
     });
 }
