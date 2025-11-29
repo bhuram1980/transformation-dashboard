@@ -1308,31 +1308,57 @@ function navigateDay(direction) {
     // Load meals for new day
     loadDayMeals();
     
-    // Update button states
+    // Update button states and display
     updateNavButtons();
     updatePillSelection();
     scrollActivePillIntoView();
+    updateDayDisplay(newDay);
+    
+    // Smooth scroll to keep selector in view (if not sticky)
+    const selectorEl = document.getElementById('daySelectorSticky');
+    if (selectorEl) {
+        selectorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 }
 
 function updateNavButtons() {
     const selector = document.getElementById('daySelect');
-    const prevBtn = document.getElementById('prevDayBtn');
-    const nextBtn = document.getElementById('nextDayBtn');
-    
-    if (!selector || !prevBtn || !nextBtn || dailyLogsCache.length === 0) {
-        if (prevBtn) prevBtn.disabled = true;
-        if (nextBtn) nextBtn.disabled = true;
+    if (!selector || dailyLogsCache.length === 0) {
+        // Disable all nav buttons
+        document.querySelectorAll('.day-pill-nav, .day-nav-button, .day-nav-btn, .day-nav-btn-mobile').forEach(btn => {
+            btn.disabled = true;
+        });
         return;
     }
     
     const currentDay = parseInt(selector.value);
     if (!currentDay) {
-        prevBtn.disabled = true;
-        nextBtn.disabled = true;
+        document.querySelectorAll('.day-pill-nav, .day-nav-button, .day-nav-btn, .day-nav-btn-mobile').forEach(btn => {
+            btn.disabled = true;
+        });
         return;
     }
     
     const currentIndex = dailyLogsCache.findIndex(d => d.day == currentDay);
+    const canGoPrev = currentIndex > 0;
+    const canGoNext = currentIndex < dailyLogsCache.length - 1;
+    
+    // Update all nav buttons (desktop and mobile)
+    const prevBtns = document.querySelectorAll('#prevDayBtnDesktop, #prevDayBtnMobile, #prevDayBtn');
+    const nextBtns = document.querySelectorAll('#nextDayBtnDesktop, #nextDayBtnMobile, #nextDayBtn');
+    
+    prevBtns.forEach(btn => {
+        if (btn) btn.disabled = !canGoPrev;
+    });
+    nextBtns.forEach(btn => {
+        if (btn) btn.disabled = !canGoNext;
+    });
+    
+    // Update current day display
+    if (currentIndex >= 0) {
+        const currentDayData = dailyLogsCache[currentIndex];
+        updateDayDisplay(currentDayData);
+    }
     
     // Disable prev if at first day, disable next if at last day
     prevBtn.disabled = currentIndex <= 0;
