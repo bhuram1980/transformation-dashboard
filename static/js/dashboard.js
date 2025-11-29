@@ -22,6 +22,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     populateDaySelector();
     
     // View-only dashboard - no forms
+    
+    // Initialize targets section as collapsed by default
+    const targetsContainer = document.getElementById('targetsContainer');
+    const targetsIcon = document.getElementById('targetsToggleIcon');
+    if (targetsContainer && targetsIcon) {
+        targetsContainer.classList.add('collapsed');
+        targetsIcon.textContent = '▶';
+        targetsIcon.classList.add('collapsed');
+    }
 });
 
 document.addEventListener('click', function(event) {
