@@ -217,18 +217,52 @@
                     <h2 class="section-title">What I Ate Today</h2>
                 </div>
                 <div class="meals-section card-surface">
-                    <div class="day-selector">
-                        <label class="day-select-label">Select Day:</label>
-                        <div class="day-pill-wrapper">
-                            <button class="day-pill-nav" id="prevDayBtn" onclick="navigateDay(-1)" aria-label="Previous day">←</button>
-                            <div class="day-pill-scroll">
-                                <div class="day-pill-track" id="dayPillContainer"></div>
+                    <div class="day-selector-sticky" id="daySelectorSticky">
+                        <div class="day-selector">
+                            <div class="day-nav-desktop">
+                                <button class="day-nav-btn day-nav-prev" id="prevDayBtnDesktop" onclick="navigateDay(-1)" aria-label="Previous day" title="Previous day (←)">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        <path d="M12 15L7 10L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span>Previous</span>
+                                </button>
+                                <div class="day-selector-center">
+                                    <label class="day-select-label">Select Day:</label>
+                                    <div class="day-pill-wrapper">
+                                        <div class="day-pill-scroll" id="dayPillScrollContainer">
+                                            <div class="day-pill-track" id="dayPillContainer"></div>
+                                        </div>
+                                    </div>
+                                    <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()" aria-label="Select day">
+                                        <option value="">Loading...</option>
+                                    </select>
+                                </div>
+                                <button class="day-nav-btn day-nav-next" id="nextDayBtnDesktop" onclick="navigateDay(1)" aria-label="Next day" title="Next day (→)">
+                                    <span>Next</span>
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        <path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <button class="day-pill-nav" id="nextDayBtn" onclick="navigateDay(1)" aria-label="Next day">→</button>
+                            <div class="day-nav-mobile">
+                                <button class="day-nav-btn-mobile" id="prevDayBtnMobile" onclick="navigateDay(-1)" aria-label="Previous day">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                                <div class="day-current-display" id="dayCurrentDisplay">
+                                    <div class="day-current-label">Day</div>
+                                    <div class="day-current-value" id="dayCurrentValue">--</div>
+                                    <div class="day-current-date" id="dayCurrentDate">--</div>
+                                </div>
+                                <button class="day-nav-btn-mobile" id="nextDayBtnMobile" onclick="navigateDay(1)" aria-label="Next day">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="day-swipe-hint" id="daySwipeHint">← Swipe to change day →</div>
                         </div>
-                        <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()" aria-label="Select day backup">
-                            <option value="">Loading...</option>
-                        </select>
                     </div>
                     <div id="dayMeals" class="meals-content">
                         <div class="meals-placeholder-card">
@@ -240,6 +274,6 @@
         </div>
     </div>
 
-    <script src="/static/js/dashboard.js?v=20251129a"></script>
+    <script src="/static/js/dashboard.js?v=20251129b"></script>
 </body>
 </html>

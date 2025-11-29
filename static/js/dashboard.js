@@ -31,6 +31,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         targetsIcon.textContent = '▶';
         targetsIcon.classList.add('collapsed');
     }
+    
+    // Setup swipe gestures for mobile
+    setupSwipeGestures();
+    
+    // Setup keyboard navigation
+    setupKeyboardNavigation();
 });
 
 document.addEventListener('click', function(event) {
