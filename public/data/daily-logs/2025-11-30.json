@@ -1,0 +1,63 @@
+{
+  "date": "2025-11-30",
+  "fastedWeight": 86.3,
+  "waist": null,
+  "total": {
+    "protein": 559,
+    "carbs": 51,
+    "fat": 230,
+    "kcal": 4075,
+    "seafoodKg": 1.40
+  },
+  "meals": {
+    "breakfast": {
+      "description": "6 whole eggs + shrimp omelette + veggies",
+      "protein": 95,
+      "carbs": 10,
+      "fat": 48,
+      "kcal": 850
+    },
+    "postSurfShake": {
+      "description": "2 scoops Critical Whey Vanilla + 5 g creatine",
+      "protein": 54,
+      "carbs": 6,
+      "fat": 4,
+      "kcal": 260
+    },
+    "lunch": {
+      "description": "450 g salmon steak (skin on) + grilled veggies + 2 Omega caps",
+      "protein": 110,
+      "carbs": 15,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    },
+    "eveningSnack": {
+      "description": "Ginger kombucha (zero sugar) + cucumber/carrot salad + 4 whole eggs",
+      "protein": 30,
+      "carbs": 15,
+      "fat": 20,
+      "kcal": 320
+    },
+    "dinner": {
+      "description": "Whole grilled Mahi Mahi (skin on) + grilled veggies",
+      "protein": 270,
+      "carbs": 5,
+      "fat": 62,
+      "kcal": 1430,
+      "seafoodKg": 0.70
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg – locked" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs morning – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
+    "whey":     { "taken": true,  "scoops": 2 },
+    "creatine": { "taken": true,  "dose": "5 g post-surf" }
+  },
+  "training": "1.5 hr surfing",
+  "feeling": 10,
+  "notes": "DAY 10 LEGENDARY – Fasted 86.3 kg (+0.1 kg water from lobster feast & PR). 559 g protein, 1.40 kg edible seafood demolished. Sleep: only ~3–4 hrs (bed 4 am). Recovery slightly reduced today but streak intact."
+}
+
