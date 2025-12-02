@@ -1,0 +1,56 @@
+{
+  "date": "2025-12-01",
+  "fastedWeight": 86.2,
+  "waist": null,
+  "total": {
+    "protein": 369,
+    "carbs": 41,
+    "fat": 214,
+    "kcal": 3540,
+    "seafoodKg": 1.15
+  },
+  "meals": {
+    "breakfast": {
+      "description": "6 whole eggs + 200 g shrimp omelette + veggies",
+      "protein": 95,
+      "carbs": 8,
+      "fat": 48,
+      "kcal": 850
+    },
+    "postSurfShake": {
+      "description": "2 scoops Critical Whey Vanilla + 5 g creatine",
+      "protein": 54,
+      "carbs": 6,
+      "fat": 4,
+      "kcal": 260
+    },
+    "lunch": {
+      "description": "450 g salmon steak (skin on) + grilled veggies",
+      "protein": 110,
+      "carbs": 15,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    },
+    "dinner": {
+      "description": "450 g salmon steak (skin on) + grilled veggies",
+      "protein": 110,
+      "carbs": 12,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps (2 morning + 2 lunch) – locked" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps before bed – taken" },
+    "whey":     { "taken": true,  "scoops": 2 },
+    "creatine": { "taken": true,  "dose": "5 g post-surf" }
+  },
+  "training": "1.5 hr surfing",
+  "feeling": 10,
+  "notes": "DAY 11 LEGENDARY – Fasted 86.2 kg (-3.8 kg from Day 1). 369 g protein, 1.15 kg salmon demolished (double salmon day). Full stack 100 %. Streak = 11."
+}
+
