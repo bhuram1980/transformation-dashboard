@@ -1,0 +1,56 @@
+{
+  "date": "2025-12-02",
+  "fastedWeight": 86.2,
+  "waist": null,
+  "total": {
+    "protein": 544,
+    "carbs": 44,
+    "fat": 228,
+    "kcal": 4280,
+    "seafoodKg": 1.35
+  },
+  "meals": {
+    "breakfast": {
+      "description": "6 whole eggs + 200 g shrimp omelette + veggies",
+      "protein": 95,
+      "carbs": 8,
+      "fat": 48,
+      "kcal": 850
+    },
+    "postGymShake": {
+      "description": "1.5 scoops Isopure unflavored + 5 g Isopure creatine",
+      "protein": 38,
+      "carbs": 0,
+      "fat": 0,
+      "kcal": 150
+    },
+    "lunch": {
+      "description": "450 g salmon steak + grilled veggies + sauerkraut",
+      "protein": 110,
+      "carbs": 15,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    },
+    "dinner": {
+      "description": "1 portion grilled lobster + 2 jumbo prawns + grilled broccoli (plain)",
+      "protein": 301,
+      "carbs": 21,
+      "fat": 99,
+      "kcal": 2065,
+      "seafoodKg": 0.90
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg – locked" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs morning – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
+    "whey":     { "taken": true,  "scoops": 1.5 },
+    "creatine": { "taken": true,  "dose": "5 g post-gym" }
+  },
+  "training": "Gym – chest press + biceps curls + full body",
+  "feeling": 10,
+  "notes": "DAY 12 LEGENDARY – 544 g protein, 1.35 kg seafood demolished (lobster + jumbo prawns). Sleep 6.8 hrs (still elite). Streak = 12."
+}
+
