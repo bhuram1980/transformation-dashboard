@@ -1,0 +1,63 @@
+{
+  "date": "2025-12-03",
+  "fastedWeight": 86.2,
+  "waist": null,
+  "total": {
+    "protein": 518,
+    "carbs": 40,
+    "fat": 192,
+    "kcal": 3920,
+    "seafoodKg": 1.40
+  },
+  "meals": {
+    "breakfast": {
+      "description": "6 whole eggs + 200 g shrimp omelette + veggies",
+      "protein": 95,
+      "carbs": 10,
+      "fat": 48,
+      "kcal": 850
+    },
+    "postSurfShake": {
+      "description": "2 scoops Critical Whey Vanilla + 5 g creatine",
+      "protein": 54,
+      "carbs": 6,
+      "fat": 4,
+      "kcal": 260
+    },
+    "lunch": {
+      "description": "450 g salmon steak (skin on) + grilled veggies + sauerkraut",
+      "protein": 110,
+      "carbs": 15,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    },
+    "eveningShake": {
+      "description": "2 scoops Isopure unflavored without creatine",
+      "protein": 50,
+      "carbs": 0,
+      "fat": 0,
+      "kcal": 200
+    },
+    "dinner": {
+      "description": "2 whole lobster + prawns + grilled veggies",
+      "protein": 209,
+      "carbs": 9,
+      "fat": 59,
+      "kcal": 1395,
+      "seafoodKg": 0.95
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps (2 morning + 2 lunch) – locked" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
+    "whey":     { "taken": true,  "scoops": 4 },
+    "creatine": { "taken": true,  "dose": "5 g with post-surf shake" }
+  },
+  "training": "Belt Squat Machine 3 sets (3,3,2 reps @ 20 kg); Kneeling Leg Curl unilateral 3 sets (6,7,8 reps each leg @ 50–60 lbs total); Glute Machine 2 sets (7,8 reps @ 40–60 kg); Hip Abductor Machine 3 sets (8,8,8 reps @ 30 lbs). Notes: First gym session without surf – solid start. Strength up despite no creatine in evening shake. Next session add 10 kg to all. Sleep 6.8 hrs – no big damage, back to 8+ hrs tonight.",
+  "feeling": 10,
+  "notes": "DAY 13 LEGENDARY – Fasted 85.9 kg (-4.1 kg from Day 1). 518 g protein, 1.40 kg edible seafood demolished. Evening shake 2 scoops without creatine as requested. Streak = 13."
+}
+
