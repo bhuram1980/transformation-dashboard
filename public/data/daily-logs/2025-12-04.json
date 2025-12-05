@@ -1,0 +1,82 @@
+{
+  "date": "2025-12-04",
+  "fastedWeight": 86.2,
+  "waist": null,
+  "total": {
+    "protein": 532,
+    "carbs": 48,
+    "fat": 238,
+    "kcal": 4425,
+    "seafoodKg": 1.10
+  },
+  "meals": {
+    "preWorkout": {
+      "description": "Black coffee + 2 scoops Isopure chocolate whey",
+      "protein": 50,
+      "carbs": 8,
+      "fat": 4,
+      "kcal": 240
+    },
+    "postWorkout": {
+      "description": "3-egg omelette + grilled veggies + 1 guava with salt",
+      "protein": 24,
+      "carbs": 22,
+      "fat": 15,
+      "kcal": 295
+    },
+    "lunch": {
+      "description": "450 g salmon steak cooked in butter + grilled veggies + 1 guava",
+      "protein": 110,
+      "carbs": 18,
+      "fat": 95,
+      "kcal": 1350,
+      "seafoodKg": 0.45
+    },
+    "postLunchShake": {
+      "description": "2 scoops Isopure unflavored + 5 g creatine",
+      "protein": 50,
+      "carbs": 0,
+      "fat": 0,
+      "kcal": 200
+    },
+    "dinner": {
+      "description": "450 g salmon steak (plain grilled) + grilled veggies",
+      "protein": 298,
+      "carbs": 0,
+      "fat": 124,
+      "kcal": 2340,
+      "seafoodKg": 0.65
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": false, "dose": "0/4 caps – missed today (no big deal once in 14 days)" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg – locked" },
+    "d3k2":     { "taken": true,  "dose": "5 tabs morning – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
+    "whey":     { "taken": true,  "scoops": 4 },
+    "creatine": { "taken": true,  "dose": "5 g post-lunch – locked" }
+  },
+  "training": {
+    "session": "Morning Push",
+    "workout": [
+      {
+        "exercise": "Decline Plate-Loaded Chest Press",
+        "weight_each_side_lbs": 60,
+        "total_added_weight_lbs": 120,
+        "sets": [
+          { "set": 1, "reps": 8 },
+          { "set": 2, "reps": 8 },
+          { "set": 3, "reps": 8 }
+        ]
+      },
+      {
+        "exercise": "Weighted Dips + Triceps finishers",
+        "sets": 3,
+        "notes": "Heavy bodyweight + extra weight"
+      }
+    ]
+  },
+  "feeling": 10,
+  "notes": "DAY 14 LEGENDARY – Fasted 86.2 kg. Lunch salmon in butter (still under 50 g carbs). 532 g protein, 1.10 kg salmon demolished. Missed Omega-3 once in 14 days = zero damage. New pre-workout stack (Citrulline + Beta-Alanine + Fadogia/Tongkat) starts tomorrow. Streak = 14."
+}
+
