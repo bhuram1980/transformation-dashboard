@@ -1,0 +1,56 @@
+{
+  "date": "2025-12-07",
+  "fastedWeight": 84.1,
+  "waist": null,
+  "total": {
+    "protein": 290,
+    "carbs": 19,
+    "fat": 39,
+    "kcal": 1615,
+    "seafoodKg": 0.63
+  },
+  "meals": {
+    "breakfast": {
+      "description": "4-egg omelette (minimal yolks, zero oil) + black coffee",
+      "protein": 28,
+      "carbs": 6,
+      "fat": 7,
+      "kcal": 195
+    },
+    "postWorkoutShake": {
+      "description": "2 scoops whey isolate + 5 g creatine (in pre-workout drink)",
+      "protein": 50,
+      "carbs": 5,
+      "fat": 2,
+      "kcal": 230
+    },
+    "lunch": {
+      "description": "300 g grilled Norwegian/Atlantic salmon + green veggies (minimal oil)",
+      "protein": 70,
+      "carbs": 7,
+      "fat": 19,
+      "kcal": 500,
+      "seafoodKg": 0.30
+    },
+    "dinner": {
+      "description": "2 whole grilled crabs (≈330 g edible meat) + 300 g grilled Pandugappa (Black Pomfret) – zero oil/butter, just salt & spices",
+      "protein": 142,
+      "carbs": 1,
+      "fat": 11,
+      "kcal": 690,
+      "seafoodKg": 0.63
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
+    "nac":      { "taken": true,  "dose": "1–2 × 600 mg – locked" },
+    "d3k2":     { "taken": true,  "dose": "Vitamin D taken – locked" },
+    "zmb":      { "taken": true,  "dose": "Night dose taken – locked" },
+    "whey":     { "taken": true,  "scoops": 2 },
+    "creatine": { "taken": true,  "dose": "5 g with pre-workout" }
+  },
+  "training": "Heavy chest day – bench, incline, flies, cable work. Volume PR. Pump insane.",
+  "feeling": 10,
+  "notes": "Peak Dixit shredded mode. 290 g protein on <20 g carbs and only 39 g fat. Zero junk, zero added oil anywhere. Fasted weight dropping fast while strength is flying. Seafood demolished: 630 g edible portion at dinner alone. Streak continues."
+}
+
