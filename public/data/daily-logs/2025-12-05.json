@@ -1,0 +1,57 @@
+{
+  "date": "2025-12-05",
+  "fastedWeight": 85.9,
+  "waist": null,
+  "total": {
+    "protein": 618,
+    "carbs": 38,
+    "fat": 198,
+    "kcal": 4360,
+    "seafoodKg": 1.62
+  },
+  "meals": {
+    "breakfast": {
+      "description": "4-egg omelette + 100g chicken breast + grilled veggies",
+      "protein": 53,
+      "carbs": 5,
+      "fat": 30,
+      "kcal": 500
+    },
+    "lunch": {
+      "description": "450g Norwegian salmon steak (skin on) + grilled veggies + sauerkraut mountain",
+      "protein": 108,
+      "carbs": 12,
+      "fat": 81,
+      "kcal": 1215,
+      "seafoodKg": 0.45
+    },
+    "eveningSnack": {
+      "description": "400g grilled sea bass (skin on) + grilled vegetables",
+      "protein": 96,
+      "carbs": 10,
+      "fat": 36,
+      "kcal": 740,
+      "seafoodKg": 0.40
+    },
+    "dinner": {
+      "description": "600gilled jumbo tiger prawns (4 × ~280g whole = ~400g edible) + 1 large rock lobster (~800g whole = 770g edible with shell on grilled) + grilled veggies",
+      "protein": 361,
+      "carbs": 11,
+      "fat": 51,
+      "kcal": 1905,
+      "seafoodKg": 1.17
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true, "dose": "4 caps with lunch salmon – locked" },
+    "nac":      { "taken": true, "dose": "2 × 600mg (morning + night) – locked" },
+    "d3k2":     { "taken": true, "dose": "5 tabs pre-breakfast – locked" },
+    "zmb":      { "taken": true, "dose": "3 caps before bed – locked" },
+    "whey":     { "taken": true, "scoops": 2 },
+    "creatine": { "taken": true, "dose": "5g post-gym/evening" }
+  },
+  "training": "Full push gym session (Chest Press + Weighted Dips PR incoming) + 1.2 hr light surf",
+  "feeling": 10,
+  "notes": "DAY 15 ABSOLUTE CARNAGE – Fasted 85.9 kg (-4.4 kg from Day 1). 618 g protein world record smashed again, 1.62 kg premium seafood executed (salmon + sea bass + jumbo prawns + lobster). New pre-workout stack (Citrulline + Beta-Alanine + Tongkat + Fadogia) deployed – pumps demonic. Streak = 15 and still accelerating."
+}
+
