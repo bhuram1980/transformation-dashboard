@@ -1,0 +1,63 @@
+{
+  "date": "2025-12-08",
+  "fastedWeight": 83.8,
+  "waist": null,
+  "total": {
+    "protein": 298,
+    "carbs": 24,
+    "fat": 42,
+    "kcal": 1740,
+    "seafoodKg": 0.63
+  },
+  "meals": {
+    "breakfast": {
+      "description": "Black coffee + full morning stack (NAC, D3K2, Omega-3 etc)",
+      "protein": 0,
+      "carbs": 4,
+      "fat": 0,
+      "kcal": 15
+    },
+    "postWakeShake": {
+      "description": "2 scoops Isopure unflavoured + 5 g creatine",
+      "protein": 50,
+      "carbs": 2,
+      "fat": 0,
+      "kcal": 200
+    },
+    "meal1": {
+      "description": "Chicken omelette (4 whole eggs + ~200 g chicken breast, zero oil)",
+      "protein": 78,
+      "carbs": 3,
+      "fat": 22,
+      "kcal": 550
+    },
+    "lunch": {
+      "description": "350 g grilled salmon + big plate grilled veggies (broccoli, zucchini, peppers – minimal oil)",
+      "protein": 80,
+      "carbs": 12,
+      "fat": 20,
+      "kcal": 540,
+      "seafoodKg": 0.35
+    },
+    "dinner": {
+      "description": "2 whole grilled crabs (~330–350 g edible meat) – Indian masala rubbed & grilled, no curry gravy, no butter",
+      "protein": 90,
+      "carbs": 3,
+      "fat": 0,
+      "kcal": 435,
+      "seafoodKg": 0.63
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
+    "nac":      { "taken": true,  "dose": "2 × 600 mg – locked" },
+    "d3k2":     { "taken": true,  "dose": "Morning dose – locked" },
+    "zmb":      { "taken": true,  "dose": "3 caps MyProtein ZMB6 before bed – locked" },
+    "whey":     { "taken": true,  "scoops": 2 },
+    "creatine": { "taken": true,  "dose": "5 g with Isopure" }
+  },
+  "training": "Deadlift 40 kg + bar (5–6 working sets), Back Squat 10 kg + bar (light technique day after heavy chest yesterday). Volume moderate, form perfect.",
+  "feeling": 10,
+  "notes": "Another shredded day – 298 g protein on <25 g carbs. Crabs grilled clean with just masala (no oil bath = still basically zero fat). Weight dropping fast (83.8 kg fasted). Deadlifts felt strong even on deload weight. Streak unstoppable."
+}
+
