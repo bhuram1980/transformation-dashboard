@@ -642,6 +642,11 @@ def dashboard_v5():
     """V5 dashboard - Stripe-inspired layout with proper section order"""
     return render_template('dashboard-v5.html')
 
+@app.route('/training')
+def training_tracker():
+    """Training tracker page - shows exercise progression and suggests next weights"""
+    return render_template('training-tracker.html')
+
 
 @app.route('/api/data')
 def get_data():
@@ -1655,6 +1660,121 @@ def upload_photo():
         print(f"Upload error: {error_msg}")
         return jsonify({'success': False, 'error': error_msg}), 500
 
+
+@app.route('/api/training')
+def get_training_data():
+    """API endpoint to get all training data grouped by exercise - public access"""
+    try:
+        loader = TransformationDataLoader()
+        daily_logs = loader.get_daily_logs()
+        
+        # Parse training data from all logs
+        training_data = []
+        
+        for log in daily_logs:
+            date = log.get('date', '')
+            day = log.get('day', 0)
+            training = log.get('training', '')
+            
+            if not training:
+                continue
+            
+            # Handle both string and object formats
+            if isinstance(training, str):
+                # Simple string format - try to extract basic info
+                training_data.append({
+                    'date': date,
+                    'day': day,
+                    'type': 'string',
+                    'content': training,
+                    'exercises': []
+                })
+            elif isinstance(training, dict):
+                # Structured format
+                session = training.get('session', '')
+                workout = training.get('workout', [])
+                
+                exercises = []
+                for exercise_obj in workout:
+                    exercise_name = exercise_obj.get('exercise', '')
+                    weight_each_side = exercise_obj.get('weight_each_side_lbs')
+                    total_weight = exercise_obj.get('total_added_weight_lbs')
+                    sets = exercise_obj.get('sets', [])
+                    notes = exercise_obj.get('notes', '')
+                    
+                    exercises.append({
+                        'name': exercise_name,
+                        'weight_each_side_lbs': weight_each_side,
+                        'total_added_weight_lbs': total_weight,
+                        'sets': sets,
+                        'notes': notes
+                    })
+                
+                training_data.append({
+                    'date': date,
+                    'day': day,
+                    'type': 'structured',
+                    'session': session,
+                    'exercises': exercises
+                })
+        
+        # Group exercises by name for progression tracking
+        exercise_groups = {}
+        
+        for entry in training_data:
+            if entry['type'] == 'structured':
+                for ex in entry['exercises']:
+                    ex_name = ex['name']
+                    if not ex_name:
+                        continue
+                    
+                    if ex_name not in exercise_groups:
+                        exercise_groups[ex_name] = []
+                    
+                    # Extract weight info
+                    weight = None
+                    if ex.get('total_added_weight_lbs'):
+                        weight = ex['total_added_weight_lbs']
+                    elif ex.get('weight_each_side_lbs'):
+                        weight = ex['weight_each_side_lbs'] * 2  # Approximate total
+                    
+                    # Extract sets/reps
+                    sets_reps = []
+                    if ex.get('sets'):
+                        for s in ex['sets']:
+                            sets_reps.append({
+                                'set': s.get('set', 0),
+                                'reps': s.get('reps', 0)
+                            })
+                    
+                    exercise_groups[ex_name].append({
+                        'date': entry['date'],
+                        'day': entry['day'],
+                        'weight_lbs': weight,
+                        'weight_each_side_lbs': ex.get('weight_each_side_lbs'),
+                        'sets_reps': sets_reps,
+                        'notes': ex.get('notes', '')
+                    })
+        
+        # Sort each exercise group by date
+        for ex_name in exercise_groups:
+            exercise_groups[ex_name].sort(key=lambda x: x['date'])
+        
+        return jsonify({
+            'training_data': training_data,
+            'exercise_groups': exercise_groups,
+            'total_sessions': len(training_data)
+        })
+    except Exception as e:
+        print(f"Error in /api/training: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': str(e),
+            'training_data': [],
+            'exercise_groups': {},
+            'total_sessions': 0
+        }), 500
 
 @app.route('/api/photos')
 def get_photos():
