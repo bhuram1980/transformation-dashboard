@@ -2,6 +2,7 @@
 
 let trainingData = [];
 let exerciseGroups = {};
+let exercisesByCategory = {};
 
 // Load training data on page load
 document.addEventListener('DOMContentLoaded', async () => {
@@ -23,18 +24,13 @@ async function loadTrainingData() {
         
         trainingData = data.training_data || [];
         exerciseGroups = data.exercise_groups || {};
+        exercisesByCategory = data.exercises_by_category || {};
         
         console.log('Loaded training data:', {
             sessions: trainingData.length,
             exercises: Object.keys(exerciseGroups).length,
-            exerciseGroups: exerciseGroups
+            categories: exercisesByCategory
         });
-        
-        // Debug: Log first exercise group if available
-        const firstExercise = Object.keys(exerciseGroups)[0];
-        if (firstExercise) {
-            console.log('First exercise sample:', firstExercise, exerciseGroups[firstExercise]);
-        }
     } catch (error) {
         console.error('Error fetching training data:', error);
         showError('Failed to fetch training data');
@@ -61,7 +57,7 @@ function renderTrainingStats() {
 function renderExerciseProgression() {
     const container = document.getElementById('exerciseContainer');
     
-    if (Object.keys(exerciseGroups).length === 0) {
+    if (!exercisesByCategory || Object.keys(exercisesByCategory).length === 0) {
         container.innerHTML = `
             <div class="no-data">
                 <div class="no-data-icon">💪</div>
@@ -74,22 +70,58 @@ function renderExerciseProgression() {
     
     let html = '';
     
-    // Sort exercises by name
-    const sortedExercises = Object.keys(exerciseGroups).sort();
+    // Define category order and icons
+    const categoryOrder = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Other'];
+    const categoryIcons = {
+        'Chest': '💪',
+        'Back': '🏋️',
+        'Legs': '🦵',
+        'Shoulders': '🤲',
+        'Arms': '💪',
+        'Other': '⚙️'
+    };
     
-    for (const exerciseName of sortedExercises) {
-        const sessions = exerciseGroups[exerciseName];
+    // Render each category section
+    for (const category of categoryOrder) {
+        const exercises = exercisesByCategory[category] || [];
+        
+        if (exercises.length === 0) {
+            continue; // Skip empty categories
+        }
         
         html += `
-            <div class="exercise-card">
-                <div class="exercise-header">
-                    <h3 class="exercise-name">${escapeHtml(exerciseName)}</h3>
-                    <span class="exercise-count">${sessions.length} session${sessions.length !== 1 ? 's' : ''}</span>
+            <div class="category-section">
+                <div class="category-header">
+                    <h2 class="category-title">
+                        <span class="category-icon">${categoryIcons[category] || '⚙️'}</span>
+                        ${category}
+                    </h2>
+                    <span class="category-count">${exercises.length} exercise${exercises.length !== 1 ? 's' : ''}</span>
                 </div>
-                <div class="exercise-content">
-                    ${renderProgressionTable(exerciseName, sessions)}
-                    ${renderProgressionChart(exerciseName, sessions)}
-                    ${renderNextWeightSuggestion(exerciseName, sessions)}
+                <div class="category-exercises">
+        `;
+        
+        // Render exercises in this category
+        for (const exercise of exercises) {
+            const exerciseName = exercise.name;
+            const sessions = exercise.sessions;
+            
+            html += `
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <h3 class="exercise-name">${escapeHtml(exerciseName)}</h3>
+                        <span class="exercise-count">${sessions.length} session${sessions.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="exercise-content">
+                        ${renderProgressionTable(exerciseName, sessions)}
+                        ${renderProgressionChart(exerciseName, sessions)}
+                        ${renderNextWeightSuggestion(exerciseName, sessions)}
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += `
                 </div>
             </div>
         `;

@@ -1795,8 +1795,39 @@ def get_training_data():
             # Keep original if no match (capitalize first letter)
             return name.strip().title()
         
+        # Categorize exercises by body part
+        def categorize_exercise(name):
+            """Categorize exercise by body part"""
+            if not name:
+                return 'Other'
+            
+            name_lower = name.lower().strip()
+            
+            # Chest exercises
+            if any(x in name_lower for x in ['chest', 'bench', 'press', 'pec', 'fly', 'dip']):
+                return 'Chest'
+            
+            # Back exercises
+            if any(x in name_lower for x in ['back', 'row', 'pulldown', 'lat', 'deadlift', 'pull']):
+                return 'Back'
+            
+            # Leg exercises
+            if any(x in name_lower for x in ['squat', 'leg', 'curl', 'glute', 'hip', 'abductor', 'adductor', 'calf', 'hamstring', 'quad']):
+                return 'Legs'
+            
+            # Shoulders
+            if any(x in name_lower for x in ['shoulder', 'lateral', 'rear delt', 'delt', 'overhead']):
+                return 'Shoulders'
+            
+            # Arms
+            if any(x in name_lower for x in ['bicep', 'tricep', 'arm']):
+                return 'Arms'
+            
+            return 'Other'
+        
         # Group exercises by normalized name for progression tracking
         exercise_groups = {}
+        exercise_categories = {}  # Track which category each exercise belongs to
         
         for entry in training_data:
             if entry['type'] == 'structured':
@@ -1811,8 +1842,12 @@ def get_training_data():
                     # Normalize exercise name
                     normalized_name = normalize_exercise_name(ex_name, has_weight_each_side)
                     
+                    # Categorize exercise
+                    category = categorize_exercise(normalized_name)
+                    
                     if normalized_name not in exercise_groups:
                         exercise_groups[normalized_name] = []
+                        exercise_categories[normalized_name] = category
                     
                     # Extract weight info - handle both kg and lbs
                     weight = None
@@ -1889,15 +1924,39 @@ def get_training_data():
         for ex_name in exercise_groups:
             exercise_groups[ex_name].sort(key=lambda x: x['date'])
         
+        # Organize exercises by category
+        exercises_by_category = {
+            'Chest': [],
+            'Back': [],
+            'Legs': [],
+            'Shoulders': [],
+            'Arms': [],
+            'Other': []
+        }
+        
+        for ex_name, sessions in exercise_groups.items():
+            category = exercise_categories.get(ex_name, 'Other')
+            if category in exercises_by_category:
+                exercises_by_category[category].append({
+                    'name': ex_name,
+                    'sessions': sessions
+                })
+        
+        # Sort exercises within each category by name
+        for category in exercises_by_category:
+            exercises_by_category[category].sort(key=lambda x: x['name'])
+        
         # Debug logging
         print(f"Training API: Found {len(training_data)} training sessions")
         print(f"Training API: Found {len(exercise_groups)} exercise groups")
-        for ex_name, sessions in exercise_groups.items():
-            print(f"  - {ex_name}: {len(sessions)} sessions")
+        for category, exercises in exercises_by_category.items():
+            if exercises:
+                print(f"  {category}: {len(exercises)} exercises")
         
         return jsonify({
             'training_data': training_data,
             'exercise_groups': exercise_groups,
+            'exercises_by_category': exercises_by_category,
             'total_sessions': len(training_data)
         })
     except Exception as e:
