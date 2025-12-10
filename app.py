@@ -1753,19 +1753,44 @@ def get_training_data():
                     
                     # Extract sets/reps - handle flexible structures
                     sets_reps = []
-                    if ex.get('sets'):
-                        for s in ex['sets']:
-                            set_info = {
-                                'set': s.get('set', 0),
-                                'reps': s.get('reps'),
-                                'distance': s.get('distance'),
-                                'weight_each_side_kg': s.get('weight_each_side_kg'),
-                                'weight_each_side_lbs': s.get('weight_each_side_lbs')
-                            }
-                            # If set has weight info, use it for this set
-                            if set_info['weight_each_side_kg']:
-                                set_info['weight_each_side_lbs'] = set_info['weight_each_side_kg'] * 2.20462
-                            sets_reps.append(set_info)
+                    sets_data = ex.get('sets', [])
+                    
+                    # Handle case where sets might be an integer (number of sets) instead of array
+                    if isinstance(sets_data, int):
+                        # If sets is just a number, create placeholder entries
+                        for i in range(sets_data):
+                            sets_reps.append({
+                                'set': i + 1,
+                                'reps': None,
+                                'distance': None,
+                                'weight_each_side_kg': None,
+                                'weight_each_side_lbs': None
+                            })
+                    elif isinstance(sets_data, list):
+                        # Normal case: sets is an array of set objects
+                        for s in sets_data:
+                            # Handle case where set item might be a dict or other structure
+                            if isinstance(s, dict):
+                                set_info = {
+                                    'set': s.get('set', 0),
+                                    'reps': s.get('reps'),
+                                    'distance': s.get('distance'),
+                                    'weight_each_side_kg': s.get('weight_each_side_kg'),
+                                    'weight_each_side_lbs': s.get('weight_each_side_lbs')
+                                }
+                                # If set has weight info, use it for this set
+                                if set_info['weight_each_side_kg']:
+                                    set_info['weight_each_side_lbs'] = set_info['weight_each_side_kg'] * 2.20462
+                                sets_reps.append(set_info)
+                            else:
+                                # Fallback: treat as simple value
+                                sets_reps.append({
+                                    'set': len(sets_reps) + 1,
+                                    'reps': s if isinstance(s, (int, float)) else None,
+                                    'distance': None,
+                                    'weight_each_side_kg': None,
+                                    'weight_each_side_lbs': None
+                                })
                     
                     exercise_groups[ex_name].append({
                         'date': entry['date'],
