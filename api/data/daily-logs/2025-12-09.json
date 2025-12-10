@@ -11,7 +11,7 @@
   },
   "meals": {
     "breakfast": {
-      "description": "Chicken omelette wrap (4 whole eggs + ~180 g chicken breast in low-carb wrap) + 2 boiled eggs + sauerkraut + black coffee + full morning supplement stack",
+      "description": "Chicken omelette wrap (4 whole eggs + ~180 g chicken breast) + 2 boiled eggs + sauerkraut + black coffee + full morning stack",
       "protein": 92,
       "carbs": 18,
       "fat": 34,
@@ -25,7 +25,7 @@
       "kcal": 200
     },
     "lunch": {
-      "description": "400 g grilled salmon + big plate grilled veggies",
+      "description": "400 g grilled salmon + grilled veggies",
       "protein": 92,
       "carbs": 12,
       "fat": 14,
@@ -33,14 +33,14 @@
       "seafoodKg": 0.40
     },
     "snack": {
-      "description": "4 roasted singhada (~250 g edible) + 1 roasted gegu/lotus root (~150 g) + ¼ medium guava",
+      "description": "4 roasted singhada + 1 roasted lotus root (gegu) + ¼ guava",
       "protein": 6,
       "carbs": 36,
       "fat": 0,
       "kcal": 260
     },
     "dinner": {
-      "description": "2 whole grilled crabs (~350 g edible) + 100 g grilled prawns + 200 g grilled Pandugappa fish (zero oil)",
+      "description": "2 whole grilled crabs (~350 g meat) + 100 g prawns + 200 g Pandugappa fish – zero oil",
       "protein": 78,
       "carbs": 0,
       "fat": 0,
@@ -49,15 +49,72 @@
     }
   },
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
-    "d3k2":     { "taken": true,  "dose": "Morning dose – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps MyProtein ZMB6 before bed – locked" },
-    "whey":     { "taken": true,  "scoops": 2 },
-    "creatine": { "taken": true,  "dose": "5 g with Isopure – locked" }
+    "omega3": { "taken": true, "dose": "4 caps – locked" },
+    "nac": { "taken": true, "dose": "2 × 600 mg – locked" },
+    "d3k2": { "taken": true, "dose": "Morning dose – locked" },
+    "zmb": { "taken": true, "dose": "3 caps ON Zinc Magnesium Aspartate before bed – locked" },
+    "whey": { "taken": true, "scoops": 2 },
+    "creatine": { "taken": true, "dose": "5 g with Isopure – locked" }
   },
-  "training": "Heavy Back Day – Deadlift warm-ups to 80 kg × 6, Lat Pulldown 4×10-12 @ 30 kg, Dual Pulley Row, MTS High Row, Sled Pull finisher. Pump disgusting.",
+  "training": {
+    "session": "Heavy Back Day",
+    "workout": [
+      {
+        "exercise": "Deadlift (conventional)",
+        "weight_each_side_kg": 80,
+        "total_added_weight_kg": 160,
+        "sets": [
+          { "set": "warm-up", "weight_each_side_kg": 40, "reps": 6 },
+          { "set": "warm-up", "weight_each_side_kg": 60, "reps": 4 },
+          { "set": "working", "weight_each_side_kg": 80, "reps": 6 }
+        ],
+        "notes": "Felt strong & explosive"
+      },
+      {
+        "exercise": "Lat Pulldown (wide grip)",
+        "weight_each_side_kg": null,
+        "total_added_weight_kg": 30,
+        "sets": [
+          { "set": 1, "reps": 12 },
+          { "set": 2, "reps": 12 },
+          { "set": 3, "reps": 10 },
+          { "set": 4, "reps": 10 }
+        ]
+      },
+      {
+        "exercise": "Dual Pulley Seated Row",
+        "weight_each_side_kg": null,
+        "total_added_weight_kg": null,
+        "sets": [
+          { "set": 1, "reps": 12 },
+          { "set": 2, "reps": 12 },
+          { "set": 3, "reps": 10 },
+          { "set": 4, "reps": 10 }
+        ],
+        "notes": "20–25 kg range"
+      },
+      {
+        "exercise": "MTS High Row",
+        "weight_each_side_lbs": 30,
+        "total_added_weight_lbs": 60,
+        "sets": [
+          { "set": 1, "reps": 12 },
+          { "set": 2, "reps": 12 },
+          { "set": 3, "reps": 10 },
+          { "set": 4, "reps": 10 }
+        ]
+      },
+      {
+        "exercise": "Sled Pull (backward)",
+        "weight_each_side_kg": null,
+        "total_added_weight_kg": 70,
+        "sets": [
+          { "set": 1, "distance": "1 full round @ 60 kg + ½ round @ 80 kg" }
+        ],
+        "notes": "Finisher – back & grip on fire"
+      }
+    ]
+  },
   "feeling": 10,
-  "notes": "All supplements & medicines 100 % locked. 318 g protein, 800 g seafood demolished, strength still climbing. Slight water hold from natural carbs (singhada + gegu + wrap) → tomorrow back to <30 g carbs and scale will drop 600–800 g overnight. Streak unbreakable."
+  "notes": "318 g protein, 800 g seafood demolished. All supplements locked (switched to ON ZMA tonight). Natural carbs slightly higher today → tomorrow <30 g and scale drops hard again. Strength keeps climbing. Streak alive."
 }
-

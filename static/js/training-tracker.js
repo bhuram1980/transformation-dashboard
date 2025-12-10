@@ -113,19 +113,42 @@ function renderProgressionTable(exerciseName, sessions) {
         const date = new Date(session.date);
         const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         
-        // Format weight
+        // Format weight - show both kg and lbs if available
         let weightStr = '--';
         if (session.weight_lbs !== null && session.weight_lbs !== undefined) {
-            weightStr = `${session.weight_lbs} lbs`;
-            if (session.weight_each_side_lbs) {
-                weightStr += ` (${session.weight_each_side_lbs} each side)`;
+            const weightLbs = Math.round(session.weight_lbs);
+            if (session.weight_kg) {
+                weightStr = `${session.weight_kg} kg (${weightLbs} lbs)`;
+            } else {
+                weightStr = `${weightLbs} lbs`;
             }
+            if (session.weight_each_side_lbs) {
+                const eachSide = Math.round(session.weight_each_side_lbs);
+                weightStr += ` (${eachSide} lbs each side)`;
+            }
+        } else if (session.weight_kg) {
+            weightStr = `${session.weight_kg} kg`;
         }
         
-        // Format sets/reps
+        // Format sets/reps - handle flexible structures
         let setsRepsStr = '--';
         if (session.sets_reps && session.sets_reps.length > 0) {
-            const setsReps = session.sets_reps.map(sr => `${sr.set}: ${sr.reps}`).join(', ');
+            const setsReps = session.sets_reps.map(sr => {
+                let setStr = '';
+                if (typeof sr.set === 'string') {
+                    setStr = sr.set;
+                } else {
+                    setStr = `Set ${sr.set}`;
+                }
+                
+                if (sr.reps !== null && sr.reps !== undefined) {
+                    return `${setStr}: ${sr.reps} reps`;
+                } else if (sr.distance) {
+                    return `${setStr}: ${sr.distance}`;
+                } else {
+                    return setStr;
+                }
+            }).join(', ');
             setsRepsStr = setsReps;
         }
         
@@ -156,8 +179,21 @@ function renderNextWeightSuggestion(exerciseName, sessions) {
     }
     
     // Get weights from sessions (filter out null/undefined)
+    // Use weight_lbs if available, otherwise try to extract from sets
     const weights = sessions
-        .map(s => s.weight_lbs)
+        .map(s => {
+            if (s.weight_lbs !== null && s.weight_lbs !== undefined && s.weight_lbs > 0) {
+                return s.weight_lbs;
+            }
+            // Try to get weight from working sets
+            if (s.sets_reps && s.sets_reps.length > 0) {
+                const workingSet = s.sets_reps.find(sr => sr.set === 'working' || sr.set === s.sets_reps.length);
+                if (workingSet && workingSet.weight_each_side_lbs) {
+                    return workingSet.weight_each_side_lbs * 2;
+                }
+            }
+            return null;
+        })
         .filter(w => w !== null && w !== undefined && w > 0);
     
     if (weights.length < 2) {

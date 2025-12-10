@@ -1731,27 +1731,47 @@ def get_training_data():
                     if ex_name not in exercise_groups:
                         exercise_groups[ex_name] = []
                     
-                    # Extract weight info
+                    # Extract weight info - handle both kg and lbs
                     weight = None
+                    weight_each_side = None
+                    
+                    # Try lbs first
                     if ex.get('total_added_weight_lbs'):
                         weight = ex['total_added_weight_lbs']
                     elif ex.get('weight_each_side_lbs'):
+                        weight_each_side = ex['weight_each_side_lbs']
                         weight = ex['weight_each_side_lbs'] * 2  # Approximate total
                     
-                    # Extract sets/reps
+                    # Try kg and convert to lbs (1 kg = 2.20462 lbs)
+                    if weight is None:
+                        if ex.get('total_added_weight_kg'):
+                            weight = ex['total_added_weight_kg'] * 2.20462
+                        elif ex.get('weight_each_side_kg'):
+                            weight_each_side = ex['weight_each_side_kg'] * 2.20462
+                            weight = weight_each_side * 2
+                    
+                    # Extract sets/reps - handle flexible structures
                     sets_reps = []
                     if ex.get('sets'):
                         for s in ex['sets']:
-                            sets_reps.append({
+                            set_info = {
                                 'set': s.get('set', 0),
-                                'reps': s.get('reps', 0)
-                            })
+                                'reps': s.get('reps'),
+                                'distance': s.get('distance'),
+                                'weight_each_side_kg': s.get('weight_each_side_kg'),
+                                'weight_each_side_lbs': s.get('weight_each_side_lbs')
+                            }
+                            # If set has weight info, use it for this set
+                            if set_info['weight_each_side_kg']:
+                                set_info['weight_each_side_lbs'] = set_info['weight_each_side_kg'] * 2.20462
+                            sets_reps.append(set_info)
                     
                     exercise_groups[ex_name].append({
                         'date': entry['date'],
                         'day': entry['day'],
                         'weight_lbs': weight,
-                        'weight_each_side_lbs': ex.get('weight_each_side_lbs'),
+                        'weight_each_side_lbs': weight_each_side or ex.get('weight_each_side_lbs'),
+                        'weight_kg': ex.get('total_added_weight_kg') or (ex.get('weight_each_side_kg') * 2 if ex.get('weight_each_side_kg') else None),
                         'sets_reps': sets_reps,
                         'notes': ex.get('notes', '')
                     })
