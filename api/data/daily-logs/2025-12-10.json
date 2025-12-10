@@ -60,7 +60,7 @@
     "session": "Heavy Chest Day",
     "workout": [
       {
-        "exercise": "Flat Barbell Bench Press",
+        "exercise": "Bench Chest Press",
         "weight_each_side_kg": 22.5,
         "total_added_weight_kg": 45,
         "sets": [
@@ -75,7 +75,7 @@
         "notes": "Chest full, stretch perfect"
       },
       {
-        "exercise": "Incline Barbell Bench Press",
+        "exercise": "Incline Chest Press",
         "weight_each_side_kg": 22.5,
         "total_added_weight_kg": 45,
         "sets": [
@@ -89,9 +89,9 @@
         "weight_each_side_lbs": 30,
         "total_added_weight_lbs": 60,
         "sets": [
-          { "set": 1, "reps": 12 },
-          { "set": 2, "reps": 10 },
-          { "set": 3, "reps": 10 }
+          { "set": 1, "reps": null },
+          { "set": 2, "reps": null },
+          { "set": 3, "reps": null }
         ]
       },
       {
@@ -99,21 +99,20 @@
         "weight_each_side_lbs": 15,
         "total_added_weight_lbs": 30,
         "sets": [
-          { "set": 1, "reps": 12 },
-          { "set": 2, "reps": 12 },
-          { "set": 3, "reps": 10 }
+          { "set": 1, "reps": null },
+          { "set": 2, "reps": null },
+          { "set": 3, "reps": null }
         ]
       },
       {
-        "exercise": "Pec Deck Fly Machine",
+        "exercise": "Pectoral Fly Machine",
         "total_added_weight_lbs": 40,
         "sets": [
-          { "set": 1, "reps": 15 },
-          { "set": 2, "reps": 12 },
-          { "set": 3, "reps": 12 },
-          { "set": 4, "reps": 12 }
-        ],
-        "notes": "Max stretch & contraction"
+          { "set": 1, "reps": null },
+          { "set": 2, "reps": null },
+          { "set": 3, "reps": null },
+          { "set": 4, "reps": null }
+        ]
       }
     ]
   },
