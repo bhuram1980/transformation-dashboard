@@ -31,10 +31,10 @@
       "carbs": 10,
       "fat": 36,
       "kcal": 740,
-      "seafoodKg": 0.40
+      "seafoodKg": 0.4
     },
     "dinner": {
-      "description": "600gilled jumbo tiger prawns (4 × ~280g whole = ~400g edible) + 1 large rock lobster (~800g whole = 770g edible with shell on grilled) + grilled veggies",
+      "description": "600gilled jumbo tiger prawns (4 \u00d7 ~280g whole = ~400g edible) + 1 large rock lobster (~800g whole = 770g edible with shell on grilled) + grilled veggies",
       "protein": 361,
       "carbs": 11,
       "fat": 51,
@@ -43,15 +43,41 @@
     }
   },
   "supplements": {
-    "omega3":   { "taken": true, "dose": "4 caps with lunch salmon – locked" },
-    "nac":      { "taken": true, "dose": "2 × 600mg (morning + night) – locked" },
-    "d3k2":     { "taken": true, "dose": "5 tabs pre-breakfast – locked" },
-    "zmb":      { "taken": true, "dose": "3 caps before bed – locked" },
-    "whey":     { "taken": true, "scoops": 2 },
-    "creatine": { "taken": true, "dose": "5g post-gym/evening" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps with lunch salmon \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600mg (morning + night) \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs pre-breakfast \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 2
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5g post-gym/evening"
+    }
   },
-  "training": "Full push gym session (Chest Press + Weighted Dips PR incoming) + 1.2 hr light surf",
+  "training": {
+    "session": "Gym Session",
+    "workout": [
+      {
+        "exercise": "Weighted Dips PR incoming)",
+        "sets": [],
+        "notes": "Weighted Dips PR incoming)"
+      }
+    ]
+  },
   "feeling": 10,
-  "notes": "DAY 15 ABSOLUTE CARNAGE – Fasted 85.9 kg (-4.4 kg from Day 1). 618 g protein world record smashed again, 1.62 kg premium seafood executed (salmon + sea bass + jumbo prawns + lobster). New pre-workout stack (Citrulline + Beta-Alanine + Tongkat + Fadogia) deployed – pumps demonic. Streak = 15 and still accelerating."
+  "notes": "DAY 15 ABSOLUTE CARNAGE \u2013 Fasted 85.9 kg (-4.4 kg from Day 1). 618 g protein world record smashed again, 1.62 kg premium seafood executed (salmon + sea bass + jumbo prawns + lobster). New pre-workout stack (Citrulline + Beta-Alanine + Tongkat + Fadogia) deployed \u2013 pumps demonic. Streak = 15 and still accelerating."
 }
-

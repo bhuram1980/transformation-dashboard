@@ -18,7 +18,7 @@
       "kcal": 195
     },
     "postWorkoutShake": {
-      "description": "Missed – whey isolate + creatine not taken",
+      "description": "Missed \u2013 whey isolate + creatine not taken",
       "protein": 0,
       "carbs": 0,
       "fat": 0,
@@ -30,10 +30,10 @@
       "carbs": 7,
       "fat": 19,
       "kcal": 500,
-      "seafoodKg": 0.30
+      "seafoodKg": 0.3
     },
     "dinner": {
-      "description": "2 whole grilled crabs (≈330 g edible meat) + 300 g grilled Pandugappa (Black Pomfret) – zero oil/butter, just salt & spices",
+      "description": "2 whole grilled crabs (\u2248330 g edible meat) + 300 g grilled Pandugappa (Black Pomfret) \u2013 zero oil/butter, just salt & spices",
       "protein": 142,
       "carbs": 1,
       "fat": 11,
@@ -42,15 +42,109 @@
     }
   },
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
-    "nac":      { "taken": true,  "dose": "1–2 × 600 mg – locked" },
-    "d3k2":     { "taken": true,  "dose": "Vitamin D taken – locked" },
-    "zmb":      { "taken": true,  "dose": "Night dose taken – locked" },
-    "whey":     { "taken": false, "scoops": 0, "note": "Missed – Isopure not taken" },
-    "creatine": { "taken": false, "dose": "Missed – not taken" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "1\u20132 \u00d7 600 mg \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "Vitamin D taken \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "Night dose taken \u2013 locked"
+    },
+    "whey": {
+      "taken": false,
+      "scoops": 0,
+      "note": "Missed \u2013 Isopure not taken"
+    },
+    "creatine": {
+      "taken": false,
+      "dose": "Missed \u2013 not taken"
+    }
   },
-  "training": "Heavy chest day – bench, incline, flies, cable work. Volume PR. Pump insane.",
+  "training": {
+    "session": "Gym Session",
+    "workout": [
+      {
+        "exercise": "Bench Press",
+        "sets": [
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          },
+          {
+            "set": 4,
+            "reps": null
+          }
+        ]
+      },
+      {
+        "exercise": "Incline Press",
+        "sets": [
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          }
+        ]
+      },
+      {
+        "exercise": "Cable Flies",
+        "sets": [
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          }
+        ]
+      },
+      {
+        "exercise": "Cable Work",
+        "sets": [
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          }
+        ]
+      }
+    ]
+  },
   "feeling": 10,
   "notes": "Peak Dixit shredded mode. 240 g protein on <15 g carbs and only 37 g fat. Zero junk, zero added oil anywhere. Missed whey isolate and creatine today. Fasted weight dropping fast while strength is flying. Seafood demolished: 630 g edible portion at dinner alone. Streak continues."
 }
-

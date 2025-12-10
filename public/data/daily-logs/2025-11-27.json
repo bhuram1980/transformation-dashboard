@@ -45,19 +45,58 @@
       "carbs": 7,
       "fat": 80,
       "kcal": 1960,
-      "seafoodKg": 1.00
+      "seafoodKg": 1.0
     }
   },
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps with lunch salmon – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
-    "whey":     { "taken": true,  "scoops": 2 },
-    "creatine": { "taken": true,  "dose": "10 g total (2×5 g)" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps with lunch salmon \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg (morning + night) \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs pre-breakfast \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 2
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "10 g total (2\u00d75 g)"
+    }
   },
-  "training": "1.5 hr surfing + Upper body gym (chest press 3×8 @ 195 lbs + light bicep work)",
+  "training": {
+    "session": "Push Day",
+    "workout": [
+      {
+        "exercise": "chest press",
+        "total_added_weight_lbs": 195.0,
+        "sets": [
+          {
+            "set": 1,
+            "reps": 8
+          },
+          {
+            "set": 2,
+            "reps": 8
+          },
+          {
+            "set": 3,
+            "reps": 8
+          }
+        ]
+      }
+    ]
+  },
   "feeling": 10,
-  "notes": "DAY 7 WORLD RECORD – Fasted 86.4 kg (-3.6 kg from Day 1). 633 g protein, 1.45 kg edible seafood demolished. New all-time high. Streak = 7."
+  "notes": "DAY 7 WORLD RECORD \u2013 Fasted 86.4 kg (-3.6 kg from Day 1). 633 g protein, 1.45 kg edible seafood demolished. New all-time high. Streak = 7."
 }
-

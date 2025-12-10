@@ -9,7 +9,6 @@
     "kcal": 4015,
     "seafoodKg": 1.45
   },
-
   "meals": {
     "breakfast": {
       "description": "4 whole eggs + spinach + tomatoes",
@@ -47,17 +46,36 @@
       "kcal": 2025
     }
   },
-
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps total (2 morning + 2 with dinner)" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs with lunch" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed – taken" },
-    "whey":     { "taken": true,  "scoops": 1 },
-    "creatine": { "taken": true,  "dose": "5 g with whey" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps total (2 morning + 2 with dinner)"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg (morning + night) \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs with lunch"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 taken"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 1
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g with whey"
+    }
   },
-
-  "training": "1 hr surfing",
+  "training": {
+    "session": "Surfing",
+    "workout": []
+  },
   "feeling": 10,
-  "notes": "DAY 3 LEGENDARY – 536 g protein, 1.45 kg premium seafood demolished, full stack locked. New personal record."
+  "notes": "DAY 3 LEGENDARY \u2013 536 g protein, 1.45 kg premium seafood demolished, full stack locked. New personal record."
 }

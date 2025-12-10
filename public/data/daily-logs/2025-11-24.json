@@ -9,7 +9,6 @@
     "kcal": 3780,
     "seafoodKg": 1.25
   },
-
   "meals": {
     "breakfast": {
       "description": "4.5 whole egg omelette + grilled veggies + sauerkraut mountain",
@@ -40,17 +39,36 @@
       "kcal": 2035
     }
   },
-
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps with lunch salmon – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed – taken" },
-    "whey":     { "taken": true,  "scoops": 1 },
-    "creatine": { "taken": true,  "dose": "5 g post-surf – locked" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps with lunch salmon \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg (morning + night) \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs pre-breakfast \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 taken"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 1
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g post-surf \u2013 locked"
+    }
   },
-
-  "training": "1.5 hr surfing",
+  "training": {
+    "session": "Surfing",
+    "workout": []
+  },
   "feeling": 10,
-  "notes": "DAY 4 LEGENDARY – Fasted 86.7 kg (-3.3 kg from Day 1). 472 g protein, 1.25 kg edible seafood demolished (lobster + 3 sea crabs). Full stack 100 %. Streak = 4."
+  "notes": "DAY 4 LEGENDARY \u2013 Fasted 86.7 kg (-3.3 kg from Day 1). 472 g protein, 1.25 kg edible seafood demolished (lobster + 3 sea crabs). Full stack 100 %. Streak = 4."
 }

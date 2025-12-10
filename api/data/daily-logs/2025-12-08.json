@@ -32,7 +32,7 @@
       "kcal": 550
     },
     "lunch": {
-      "description": "350 g grilled salmon + big plate grilled veggies (broccoli, zucchini, peppers – minimal oil)",
+      "description": "350 g grilled salmon + big plate grilled veggies (broccoli, zucchini, peppers \u2013 minimal oil)",
       "protein": 80,
       "carbs": 12,
       "fat": 20,
@@ -40,7 +40,7 @@
       "seafoodKg": 0.35
     },
     "dinner": {
-      "description": "2 whole grilled crabs (~330–350 g edible meat) – Indian masala rubbed & grilled, no curry gravy, no butter",
+      "description": "2 whole grilled crabs (~330\u2013350 g edible meat) \u2013 Indian masala rubbed & grilled, no curry gravy, no butter",
       "protein": 90,
       "carbs": 3,
       "fat": 0,
@@ -49,15 +49,86 @@
     }
   },
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg – locked" },
-    "d3k2":     { "taken": true,  "dose": "Morning dose – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps MyProtein ZMB6 before bed – locked" },
-    "whey":     { "taken": true,  "scoops": 2 },
-    "creatine": { "taken": true,  "dose": "5 g with Isopure" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "Morning dose \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps MyProtein ZMB6 before bed \u2013 locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 2
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g with Isopure"
+    }
   },
-  "training": "Deadlift 40 kg + bar (5–6 working sets), Back Squat 10 kg + bar (light technique day after heavy chest yesterday). Volume moderate, form perfect.",
+  "training": {
+    "session": "Leg Day",
+    "workout": [
+      {
+        "exercise": "Deadlift (conventional)",
+        "total_added_weight_kg": 40,
+        "sets": [
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          },
+          {
+            "set": 4,
+            "reps": null
+          },
+          {
+            "set": 5,
+            "reps": null
+          },
+          {
+            "set": 6,
+            "reps": null
+          }
+        ],
+        "notes": "40 kg + bar (5-6 working sets)"
+      },
+      {
+        "exercise": "Back Squat",
+        "total_added_weight_kg": 10,
+        "sets": [
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          }
+        ],
+        "notes": "10 kg + bar (light technique day)"
+      }
+    ]
+  },
   "feeling": 10,
-  "notes": "Another shredded day – 298 g protein on <25 g carbs. Crabs grilled clean with just masala (no oil bath = still basically zero fat). Weight stable at 86.2 kg fasted. Deadlifts felt strong even on deload weight. Streak unstoppable."
+  "notes": "Another shredded day \u2013 298 g protein on <25 g carbs. Crabs grilled clean with just masala (no oil bath = still basically zero fat). Weight stable at 86.2 kg fasted. Deadlifts felt strong even on deload weight. Streak unstoppable."
 }
-

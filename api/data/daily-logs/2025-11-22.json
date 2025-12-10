@@ -2,37 +2,96 @@
   "date": "2025-11-22",
   "fastedWeight": 89.0,
   "waist": null,
-  "total": { "protein": 395, "carbs": 36, "fat": 136, "kcal": 2450, "seafoodKg": 0.9 },
-
+  "total": {
+    "protein": 395,
+    "carbs": 36,
+    "fat": 136,
+    "kcal": 2450,
+    "seafoodKg": 0.9
+  },
   "meals": {
     "breakfast": {
       "description": "5 whole eggs + mixed veggies",
-      "protein": 35, "carbs": 10, "fat": 30, "kcal": 430
+      "protein": 35,
+      "carbs": 10,
+      "fat": 30,
+      "kcal": 430
     },
     "lunch": {
       "description": "450 g salmon steak (skin on) + grilled veggies",
-      "protein": 108, "carbs": 12, "fat": 81, "kcal": 1215
+      "protein": 108,
+      "carbs": 12,
+      "fat": 81,
+      "kcal": 1215
     },
     "dinner": {
       "description": "450 g lobster (shell on) + lime pickle",
-      "protein": 238, "carbs": 8,  "fat": 18, "kcal": 1120
+      "protein": 238,
+      "carbs": 8,
+      "fat": 18,
+      "kcal": 1120
     },
     "snacks": {
       "description": "1 scoop Critical Whey + 5 g creatine",
-      "protein": 27, "carbs": 6,  "fat": 7,  "kcal": 185
+      "protein": 27,
+      "carbs": 6,
+      "fat": 7,
+      "kcal": 185
     }
   },
-
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps with lunch" },
-    "nac":      { "taken": true,  "dose": "1 morning + 1 night" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs with lunch" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed" },
-    "whey":     { "taken": true,  "scoops": 1 },
-    "creatine": { "taken": true,  "dose": "5 g" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps with lunch"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "1 morning + 1 night"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs with lunch"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 1
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g"
+    }
   },
-
-  "training": "2.3 hr surfing + chest press 4×8 @178 lbs + Smith squats",
+  "training": {
+    "session": "Surfing + Gym",
+    "workout": [
+      {
+        "exercise": "chest press",
+        "total_added_weight_lbs": 178.0,
+        "sets": [
+          {
+            "set": 1,
+            "reps": 8
+          },
+          {
+            "set": 2,
+            "reps": 8
+          },
+          {
+            "set": 3,
+            "reps": 8
+          },
+          {
+            "set": 4,
+            "reps": 8
+          }
+        ]
+      }
+    ]
+  },
   "feeling": 10,
   "notes": "Full stack locked, lobster annihilated"
 }

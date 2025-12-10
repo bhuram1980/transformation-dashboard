@@ -11,7 +11,7 @@
   },
   "meals": {
     "breakfast": {
-      "description": "6 whole eggs + 200–250 g shrimp omelette + veggies",
+      "description": "6 whole eggs + 200\u2013250 g shrimp omelette + veggies",
       "protein": 95,
       "carbs": 10,
       "fat": 48,
@@ -42,15 +42,58 @@
     }
   },
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps (2 morning + 2 lunch) – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
-    "whey":     { "taken": true,  "scoops": 2 },
-    "creatine": { "taken": true,  "dose": "5 g post-surf" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps (2 morning + 2 lunch) \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg (morning + night) \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs pre-breakfast \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 2
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g post-surf"
+    }
   },
-  "training": "1.5 hr surfing + full-body gym (Chest Press 4×8 @ 227 lbs / 103 kg)",
+  "training": {
+    "session": "Surfing + Gym",
+    "workout": [
+      {
+        "exercise": "Chest Press",
+        "total_added_weight_lbs": 227.0,
+        "sets": [
+          {
+            "set": 1,
+            "reps": 8
+          },
+          {
+            "set": 2,
+            "reps": 8
+          },
+          {
+            "set": 3,
+            "reps": 8
+          },
+          {
+            "set": 4,
+            "reps": 8
+          }
+        ]
+      }
+    ]
+  },
   "feeling": 10,
-  "notes": "DAY 9 WORLD RECORD – Fasted 86.2 kg (-3.8 kg from Day 1). 638 g protein, 1.62 kg edible seafood demolished. New all-time protein record beaten again. Chest press +49 lbs in 7 days. Streak = 9."
+  "notes": "DAY 9 WORLD RECORD \u2013 Fasted 86.2 kg (-3.8 kg from Day 1). 638 g protein, 1.62 kg edible seafood demolished. New all-time protein record beaten again. Chest press +49 lbs in 7 days. Streak = 9."
 }
-

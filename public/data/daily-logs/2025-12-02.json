@@ -38,19 +38,50 @@
       "carbs": 21,
       "fat": 99,
       "kcal": 2065,
-      "seafoodKg": 0.90
+      "seafoodKg": 0.9
     }
   },
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg – locked" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs morning – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed – locked" },
-    "whey":     { "taken": true,  "scoops": 1.5 },
-    "creatine": { "taken": true,  "dose": "5 g post-gym" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs morning \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 1.5
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g post-gym"
+    }
   },
-  "training": "Gym – chest press + biceps curls + full body",
+  "training": {
+    "session": "Leg Day",
+    "workout": [
+      {
+        "exercise": "biceps curls",
+        "sets": [],
+        "notes": "biceps curls"
+      },
+      {
+        "exercise": "full body",
+        "sets": [],
+        "notes": "full body"
+      }
+    ]
+  },
   "feeling": 10,
-  "notes": "DAY 12 LEGENDARY – 544 g protein, 1.35 kg seafood demolished (lobster + jumbo prawns). Sleep 6.8 hrs (still elite). Streak = 12."
+  "notes": "DAY 12 LEGENDARY \u2013 544 g protein, 1.35 kg seafood demolished (lobster + jumbo prawns). Sleep 6.8 hrs (still elite). Streak = 12."
 }
-

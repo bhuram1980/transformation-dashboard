@@ -9,7 +9,6 @@
     "kcal": 3760,
     "seafoodKg": 1.35
   },
-
   "meals": {
     "breakfast": {
       "description": "4 whole egg omelette + steamed veggies + 2 black coffees",
@@ -46,20 +45,39 @@
       "carbs": 13,
       "fat": 61,
       "kcal": 1885,
-      "seafoodKg": 0.90
+      "seafoodKg": 0.9
     }
   },
-
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps with lunch salmon – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed – taken" },
-    "whey":     { "taken": true,  "scoops": 2 },
-    "creatine": { "taken": true,  "dose": "10 g total (2×5 g)" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps with lunch salmon \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg (morning + night) \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs pre-breakfast \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 taken"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 2
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "10 g total (2\u00d75 g)"
+    }
   },
-
-  "training": "1.5 hr surfing + full-body gym session",
+  "training": {
+    "session": "Surfing",
+    "workout": []
+  },
   "feeling": 10,
-  "notes": "DAY 5 LEGENDARY – 518 g protein, 1.35 kg edible seafood demolished (salmon + lobster + crab). New protein record. Streak = 5."
+  "notes": "DAY 5 LEGENDARY \u2013 518 g protein, 1.35 kg edible seafood demolished (salmon + lobster + crab). New protein record. Streak = 5."
 }

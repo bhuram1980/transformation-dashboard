@@ -42,15 +42,35 @@
     }
   },
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps (2 morning + 2 lunch) – locked" },
-    "nac":      { "taken": true,  "dose": "2 × 600 mg (morning + night) – locked" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs pre-breakfast – locked" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed – taken" },
-    "whey":     { "taken": true,  "scoops": 2 },
-    "creatine": { "taken": true,  "dose": "5 g post-surf" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps (2 morning + 2 lunch) \u2013 locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 \u00d7 600 mg (morning + night) \u2013 locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs pre-breakfast \u2013 locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed \u2013 taken"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 2
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g post-surf"
+    }
   },
-  "training": "1.5 hr surfing",
+  "training": {
+    "session": "Surfing",
+    "workout": []
+  },
   "feeling": 10,
-  "notes": "DAY 11 LEGENDARY – Fasted 86.2 kg (-3.8 kg from Day 1). 369 g protein, 1.15 kg salmon demolished (double salmon day). Full stack 100 %. Streak = 11."
+  "notes": "DAY 11 LEGENDARY \u2013 Fasted 86.2 kg (-3.8 kg from Day 1). 369 g protein, 1.15 kg salmon demolished (double salmon day). Full stack 100 %. Streak = 11."
 }
-

@@ -2,34 +2,72 @@
   "date": "2025-11-21",
   "fastedWeight": 90.3,
   "waist": null,
-  "total": { "protein": 395, "carbs": 50, "fat": 190, "kcal": 3620, "seafoodKg": 1.35 },
-
+  "total": {
+    "protein": 395,
+    "carbs": 50,
+    "fat": 190,
+    "kcal": 3620,
+    "seafoodKg": 1.35
+  },
   "meals": {
     "breakfast": {
       "description": "6 whole eggs + spinach + mushrooms + onions",
-      "protein": 42, "carbs": 12, "fat": 36, "kcal": 520
+      "protein": 42,
+      "carbs": 12,
+      "fat": 36,
+      "kcal": 520
     },
     "lunch": {
       "description": "400 g salmon steak (skin on) + grilled veggies",
-      "protein": 96, "carbs": 15, "fat": 72, "kcal": 1080
+      "protein": 96,
+      "carbs": 15,
+      "fat": 72,
+      "kcal": 1080
     },
     "dinner": {
       "description": "900 g mixed tuna & seabass (skin on) + lime pickle",
-      "protein": 257, "carbs": 23, "fat": 82, "kcal": 2020
+      "protein": 257,
+      "carbs": 23,
+      "fat": 82,
+      "kcal": 2020
     },
-    "snacks": { "description": "none", "protein": 0, "carbs": 0, "fat": 0, "kcal": 0 }
+    "snacks": {
+      "description": "none",
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "kcal": 0
+    }
   },
-
   "supplements": {
-    "omega3":   { "taken": true,  "dose": "4 caps with lunch salmon" },
-    "nac":      { "taken": false, "note": "started Day 2" },
-    "d3k2":     { "taken": true,  "dose": "5 tabs with lunch" },
-    "zmb":      { "taken": true,  "dose": "3 caps before bed" },
-    "whey":     { "taken": true, "scoops": 1 },
-    "creatine": { "taken": false }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps with lunch salmon"
+    },
+    "nac": {
+      "taken": false,
+      "note": "started Day 2"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "5 tabs with lunch"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps before bed"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 1
+    },
+    "creatine": {
+      "taken": false
+    }
   },
-
-  "training": "2.3 hr surfing",
+  "training": {
+    "session": "Surfing",
+    "workout": []
+  },
   "feeling": 10,
-  "notes": "Great start – 1.35 kg fish massacred"
+  "notes": "Great start \u2013 1.35 kg fish massacred"
 }
