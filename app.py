@@ -1853,14 +1853,15 @@ def get_training_data():
                                     'weight_each_side_lbs': None
                                 })
                     
-                    exercise_groups[ex_name].append({
+                    exercise_groups[normalized_name].append({
                         'date': entry['date'],
                         'day': entry['day'],
                         'weight_lbs': weight,
                         'weight_each_side_lbs': weight_each_side or ex.get('weight_each_side_lbs'),
                         'weight_kg': ex.get('total_added_weight_kg') or (ex.get('weight_each_side_kg') * 2 if ex.get('weight_each_side_kg') else None),
                         'sets_reps': sets_reps,
-                        'notes': ex.get('notes', '')
+                        'notes': ex.get('notes', ''),
+                        'original_name': ex_name  # Keep original for reference
                     })
         
         # Sort each exercise group by date
