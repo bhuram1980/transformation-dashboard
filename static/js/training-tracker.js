@@ -88,6 +88,7 @@ function renderExerciseProgression() {
                 </div>
                 <div class="exercise-content">
                     ${renderProgressionTable(exerciseName, sessions)}
+                    ${renderProgressionChart(exerciseName, sessions)}
                     ${renderNextWeightSuggestion(exerciseName, sessions)}
                 </div>
             </div>
@@ -95,6 +96,9 @@ function renderExerciseProgression() {
     }
     
     container.innerHTML = html;
+    
+    // Initialize charts after rendering
+    initializeCharts();
 }
 
 function renderProgressionTable(exerciseName, sessions) {
@@ -178,6 +182,214 @@ function renderProgressionTable(exerciseName, sessions) {
     `;
     
     return tableHtml;
+}
+
+function renderProgressionChart(exerciseName, sessions) {
+    if (sessions.length < 2) {
+        return ''; // Need at least 2 data points for a chart
+    }
+    
+    // Get weights from sessions
+    const weights = sessions
+        .map(s => {
+            if (s.weight_lbs !== null && s.weight_lbs !== undefined && s.weight_lbs > 0) {
+                return s.weight_lbs;
+            }
+            // Try to get weight from working sets
+            if (s.sets_reps && s.sets_reps.length > 0) {
+                const workingSet = s.sets_reps.find(sr => sr.set === 'working' || sr.set === s.sets_reps.length);
+                if (workingSet && workingSet.weight_each_side_lbs) {
+                    return workingSet.weight_each_side_lbs * 2;
+                }
+            }
+            return null;
+        })
+        .filter(w => w !== null && w !== undefined && w > 0);
+    
+    if (weights.length < 2) {
+        return ''; // Need at least 2 weights for a chart
+    }
+    
+    const chartId = `chart-${exerciseName.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    
+    return `
+        <div class="chart-container" style="margin-top: 1.5rem;">
+            <button class="chart-toggle-btn" onclick="toggleChart('${chartId}')" id="toggle-${chartId}">
+                <span class="chart-toggle-icon" id="icon-${chartId}">▶</span>
+                <span>View Weight Progression Graph</span>
+            </button>
+            <div class="chart-wrapper" id="${chartId}" style="display: none;">
+                <canvas id="canvas-${chartId}"></canvas>
+            </div>
+        </div>
+    `;
+}
+
+function initializeCharts() {
+    // Charts will be initialized when toggled
+}
+
+function toggleChart(chartId) {
+    const chartWrapper = document.getElementById(chartId);
+    const toggleIcon = document.getElementById(`icon-${chartId}`);
+    const canvas = document.getElementById(`canvas-${chartId}`);
+    
+    if (!chartWrapper || !canvas) return;
+    
+    const isVisible = chartWrapper.style.display !== 'none';
+    
+    if (isVisible) {
+        // Hide chart
+        chartWrapper.style.display = 'none';
+        toggleIcon.textContent = '▶';
+        
+        // Destroy chart if it exists
+        if (window[`chart_${chartId}`]) {
+            window[`chart_${chartId}`].destroy();
+            window[`chart_${chartId}`] = null;
+        }
+    } else {
+        // Show chart
+        chartWrapper.style.display = 'block';
+        toggleIcon.textContent = '▼';
+        
+        // Initialize chart if not already created
+        if (!window[`chart_${chartId}`]) {
+            createProgressionChart(chartId, canvas);
+        }
+    }
+}
+
+function createProgressionChart(chartId, canvas) {
+    // Find the exercise name from chartId
+    const exerciseCard = canvas.closest('.exercise-card');
+    if (!exerciseCard) return;
+    
+    const exerciseName = exerciseCard.querySelector('.exercise-name').textContent;
+    
+    // Find sessions for this exercise
+    const sessions = exerciseGroups[exerciseName];
+    if (!sessions || sessions.length < 2) return;
+    
+    // Prepare data
+    const labels = [];
+    const weightData = [];
+    const dates = [];
+    
+    for (const session of sessions) {
+        const date = new Date(session.date);
+        dates.push(date);
+        labels.push(`Day ${session.day}`);
+        
+        // Get weight
+        let weight = null;
+        if (session.weight_lbs !== null && session.weight_lbs !== undefined && session.weight_lbs > 0) {
+            weight = session.weight_lbs;
+        } else if (session.weight_kg) {
+            weight = session.weight_kg * 2.20462; // Convert kg to lbs
+        } else if (session.sets_reps && session.sets_reps.length > 0) {
+            const workingSet = session.sets_reps.find(sr => sr.set === 'working' || sr.set === session.sets_reps.length);
+            if (workingSet && workingSet.weight_each_side_lbs) {
+                weight = workingSet.weight_each_side_lbs * 2;
+            }
+        }
+        
+        weightData.push(weight);
+    }
+    
+    // Filter out null values but keep labels aligned
+    const filteredData = [];
+    const filteredLabels = [];
+    for (let i = 0; i < weightData.length; i++) {
+        if (weightData[i] !== null && weightData[i] !== undefined) {
+            filteredData.push(weightData[i]);
+            filteredLabels.push(labels[i]);
+        }
+    }
+    
+    if (filteredData.length < 2) return;
+    
+    // Create chart
+    const ctx = canvas.getContext('2d');
+    
+    window[`chart_${chartId}`] = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: filteredLabels,
+            datasets: [{
+                label: 'Weight (lbs)',
+                data: filteredData,
+                borderColor: '#0066ff',
+                backgroundColor: 'rgba(0, 102, 255, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#0066ff',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            const session = sessions[context.dataIndex];
+                            const date = new Date(session.date);
+                            const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            return `${dateStr}: ${context.parsed.y.toFixed(1)} lbs`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Weight (lbs)',
+                        font: {
+                            size: 12,
+                            weight: '600'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Session',
+                        font: {
+                            size: 12,
+                            weight: '600'
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
 }
 
 function renderNextWeightSuggestion(exerciseName, sessions) {

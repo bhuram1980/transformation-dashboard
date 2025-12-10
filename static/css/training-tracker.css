@@ -162,6 +162,50 @@
     color: #666;
 }
 
+.chart-container {
+    margin-top: 1.5rem;
+}
+
+.chart-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #f5f7fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: left;
+}
+
+.chart-toggle-btn:hover {
+    background: #e5e7eb;
+    border-color: #0066ff;
+}
+
+.chart-toggle-icon {
+    font-size: 0.75rem;
+    color: #0066ff;
+    transition: transform 0.2s;
+}
+
+.chart-wrapper {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.chart-wrapper canvas {
+    max-height: 300px;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .exercise-header {
