@@ -26,8 +26,15 @@ async function loadTrainingData() {
         
         console.log('Loaded training data:', {
             sessions: trainingData.length,
-            exercises: Object.keys(exerciseGroups).length
+            exercises: Object.keys(exerciseGroups).length,
+            exerciseGroups: exerciseGroups
         });
+        
+        // Debug: Log first exercise group if available
+        const firstExercise = Object.keys(exerciseGroups)[0];
+        if (firstExercise) {
+            console.log('First exercise sample:', firstExercise, exerciseGroups[firstExercise]);
+        }
     } catch (error) {
         console.error('Error fetching training data:', error);
         showError('Failed to fetch training data');

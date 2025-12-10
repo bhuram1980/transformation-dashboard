@@ -1697,15 +1697,16 @@ def get_training_data():
                 exercises = []
                 for exercise_obj in workout:
                     exercise_name = exercise_obj.get('exercise', '')
-                    weight_each_side = exercise_obj.get('weight_each_side_lbs')
-                    total_weight = exercise_obj.get('total_added_weight_lbs')
                     sets = exercise_obj.get('sets', [])
                     notes = exercise_obj.get('notes', '')
                     
+                    # Preserve all weight fields (both kg and lbs) for later processing
                     exercises.append({
                         'name': exercise_name,
-                        'weight_each_side_lbs': weight_each_side,
-                        'total_added_weight_lbs': total_weight,
+                        'weight_each_side_lbs': exercise_obj.get('weight_each_side_lbs'),
+                        'total_added_weight_lbs': exercise_obj.get('total_added_weight_lbs'),
+                        'weight_each_side_kg': exercise_obj.get('weight_each_side_kg'),
+                        'total_added_weight_kg': exercise_obj.get('total_added_weight_kg'),
                         'sets': sets,
                         'notes': notes
                     })
@@ -1779,6 +1780,12 @@ def get_training_data():
         # Sort each exercise group by date
         for ex_name in exercise_groups:
             exercise_groups[ex_name].sort(key=lambda x: x['date'])
+        
+        # Debug logging
+        print(f"Training API: Found {len(training_data)} training sessions")
+        print(f"Training API: Found {len(exercise_groups)} exercise groups")
+        for ex_name, sessions in exercise_groups.items():
+            print(f"  - {ex_name}: {len(sessions)} sessions")
         
         return jsonify({
             'training_data': training_data,
