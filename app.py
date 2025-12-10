@@ -1720,16 +1720,32 @@ def get_training_data():
                 })
         
         # Normalize exercise names to group similar exercises together
-        def normalize_exercise_name(name):
+        def normalize_exercise_name(name, has_weight_each_side=False):
             """Normalize exercise names to group similar exercises"""
             if not name:
                 return name
             
             name_lower = name.lower().strip()
             
-            # Bench press variations
+            # Bench press variations - check for dumbbells first
             if any(x in name_lower for x in ['bench chest press', 'bench press', 'chest press']):
-                if 'decline' in name_lower:
+                # If it has weight_each_side, it's dumbbells (even if named "machine")
+                if has_weight_each_side:
+                    if 'decline' in name_lower:
+                        return 'Decline Bench Press with Dumbbells'
+                    elif 'incline' in name_lower:
+                        return 'Incline Bench Press with Dumbbells'
+                    else:
+                        return 'Bench Press with Dumbbells'
+                # Check if it's a machine
+                elif 'machine' in name_lower or 'mts' in name_lower:
+                    if 'decline' in name_lower:
+                        return 'Decline Chest Press Machine'
+                    elif 'incline' in name_lower:
+                        return 'Incline Chest Press Machine'
+                    else:
+                        return 'Chest Press Machine'
+                elif 'decline' in name_lower:
                     return 'Decline Bench Press'
                 elif 'incline' in name_lower:
                     return 'Incline Bench Press'
@@ -1738,7 +1754,9 @@ def get_training_data():
             
             # Incline press variations
             if 'incline' in name_lower and 'press' in name_lower:
-                if 'machine' in name_lower:
+                if has_weight_each_side:
+                    return 'Incline Bench Press with Dumbbells'
+                elif 'machine' in name_lower:
                     return 'Incline Press Machine'
                 else:
                     return 'Incline Bench Press'
@@ -1787,8 +1805,11 @@ def get_training_data():
                     if not ex_name:
                         continue
                     
+                    # Check if it's dumbbells (has weight_each_side)
+                    has_weight_each_side = bool(ex.get('weight_each_side_kg') or ex.get('weight_each_side_lbs'))
+                    
                     # Normalize exercise name
-                    normalized_name = normalize_exercise_name(ex_name)
+                    normalized_name = normalize_exercise_name(ex_name, has_weight_each_side)
                     
                     if normalized_name not in exercise_groups:
                         exercise_groups[normalized_name] = []
