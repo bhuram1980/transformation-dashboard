@@ -1,0 +1,123 @@
+{
+  "date": "2025-12-10",
+  "fastedWeight": 85.5,
+  "waist": null,
+  "total": {
+    "protein": 335,
+    "carbs": 42,
+    "fat": 54,
+    "kcal": 2020,
+    "seafoodKg": 0.90
+  },
+  "meals": {
+    "preWorkoutShake": {
+      "description": "2 scoops Isopure unflavoured + 5 g creatine + pre-workout drink",
+      "protein": 50,
+      "carbs": 8,
+      "fat": 0,
+      "kcal": 220
+    },
+    "postWorkout": {
+      "description": "Chicken omelette (4 eggs + ~180 g chicken breast) + 2 boiled eggs",
+      "protein": 88,
+      "carbs": 4,
+      "fat": 36,
+      "kcal": 700
+    },
+    "midDayShake": {
+      "description": "2 scoops chocolate whey protein",
+      "protein": 50,
+      "carbs": 6,
+      "fat": 3,
+      "kcal": 230
+    },
+    "lunch": {
+      "description": "400 g grilled salmon + big plate grilled veggies",
+      "protein": 92,
+      "carbs": 12,
+      "fat": 15,
+      "kcal": 560,
+      "seafoodKg": 0.40
+    },
+    "dinner": {
+      "description": "1 whole lobster (~300 g edible) + tiger prawns (~200 g edible) – zero oil/butter",
+      "protein": 105,
+      "carbs": 0,
+      "fat": 0,
+      "kcal": 510,
+      "seafoodKg": 0.50
+    }
+  },
+  "supplements": {
+    "omega3":   { "taken": true, "dose": "4 caps – locked" },
+    "nac":      { "taken": true, "dose": "2 × 600 mg – locked" },
+    "d3k2":     { "taken": true, "dose": "Morning dose – locked" },
+    "zmb":      { "taken": true, "dose": "2 caps ON Zinc Magnesium Aspartate before bed – locked" },
+    "whey":     { "taken": true, "scoops": 4 },
+    "creatine": { "taken": true, "dose": "5 g with Isopure – locked" }
+  },
+  "training": {
+    "session": "Heavy Chest Day",
+    "workout": [
+      {
+        "exercise": "Flat Barbell Bench Press",
+        "weight_each_side_kg": 22.5,
+        "total_added_weight_kg": 45,
+        "sets": [
+          { "set": "warm-up", "weight_each_side_kg": 10,   "reps": 6 },
+          { "set": "warm-up", "weight_each_side_kg": 12.5, "reps": 4 },
+          { "set": "warm-up", "weight_each_side_kg": 15,   "reps": 4 },
+          { "set": "working", "weight_each_side_kg": 20,   "reps": 12 },
+          { "set": "working", "weight_each_side_kg": 20,   "reps": 12 },
+          { "set": "working", "weight_each_side_kg": 22.5, "reps": 10 },
+          { "set": "working", "weight_each_side_kg": 22.5, "reps": 10 }
+        ],
+        "notes": "Chest full, stretch perfect"
+      },
+      {
+        "exercise": "Incline Barbell Bench Press",
+        "weight_each_side_kg": 22.5,
+        "total_added_weight_kg": 45,
+        "sets": [
+          { "set": 1, "reps": 12 },
+          { "set": 2, "reps": 12 },
+          { "set": 3, "reps": 12 }
+        ]
+      },
+      {
+        "exercise": "MTS Chest Press Machine",
+        "weight_each_side_lbs": 30,
+        "total_added_weight_lbs": 60,
+        "sets": [
+          { "set": 1, "reps": 12 },
+          { "set": 2, "reps": 10 },
+          { "set": 3, "reps": 10 }
+        ]
+      },
+      {
+        "exercise": "MTS Incline Press Machine",
+        "weight_each_side_lbs": 15,
+        "total_added_weight_lbs": 30,
+        "sets": [
+          { "set": 1, "reps": 12 },
+          { "set": 2, "reps": 12 },
+          { "set": 3, "reps": 10 }
+        ]
+      },
+      {
+        "exercise": "Pec Deck Fly Machine",
+        "total_added_weight_lbs": 40,
+        "sets": [
+          { "set": 1, "reps": 15 },
+          { "set": 2, "reps": 12 },
+          { "set": 3, "reps": 12 },
+          { "set": 4, "reps": 12 }
+        ],
+        "notes": "Max stretch & contraction"
+      }
+    ]
+  },
+  "feeling": 10,
+  "notes": "Down to 85.5 kg fasted (–0.7 kg overnight). 335 g protein, 900 g+ seafood demolished, chest absolutely torched. All supplements 100% locked. Carbs back under 45 g = fat melting again. Streak = disgusting."
+}
+
