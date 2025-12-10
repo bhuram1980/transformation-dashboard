@@ -99,7 +99,7 @@ function renderExerciseProgression() {
         }
         
         html += `
-            <div class="category-section">
+            <div class="category-section" id="category-${category}">
                 <div class="category-header">
                     <h2 class="category-title">
                         <span class="category-icon">${categoryIcons[category] || '⚙️'}</span>
@@ -140,6 +140,22 @@ function renderExerciseProgression() {
     
     // Initialize charts after rendering
     initializeCharts();
+    
+    // Update nav button visibility based on available categories
+    updateNavButtonsVisibility();
+}
+
+function updateNavButtonsVisibility() {
+    const navButtons = document.querySelectorAll('.category-nav-btn');
+    navButtons.forEach(btn => {
+        const category = btn.getAttribute('data-category');
+        const section = document.getElementById(`category-${category}`);
+        if (!section) {
+            btn.style.display = 'none';
+        } else {
+            btn.style.display = 'flex';
+        }
+    });
 }
 
 function renderProgressionTable(exerciseName, sessions) {
@@ -532,4 +548,51 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+function scrollToCategory(category) {
+    const categorySection = document.getElementById(`category-${category}`);
+    if (categorySection) {
+        // Update active button
+        document.querySelectorAll('.category-nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeBtn = document.querySelector(`[data-category="${category}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+        
+        // Smooth scroll to section
+        categorySection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+}
+
+// Update active button on scroll
+function updateActiveCategoryOnScroll() {
+    const sections = document.querySelectorAll('.category-section');
+    const navButtons = document.querySelectorAll('.category-nav-btn');
+    
+    let currentSection = '';
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 150 && rect.bottom >= 150) {
+            const category = section.id.replace('category-', '');
+            currentSection = category;
+        }
+    });
+    
+    navButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-category') === currentSection) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+// Add scroll listener after rendering
+document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('scroll', updateActiveCategoryOnScroll);
+});
 
