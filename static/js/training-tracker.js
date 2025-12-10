@@ -39,7 +39,16 @@ async function loadTrainingData() {
 
 function renderTrainingStats() {
     const totalSessions = trainingData.length;
-    const totalExercises = Object.keys(exerciseGroups).length;
+    
+    // Count total exercises from categories
+    let totalExercises = 0;
+    if (exercisesByCategory) {
+        for (const category in exercisesByCategory) {
+            totalExercises += (exercisesByCategory[category] || []).length;
+        }
+    } else {
+        totalExercises = Object.keys(exerciseGroups).length;
+    }
     
     // Get last session date
     let lastSession = '--';
