@@ -1719,7 +1719,65 @@ def get_training_data():
                     'exercises': exercises
                 })
         
-        # Group exercises by name for progression tracking
+        # Normalize exercise names to group similar exercises together
+        def normalize_exercise_name(name):
+            """Normalize exercise names to group similar exercises"""
+            if not name:
+                return name
+            
+            name_lower = name.lower().strip()
+            
+            # Bench press variations
+            if any(x in name_lower for x in ['bench chest press', 'bench press', 'chest press']):
+                if 'decline' in name_lower:
+                    return 'Decline Bench Press'
+                elif 'incline' in name_lower:
+                    return 'Incline Bench Press'
+                else:
+                    return 'Bench Press'
+            
+            # Incline press variations
+            if 'incline' in name_lower and 'press' in name_lower:
+                if 'machine' in name_lower:
+                    return 'Incline Press Machine'
+                else:
+                    return 'Incline Bench Press'
+            
+            # Chest press variations
+            if 'chest press' in name_lower:
+                if 'decline' in name_lower:
+                    return 'Decline Chest Press'
+                elif 'machine' in name_lower:
+                    return 'Chest Press Machine'
+                else:
+                    return 'Chest Press'
+            
+            # Weighted dips variations
+            if 'weighted dip' in name_lower or 'dip' in name_lower:
+                return 'Weighted Dips'
+            
+            # Biceps variations
+            if 'bicep' in name_lower or 'biceps' in name_lower:
+                if 'curl' in name_lower:
+                    return 'Biceps Curls'
+                else:
+                    return 'Biceps'
+            
+            # Cable work variations
+            if 'cable' in name_lower:
+                if 'fly' in name_lower or 'flies' in name_lower:
+                    return 'Cable Flies'
+                else:
+                    return 'Cable Work'
+            
+            # Pec fly variations
+            if 'pec' in name_lower and 'fly' in name_lower:
+                return 'Pectoral Fly Machine'
+            
+            # Keep original if no match (capitalize first letter)
+            return name.strip().title()
+        
+        # Group exercises by normalized name for progression tracking
         exercise_groups = {}
         
         for entry in training_data:
@@ -1729,8 +1787,11 @@ def get_training_data():
                     if not ex_name:
                         continue
                     
-                    if ex_name not in exercise_groups:
-                        exercise_groups[ex_name] = []
+                    # Normalize exercise name
+                    normalized_name = normalize_exercise_name(ex_name)
+                    
+                    if normalized_name not in exercise_groups:
+                        exercise_groups[normalized_name] = []
                     
                     # Extract weight info - handle both kg and lbs
                     weight = None
