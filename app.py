@@ -1742,7 +1742,7 @@ def get_training_data():
                         return 'Incline Bench Press with Dumbbells'
                     else:
                         return 'Bench Press with Dumbbells'
-                # Check if it's a machine
+                # Check if it's a machine (has total_added_weight but no weight_each_side)
                 elif 'machine' in name_lower or 'mts' in name_lower:
                     if 'decline' in name_lower:
                         return 'Decline Chest Press Machine'
@@ -1750,6 +1750,14 @@ def get_training_data():
                         return 'Incline Chest Press Machine'
                     else:
                         return 'Chest Press Machine'
+                # If no weight_each_side, it's likely a machine (bench press machine)
+                elif not has_weight_each_side:
+                    if 'decline' in name_lower:
+                        return 'Decline Bench Press Machine'
+                    elif 'incline' in name_lower:
+                        return 'Incline Bench Press Machine'
+                    else:
+                        return 'Bench Press Machine'
                 elif 'decline' in name_lower:
                     return 'Decline Bench Press'
                 elif 'incline' in name_lower:
@@ -1902,7 +1910,13 @@ def get_training_data():
                             })
                     elif isinstance(sets_data, list):
                         # Normal case: sets is an array of set objects
-                        for s in sets_data:
+                        # Track first set weight to propagate to subsequent sets if needed
+                        first_set_weight_lbs = None
+                        first_set_weight_kg = None
+                        first_set_weight_each_side_lbs = None
+                        first_set_weight_each_side_kg = None
+                        
+                        for idx, s in enumerate(sets_data):
                             # Handle case where set item might be a dict or other structure
                             if isinstance(s, dict):
                                 set_info = {
@@ -1914,6 +1928,36 @@ def get_training_data():
                                     'total_added_weight_lbs': s.get('total_added_weight_lbs'),
                                     'total_added_weight_kg': s.get('total_added_weight_kg')
                                 }
+                                
+                                # If first set, capture its weight
+                                if idx == 0:
+                                    first_set_weight_lbs = set_info['total_added_weight_lbs'] or set_info['weight_each_side_lbs']
+                                    first_set_weight_kg = set_info['total_added_weight_kg'] or set_info['weight_each_side_kg']
+                                    first_set_weight_each_side_lbs = set_info['weight_each_side_lbs']
+                                    first_set_weight_each_side_kg = set_info['weight_each_side_kg']
+                                
+                                # If set doesn't have weight but exercise level has weight, use exercise level weight
+                                if not set_info['total_added_weight_lbs'] and not set_info['total_added_weight_kg'] and not set_info['weight_each_side_lbs'] and not set_info['weight_each_side_kg']:
+                                    if ex.get('total_added_weight_lbs'):
+                                        set_info['total_added_weight_lbs'] = ex['total_added_weight_lbs']
+                                    elif ex.get('total_added_weight_kg'):
+                                        set_info['total_added_weight_kg'] = ex['total_added_weight_kg']
+                                    elif ex.get('weight_each_side_lbs'):
+                                        set_info['weight_each_side_lbs'] = ex['weight_each_side_lbs']
+                                    elif ex.get('weight_each_side_kg'):
+                                        set_info['weight_each_side_kg'] = ex['weight_each_side_kg']
+                                
+                                # If set still doesn't have weight but first set had weight, propagate from first set
+                                if not set_info['total_added_weight_lbs'] and not set_info['total_added_weight_kg'] and not set_info['weight_each_side_lbs'] and not set_info['weight_each_side_kg']:
+                                    if first_set_weight_lbs:
+                                        set_info['total_added_weight_lbs'] = first_set_weight_lbs
+                                    elif first_set_weight_kg:
+                                        set_info['total_added_weight_kg'] = first_set_weight_kg
+                                    elif first_set_weight_each_side_lbs:
+                                        set_info['weight_each_side_lbs'] = first_set_weight_each_side_lbs
+                                    elif first_set_weight_each_side_kg:
+                                        set_info['weight_each_side_kg'] = first_set_weight_each_side_kg
+                                
                                 sets_reps.append(set_info)
                             else:
                                 # Fallback: treat as simple value
