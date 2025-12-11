@@ -102,22 +102,27 @@
       },
       {
         "exercise": "Lat Pulldown (wide grip)",
+        "total_added_weight_kg": 30,
         "sets": [
           {
             "set": 1,
-            "reps": 12
+            "reps": 12,
+            "total_added_weight_kg": 30
           },
           {
             "set": 2,
-            "reps": 12
+            "reps": 12,
+            "total_added_weight_kg": 30
           },
           {
             "set": 3,
-            "reps": 10
+            "reps": 10,
+            "total_added_weight_kg": 30
           },
           {
             "set": 4,
-            "reps": 10
+            "reps": 10,
+            "total_added_weight_kg": 30
           }
         ],
         "total_added_weight_lbs": 66
