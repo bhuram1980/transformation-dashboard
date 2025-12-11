@@ -1,0 +1,27 @@
+{
+  "date": "2025-11-05",
+  "scan_type": "DEXA",
+  "scan_time": "fasted_morning",
+  "height_cm": 185.2,
+  "weight_kg": 86.2,
+  "lean_mass_kg": 65.1,
+  "skeletal_muscle_mass_kg": 40.1,
+  "fat_mass_kg": 18.4,
+  "body_fat_percent": 21.4,
+  "visceral_fat_mass_g": 980,
+  "visceral_fat_area_cm2": 112,
+  "visceral_fat_level": 9,
+  "android_fat_kg": 7.8,
+  "gynoid_fat_kg": 5.9,
+  "android_gynoid_ratio": 1.32,
+  "bone_mineral_content_g": 3280,
+  "bone_density_g_per_cm2": 1.24,
+  "t_score_spine": 1.5,
+  "t_score_hip": 1.9,
+  "total_body_water_liters": 47.8,
+  "extracellular_water_ratio": 0.392,
+  "basal_metabolic_rate_kcal": 1880,
+  "bmi": 25.5,
+  "notes": "True fasted DEXA baseline. Starting point of current shred."
+}
+

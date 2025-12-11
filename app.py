@@ -647,6 +647,11 @@ def training_tracker():
     """Training tracker page - shows exercise progression and suggests next weights"""
     return render_template('training-tracker.html')
 
+@app.route('/body-scans')
+def body_scans():
+    """Body scans page - shows DEXA/InBody progression and comparison"""
+    return render_template('body-scans.html')
+
 
 @app.route('/api/data')
 def get_data():
@@ -1968,6 +1973,60 @@ def get_training_data():
             'training_data': [],
             'exercise_groups': {},
             'total_sessions': 0
+        }), 500
+
+@app.route('/api/body-scans')
+def get_body_scans():
+    """API endpoint to get all body scan data - public access"""
+    try:
+        # Try multiple paths for body scans directory
+        vercel_env = os.getenv('VERCEL')
+        scans_dir = None
+        
+        if vercel_env == '1':
+            # On Vercel, try api/data first
+            cwd = Path.cwd()
+            api_scans_from_cwd = cwd / "api" / "data" / "body-scans"
+            api_scans_from_file = Path(__file__).parent / "api" / "data" / "body-scans"
+            
+            if api_scans_from_cwd.exists():
+                scans_dir = api_scans_from_cwd
+            elif api_scans_from_file.exists():
+                scans_dir = api_scans_from_file
+        else:
+            # Local development
+            scans_dir = Path('api/data/body-scans')
+            if not scans_dir.exists():
+                scans_dir = Path('public/data/body-scans')
+        
+        scans = []
+        
+        if scans_dir and scans_dir.exists():
+            json_files = sorted(scans_dir.glob("*.json"))
+            for json_file in json_files:
+                try:
+                    content = json_file.read_text(encoding='utf-8')
+                    scan_data = json.loads(content)
+                    scans.append(scan_data)
+                except Exception as e:
+                    print(f"Error loading {json_file}: {e}")
+                    continue
+        
+        # Sort by date
+        scans.sort(key=lambda x: x.get('date', ''))
+        
+        return jsonify({
+            'scans': scans,
+            'total': len(scans)
+        })
+    except Exception as e:
+        print(f"Error in /api/body-scans: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': str(e),
+            'scans': [],
+            'total': 0
         }), 500
 
 @app.route('/api/photos')

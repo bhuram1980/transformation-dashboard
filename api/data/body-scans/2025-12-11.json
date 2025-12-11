@@ -1,0 +1,27 @@
+{
+  "date": "2025-12-11",
+  "scan_type": "InBody",
+  "scan_time": "afternoon_non_fasted_adjusted",
+  "height_cm": 185.2,
+  "weight_kg": 85.5,
+  "lean_mass_kg": 68.1,
+  "skeletal_muscle_mass_kg": 41.8,
+  "fat_mass_kg": 14.9,
+  "body_fat_percent": 16.0,
+  "visceral_fat_mass_g": 720,
+  "visceral_fat_area_cm2": 88,
+  "visceral_fat_level": 7,
+  "android_fat_kg": 5.9,
+  "gynoid_fat_kg": 4.7,
+  "android_gynoid_ratio": 1.26,
+  "bone_mineral_content_g": 3310,
+  "bone_density_g_per_cm2": 1.25,
+  "total_body_water_liters": 49.2,
+  "intracellular_water_liters": 30.8,
+  "extracellular_water_liters": 18.4,
+  "extracellular_water_ratio": 0.365,
+  "basal_metabolic_rate_kcal": 1950,
+  "bmi": 25.1,
+  "notes": "Afternoon scan after 1 L water + 4 scoops whey. All numbers adjusted to fasted equivalent. +1.7 kg muscle, –3.5 kg fat in 36 days."
+}
+

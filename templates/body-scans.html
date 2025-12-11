@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Scans - DEXA & InBody Progression</title>
+    <link rel="stylesheet" href="/static/css/style.css?v=20251127a">
+    <link rel="stylesheet" href="/static/css/body-scans.css?v=20251211a">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/static/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-surface">
+        <div class="dashboard-container">
+            <!-- Header -->
+            <section class="layout-section scans-header">
+                <div class="section-heading">
+                    <h1 class="dashboard-title">Body Scans</h1>
+                    <p class="section-subtitle">DEXA & InBody Progression Tracking</p>
+                </div>
+                <div class="header-actions">
+                    <a href="/" class="back-link">← Back to Dashboard</a>
+                </div>
+            </section>
+
+            <!-- Summary Stats -->
+            <section class="layout-section scans-stats" id="scansStats">
+                <div class="grid-12">
+                    <div class="card-surface stat-card col-span-12 md:col-span-4">
+                        <div class="stat-label">Total Scans</div>
+                        <div class="stat-value" id="totalScans">0</div>
+                    </div>
+                    <div class="card-surface stat-card col-span-12 md:col-span-4">
+                        <div class="stat-label">Latest Body Fat</div>
+                        <div class="stat-value" id="latestBodyFat">--</div>
+                    </div>
+                    <div class="card-surface stat-card col-span-12 md:col-span-4">
+                        <div class="stat-label">Latest Scan Date</div>
+                        <div class="stat-value" id="latestScanDate">--</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparison View -->
+            <section class="layout-section scans-comparison" id="scansComparison">
+                <div class="section-heading">
+                    <h2 class="section-title">Progress Comparison</h2>
+                    <p class="section-subtitle">Compare your latest scan with baseline</p>
+                </div>
+                <div id="comparisonContainer">
+                    <div class="loading-state">Loading scan data...</div>
+                </div>
+            </section>
+
+            <!-- All Scans List -->
+            <section class="layout-section scans-list" id="scansList">
+                <div class="section-heading">
+                    <h2 class="section-title">All Scan Reports</h2>
+                    <p class="section-subtitle">Complete history of all body composition scans</p>
+                </div>
+                <div id="scansContainer">
+                    <div class="loading-state">Loading scan data...</div>
+                </div>
+            </section>
+
+            <!-- Progression Charts -->
+            <section class="layout-section scans-charts" id="scansCharts">
+                <div class="section-heading">
+                    <h2 class="section-title">Progression Charts</h2>
+                    <p class="section-subtitle">Visualize your transformation over time</p>
+                </div>
+                <div class="charts-grid" id="chartsContainer">
+                    <div class="loading-state">Loading charts...</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/static/js/body-scans.js?v=20251211a"></script>
+</body>
+</html>
+
