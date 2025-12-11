@@ -1808,25 +1808,33 @@ def get_training_data():
             
             name_lower = name.lower().strip()
             
-            # Chest exercises
-            if any(x in name_lower for x in ['chest', 'bench', 'press', 'pec', 'fly', 'dip']):
-                return 'Chest'
+            # Arms - check FIRST to catch biceps/triceps before "curl" matches legs
+            if any(x in name_lower for x in ['bicep', 'tricep', 'arm']):
+                return 'Arms'
             
-            # Back exercises
-            if any(x in name_lower for x in ['back', 'row', 'pulldown', 'lat', 'deadlift', 'pull']):
-                return 'Back'
-            
-            # Leg exercises
-            if any(x in name_lower for x in ['squat', 'leg', 'curl', 'glute', 'hip', 'abductor', 'adductor', 'calf', 'hamstring', 'quad']):
+            # Leg exercises - check for specific leg movements BEFORE checking "back" keyword
+            if any(x in name_lower for x in ['squat', 'leg curl', 'leg press', 'leg extension', 'leg curl', 'glute', 'hip', 'abductor', 'adductor', 'calf', 'hamstring', 'quad', 'lunge', 'deadlift']):
                 return 'Legs'
+            
+            # Chest exercises - check for cable flies specifically
+            if any(x in name_lower for x in ['chest', 'bench', 'press', 'pec', 'fly', 'dip', 'cable']):
+                # Make sure cable flies go to chest
+                if 'cable' in name_lower and 'fly' in name_lower:
+                    return 'Chest'
+                # Regular chest exercises
+                if any(x in name_lower for x in ['chest', 'bench', 'press', 'pec', 'fly', 'dip']):
+                    return 'Chest'
+            
+            # Back exercises - but exclude deadlift and back squat (already handled above)
+            if any(x in name_lower for x in ['row', 'pulldown', 'lat', 'pull-up', 'pullup', 'chin-up']):
+                return 'Back'
+            # Back exercises that don't conflict with legs
+            if 'back' in name_lower and 'squat' not in name_lower:
+                return 'Back'
             
             # Shoulders
             if any(x in name_lower for x in ['shoulder', 'lateral', 'rear delt', 'delt', 'overhead']):
                 return 'Shoulders'
-            
-            # Arms
-            if any(x in name_lower for x in ['bicep', 'tricep', 'arm']):
-                return 'Arms'
             
             return 'Other'
         
