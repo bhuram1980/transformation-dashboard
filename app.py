@@ -1936,8 +1936,14 @@ def get_training_data():
                                     first_set_weight_each_side_lbs = set_info['weight_each_side_lbs']
                                     first_set_weight_each_side_kg = set_info['weight_each_side_kg']
                                 
-                                # If set doesn't have weight but exercise level has weight, use exercise level weight
-                                if not set_info['total_added_weight_lbs'] and not set_info['total_added_weight_kg'] and not set_info['weight_each_side_lbs'] and not set_info['weight_each_side_kg']:
+                                # If set doesn't have weight, try to get from exercise level or first set
+                                has_weight = (set_info['total_added_weight_lbs'] is not None and set_info['total_added_weight_lbs'] > 0) or \
+                                            (set_info['total_added_weight_kg'] is not None and set_info['total_added_weight_kg'] > 0) or \
+                                            (set_info['weight_each_side_lbs'] is not None and set_info['weight_each_side_lbs'] > 0) or \
+                                            (set_info['weight_each_side_kg'] is not None and set_info['weight_each_side_kg'] > 0)
+                                
+                                if not has_weight:
+                                    # First try exercise level weight
                                     if ex.get('total_added_weight_lbs'):
                                         set_info['total_added_weight_lbs'] = ex['total_added_weight_lbs']
                                     elif ex.get('total_added_weight_kg'):
@@ -1946,10 +1952,8 @@ def get_training_data():
                                         set_info['weight_each_side_lbs'] = ex['weight_each_side_lbs']
                                     elif ex.get('weight_each_side_kg'):
                                         set_info['weight_each_side_kg'] = ex['weight_each_side_kg']
-                                
-                                # If set still doesn't have weight but first set had weight, propagate from first set
-                                if not set_info['total_added_weight_lbs'] and not set_info['total_added_weight_kg'] and not set_info['weight_each_side_lbs'] and not set_info['weight_each_side_kg']:
-                                    if first_set_weight_lbs:
+                                    # If still no weight, propagate from first set
+                                    elif first_set_weight_lbs:
                                         set_info['total_added_weight_lbs'] = first_set_weight_lbs
                                     elif first_set_weight_kg:
                                         set_info['total_added_weight_kg'] = first_set_weight_kg
