@@ -1,0 +1,47 @@
+{
+  "date": "2025-11-03",
+  "scan_type": "DEXA",
+  "scan_time": "fasted_morning",
+  "height_cm": 185.0,
+  "age": 37.3,
+  "gender": "male",
+  "weight_kg": 90.0,
+  "lean_mass_kg": 61.0,
+  "skeletal_muscle_mass_kg": null,
+  "fat_mass_kg": 21.9,
+  "body_fat_percent": 25.2,
+  "visceral_fat_mass_g": null,
+  "visceral_fat_area_cm2": null,
+  "visceral_fat_level": null,
+  "android_fat_kg": null,
+  "gynoid_fat_kg": null,
+  "android_gynoid_ratio": 1.37,
+  "bone_mineral_content_g": 3520,
+  "bone_density_g_per_cm2": 1.321,
+  "t_score_spine": null,
+  "t_score_hip": null,
+  "z_score": 1.1,
+  "total_body_water_liters": null,
+  "intracellular_water_liters": null,
+  "extracellular_water_liters": null,
+  "extracellular_water_ratio": null,
+  "basal_metabolic_rate_kcal": null,
+  "bmi": 26.3,
+  "waist_hip_ratio": null,
+  "segmental_lean": {
+    "right_arm_kg": null,
+    "left_arm_kg": null,
+    "trunk_kg": null,
+    "right_leg_kg": null,
+    "left_leg_kg": null
+  },
+  "segmental_fat_percent": {
+    "right_arm": null,
+    "left_arm": null,
+    "trunk": null,
+    "right_leg": null,
+    "left_leg": null
+  },
+  "notes": "True fasted DEXA baseline. Starting point of current shred. Matched for age, weight (males 25-100 kg), ethnic: Asian. Total BMC 3520 g, area 2665 cm². Fat mass ratio (trunk/lower body) 0.66. WHO class: Overweight."
+}
+
