@@ -193,15 +193,34 @@ function renderProgressionTable(exerciseName, sessions) {
                     setStr = `Set ${sr.set}`;
                 }
                 
-                // Format weight for this set
+                // Format weight for this set - show kg or lbs as provided
                 let weightStr = '--';
                 if (sr.weight_each_side_lbs !== null && sr.weight_each_side_lbs !== undefined) {
                     const eachSide = Math.round(sr.weight_each_side_lbs);
                     weightStr = `${eachSide} lbs each side`;
+                } else if (sr.weight_each_side_kg !== null && sr.weight_each_side_kg !== undefined) {
+                    const eachSide = sr.weight_each_side_kg;
+                    weightStr = `${eachSide} kg each side`;
+                } else if (sr.total_added_weight_lbs !== null && sr.total_added_weight_lbs !== undefined) {
+                    const total = Math.round(sr.total_added_weight_lbs);
+                    weightStr = `${total} lbs`;
+                } else if (sr.total_added_weight_kg !== null && sr.total_added_weight_kg !== undefined) {
+                    const total = sr.total_added_weight_kg;
+                    weightStr = `${total} kg`;
                 } else if (session.weight_each_side_lbs && index === 0) {
                     // Fallback to session-level weight if set doesn't have individual weight
                     const eachSide = Math.round(session.weight_each_side_lbs);
                     weightStr = `${eachSide} lbs each side`;
+                } else if (session.weight_each_side_kg && index === 0) {
+                    // Fallback to session-level weight in kg
+                    const eachSide = session.weight_each_side_kg;
+                    weightStr = `${eachSide} kg each side`;
+                } else if (session.weight_kg && index === 0) {
+                    // Fallback to session-level total weight in kg
+                    weightStr = `${session.weight_kg} kg`;
+                } else if (session.weight_lbs && index === 0) {
+                    // Fallback to session-level total weight in lbs
+                    weightStr = `${Math.round(session.weight_lbs)} lbs`;
                 }
                 
                 // Format reps for this set
