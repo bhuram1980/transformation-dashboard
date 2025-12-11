@@ -155,7 +155,7 @@ function renderProgressRings() {
 }
 
 function renderAchievements() {
-    if (scansData.length < 2) {
+    if (!scansData || scansData.length < 2) {
         document.getElementById('achievementsContainer').innerHTML = 
             '<div class="info-state">Need at least 2 scans to show achievements.</div>';
         return;
@@ -163,6 +163,14 @@ function renderAchievements() {
     
     const baseline = scansData[0];
     const latest = scansData[scansData.length - 1];
+    
+    if (!baseline || !latest || !baseline.date || !latest.date) {
+        console.error('Invalid scan data for achievements:', { baseline, latest });
+        document.getElementById('achievementsContainer').innerHTML = 
+            '<div class="error-state">Error: Invalid scan data.</div>';
+        return;
+    }
+    
     const daysDiff = Math.floor((new Date(latest.date) - new Date(baseline.date)) / (1000 * 60 * 60 * 24));
     
     const achievements = [];
@@ -256,7 +264,7 @@ function renderAchievements() {
 }
 
 function renderBodyComposition() {
-    if (scansData.length === 0) {
+    if (!scansData || scansData.length === 0) {
         document.getElementById('compositionContainer').innerHTML = 
             '<div class="info-state">No scan data available.</div>';
         return;
@@ -264,6 +272,12 @@ function renderBodyComposition() {
     
     const latest = scansData[scansData.length - 1];
     const baseline = scansData.length > 1 ? scansData[0] : null;
+    
+    if (!latest) {
+        document.getElementById('compositionContainer').innerHTML = 
+            '<div class="error-state">Error: No latest scan data available.</div>';
+        return;
+    }
     
     const fatMass = latest.fat_mass_kg;
     const leanMass = latest.lean_mass_kg;
@@ -344,7 +358,7 @@ function renderBodyComposition() {
 }
 
 function renderComparison() {
-    if (scansData.length < 2) {
+    if (!scansData || scansData.length < 2) {
         document.getElementById('comparisonContainer').innerHTML = 
             '<div class="info-state">Need at least 2 scans to show comparison.</div>';
         return;
@@ -353,47 +367,95 @@ function renderComparison() {
     // Setup scan selector
     const baselineSelect = document.getElementById('baselineSelect');
     const latestSelect = document.getElementById('latestSelect');
+    const scanSelector = document.getElementById('scanSelector');
+    
+    if (!baselineSelect || !latestSelect || !scanSelector) {
+        console.error('Scan selector elements not found');
+        // Still try to render comparison without selector
+        updateComparison();
+        return;
+    }
     
     if (scansData.length > 2) {
-        document.getElementById('scanSelector').style.display = 'block';
+        scanSelector.style.display = 'block';
         baselineSelect.innerHTML = '';
         latestSelect.innerHTML = '';
         
         scansData.forEach((scan, index) => {
+            if (!scan || !scan.date) {
+                console.warn(`Skipping scan at index ${index}: missing date`, scan);
+                return;
+            }
+            
             const option1 = document.createElement('option');
             option1.value = index;
-            option1.textContent = `${formatDate(scan.date)} (${scan.scan_type})`;
+            option1.textContent = `${formatDate(scan.date)} (${scan.scan_type || 'Unknown'})`;
             if (index === 0) option1.selected = true;
             baselineSelect.appendChild(option1);
             
             const option2 = document.createElement('option');
             option2.value = index;
-            option2.textContent = `${formatDate(scan.date)} (${scan.scan_type})`;
+            option2.textContent = `${formatDate(scan.date)} (${scan.scan_type || 'Unknown'})`;
             if (index === scansData.length - 1) option2.selected = true;
             latestSelect.appendChild(option2);
         });
         
-        baselineSelect.addEventListener('change', updateComparison);
-        latestSelect.addEventListener('change', updateComparison);
+        // Remove existing listeners to avoid duplicates
+        const newBaselineSelect = baselineSelect.cloneNode(true);
+        baselineSelect.parentNode.replaceChild(newBaselineSelect, baselineSelect);
+        newBaselineSelect.addEventListener('change', updateComparison);
+        
+        const newLatestSelect = latestSelect.cloneNode(true);
+        latestSelect.parentNode.replaceChild(newLatestSelect, latestSelect);
+        newLatestSelect.addEventListener('change', updateComparison);
+    } else {
+        scanSelector.style.display = 'none';
     }
     
-    updateComparison();
+    // Render comparison after a small delay to ensure DOM is ready
+    setTimeout(() => {
+        updateComparison();
+    }, 100);
 }
 
 function updateComparison() {
+    if (!scansData || scansData.length < 2) {
+        document.getElementById('comparisonContainer').innerHTML = 
+            '<div class="info-state">Need at least 2 scans to show comparison.</div>';
+        return;
+    }
+    
     const baselineSelect = document.getElementById('baselineSelect');
     const latestSelect = document.getElementById('latestSelect');
     
     let baselineIndex = 0;
     let latestIndex = scansData.length - 1;
     
-    if (baselineSelect && latestSelect) {
-        baselineIndex = parseInt(baselineSelect.value);
-        latestIndex = parseInt(latestSelect.value);
+    if (baselineSelect && latestSelect && baselineSelect.value !== '' && latestSelect.value !== '') {
+        baselineIndex = parseInt(baselineSelect.value) || 0;
+        latestIndex = parseInt(latestSelect.value) || scansData.length - 1;
     }
+    
+    // Ensure indices are valid
+    baselineIndex = Math.max(0, Math.min(baselineIndex, scansData.length - 1));
+    latestIndex = Math.max(0, Math.min(latestIndex, scansData.length - 1));
     
     const baseline = scansData[baselineIndex];
     const latest = scansData[latestIndex];
+    
+    if (!baseline || !latest) {
+        console.error('Invalid scan data:', { baselineIndex, latestIndex, scansData });
+        document.getElementById('comparisonContainer').innerHTML = 
+            '<div class="error-state">Error: Invalid scan data selected.</div>';
+        return;
+    }
+    
+    if (!baseline.date || !latest.date) {
+        console.error('Missing date in scan data:', { baseline, latest });
+        document.getElementById('comparisonContainer').innerHTML = 
+            '<div class="error-state">Error: Missing date information in scan data.</div>';
+        return;
+    }
     
     const daysDiff = Math.floor((new Date(latest.date) - new Date(baseline.date)) / (1000 * 60 * 60 * 24));
     
@@ -559,7 +621,7 @@ function updateComparison() {
 }
 
 function renderAllScans() {
-    if (scansData.length === 0) {
+    if (!scansData || scansData.length === 0) {
         document.getElementById('scansContainer').innerHTML = 
             '<div class="info-state">No scan data available.</div>';
         return;
@@ -567,8 +629,23 @@ function renderAllScans() {
     
     let html = '';
     
-    // Sort by date, newest first
-    const sortedScans = [...scansData].sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Sort by date, newest first (with null safety)
+    const sortedScans = [...scansData]
+        .filter(scan => scan && scan.date)
+        .sort((a, b) => {
+            try {
+                return new Date(b.date) - new Date(a.date);
+            } catch (e) {
+                console.warn('Error sorting scans:', e);
+                return 0;
+            }
+        });
+    
+    if (sortedScans.length === 0) {
+        document.getElementById('scansContainer').innerHTML = 
+            '<div class="error-state">Error: No valid scan data found.</div>';
+        return;
+    }
     
     sortedScans.forEach(scan => {
         html += '<div class="scan-card">';
@@ -618,15 +695,38 @@ function renderAllScans() {
 }
 
 function renderCharts() {
-    if (scansData.length < 2) {
+    if (!scansData || scansData.length < 2) {
         document.getElementById('chartsContainer').innerHTML = 
             '<div class="info-state">Need at least 2 scans to show progression charts.</div>';
         return;
     }
     
-    // Sort by date
-    const sortedScans = [...scansData].sort((a, b) => new Date(a.date) - new Date(b.date));
-    const dates = sortedScans.map(s => formatDate(s.date));
+    // Sort by date (with null safety)
+    const sortedScans = [...scansData]
+        .filter(scan => scan && scan.date)
+        .sort((a, b) => {
+            try {
+                return new Date(a.date) - new Date(b.date);
+            } catch (e) {
+                console.warn('Error sorting scans for charts:', e);
+                return 0;
+            }
+        });
+    
+    if (sortedScans.length < 2) {
+        document.getElementById('chartsContainer').innerHTML = 
+            '<div class="info-state">Need at least 2 valid scans to show progression charts.</div>';
+        return;
+    }
+    
+    const dates = sortedScans.map(s => {
+        try {
+            return formatDate(s.date);
+        } catch (e) {
+            console.warn('Error formatting date:', e);
+            return s.date || 'Unknown';
+        }
+    });
     
     const charts = [
         {
