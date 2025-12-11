@@ -9,7 +9,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadTrainingData();
     renderTrainingStats();
     renderExerciseProgression();
+    setupBodyDiagram();
 });
+
+function setupBodyDiagram() {
+    const bodyParts = document.querySelectorAll('.body-part.clickable');
+    
+    bodyParts.forEach(part => {
+        part.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            if (category && category !== 'Other') {
+                scrollToCategory(category);
+                
+                // Update active state on category nav buttons
+                document.querySelectorAll('.category-nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-category') === category) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Add visual feedback
+                this.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            }
+        });
+        
+        // Add hover tooltip
+        part.addEventListener('mouseenter', function() {
+            const category = this.getAttribute('data-category');
+            if (category && category !== 'Other') {
+                this.style.cursor = 'pointer';
+            }
+        });
+    });
+}
 
 async function loadTrainingData() {
     try {

@@ -26,20 +26,53 @@
                 </div>
             </section>
 
-            <!-- Summary Stats -->
+            <!-- Interactive Body Diagram -->
             <section class="layout-section training-stats" id="trainingStats">
-                <div class="grid-12">
-                    <div class="card-surface stat-card col-span-12 md:col-span-4">
-                        <div class="stat-label">Total Sessions</div>
-                        <div class="stat-value" id="totalSessions">0</div>
+                <div class="body-diagram-container">
+                    <div class="body-diagram-wrapper">
+                        <svg class="body-diagram" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Head -->
+                            <circle class="body-part" data-category="Other" cx="150" cy="50" r="35" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
+                            
+                            <!-- Neck -->
+                            <rect class="body-part" data-category="Other" x="140" y="80" width="20" height="15" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
+                            
+                            <!-- Chest -->
+                            <ellipse class="body-part clickable" data-category="Chest" cx="150" cy="140" rx="60" ry="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" opacity="0.7"/>
+                            <text x="150" y="145" text-anchor="middle" fill="#1e40af" font-size="14" font-weight="600">Chest</text>
+                            
+                            <!-- Shoulders -->
+                            <ellipse class="body-part clickable" data-category="Shoulders" cx="100" cy="130" rx="25" ry="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" opacity="0.7"/>
+                            <ellipse class="body-part clickable" data-category="Shoulders" cx="200" cy="130" rx="25" ry="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" opacity="0.7"/>
+                            <text x="100" y="135" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Shoulders</text>
+                            <text x="200" y="135" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Shoulders</text>
+                            
+                            <!-- Arms -->
+                            <ellipse class="body-part clickable" data-category="Arms" cx="80" cy="200" rx="20" ry="80" fill="#fce7f3" stroke="#ec4899" stroke-width="3" opacity="0.7"/>
+                            <ellipse class="body-part clickable" data-category="Arms" cx="220" cy="200" rx="20" ry="80" fill="#fce7f3" stroke="#ec4899" stroke-width="3" opacity="0.7"/>
+                            <text x="80" y="240" text-anchor="middle" fill="#9f1239" font-size="12" font-weight="600">Arms</text>
+                            <text x="220" y="240" text-anchor="middle" fill="#9f1239" font-size="12" font-weight="600">Arms</text>
+                            
+                            <!-- Core/Abdomen -->
+                            <rect class="body-part clickable" data-category="Core" x="120" y="180" width="60" height="80" rx="10" fill="#d1fae5" stroke="#10b981" stroke-width="3" opacity="0.7"/>
+                            <text x="150" y="220" text-anchor="middle" fill="#065f46" font-size="12" font-weight="600">Core</text>
+                            
+                            <!-- Back (behind, shown with outline) -->
+                            <path class="body-part clickable" data-category="Back" d="M 90 140 Q 90 180 100 220 Q 110 260 120 300 Q 130 340 140 380 L 160 380 Q 170 340 180 300 Q 190 260 200 220 Q 210 180 210 140 Q 200 130 190 125 Q 180 120 150 120 Q 120 120 110 125 Q 100 130 90 140 Z" fill="#e0e7ff" stroke="#6366f1" stroke-width="3" opacity="0.7"/>
+                            <text x="150" y="200" text-anchor="middle" fill="#312e81" font-size="12" font-weight="600">Back</text>
+                            
+                            <!-- Legs -->
+                            <ellipse class="body-part clickable" data-category="Legs" cx="120" cy="450" rx="25" ry="120" fill="#f3e8ff" stroke="#a855f7" stroke-width="3" opacity="0.7"/>
+                            <ellipse class="body-part clickable" data-category="Legs" cx="180" cy="450" rx="25" ry="120" fill="#f3e8ff" stroke="#a855f7" stroke-width="3" opacity="0.7"/>
+                            <text x="120" y="520" text-anchor="middle" fill="#6b21a8" font-size="12" font-weight="600">Legs</text>
+                            <text x="180" y="520" text-anchor="middle" fill="#6b21a8" font-size="12" font-weight="600">Legs</text>
+                            
+                            <!-- Hover effect overlay -->
+                            <rect class="body-overlay" x="0" y="0" width="300" height="600" fill="transparent" pointer-events="none"/>
+                        </svg>
                     </div>
-                    <div class="card-surface stat-card col-span-12 md:col-span-4">
-                        <div class="stat-label">Exercises Tracked</div>
-                        <div class="stat-value" id="totalExercises">0</div>
-                    </div>
-                    <div class="card-surface stat-card col-span-12 md:col-span-4">
-                        <div class="stat-label">Last Session</div>
-                        <div class="stat-value" id="lastSession">--</div>
+                    <div class="body-diagram-hint">
+                        <p>Click on any body part to view exercises</p>
                     </div>
                 </div>
             </section>

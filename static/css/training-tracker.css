@@ -20,26 +20,126 @@
 }
 
 .training-stats {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
-.stat-card {
+.body-diagram-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.body-diagram-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.body-diagram {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+.body-part {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.body-part.clickable {
+    cursor: pointer;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.body-part.clickable:hover {
+    opacity: 1 !important;
+    filter: brightness(1.15) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    transform: scale(1.08);
+    transform-origin: center;
+    animation: none;
+}
+
+.body-part.clickable:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.85;
+    }
+}
+
+.body-part[data-category="Chest"]:hover {
+    fill: #3b82f6 !important;
+    stroke: #1e40af !important;
+}
+
+.body-part[data-category="Back"]:hover {
+    fill: #6366f1 !important;
+    stroke: #312e81 !important;
+}
+
+.body-part[data-category="Legs"]:hover {
+    fill: #a855f7 !important;
+    stroke: #6b21a8 !important;
+}
+
+.body-part[data-category="Arms"]:hover {
+    fill: #ec4899 !important;
+    stroke: #9f1239 !important;
+}
+
+.body-part[data-category="Shoulders"]:hover {
+    fill: #f59e0b !important;
+    stroke: #92400e !important;
+}
+
+.body-part[data-category="Core"]:hover {
+    fill: #10b981 !important;
+    stroke: #065f46 !important;
+}
+
+.body-diagram-hint {
+    margin-top: 1.5rem;
     text-align: center;
-    padding: 1.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-style: italic;
+    animation: fadeInUp 0.6s ease-out;
 }
 
-.stat-label {
-    font-size: 0.875rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.body-diagram-hint p {
+    margin: 0;
 }
 
-.stat-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #0066ff;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .body-diagram-container {
+        padding: 1.5rem;
+    }
+    
+    .body-diagram-wrapper {
+        max-width: 300px;
+    }
 }
 
 .training-exercises {
