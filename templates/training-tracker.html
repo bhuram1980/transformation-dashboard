@@ -31,44 +31,44 @@
                 <div class="body-diagram-container">
                     <div class="body-diagram-wrapper">
                         <svg class="body-diagram" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Body outline (base) -->
+                            <path d="M 150 95 Q 120 95 100 115 Q 85 130 85 150 Q 85 170 90 190 Q 95 210 100 230 Q 105 250 110 270 Q 115 290 120 310 Q 125 330 130 350 Q 135 370 140 390 Q 145 410 150 430 Q 155 450 160 470 Q 165 490 170 510 Q 175 530 180 550 Q 185 570 190 580 L 210 580 Q 215 570 220 550 Q 225 530 230 510 Q 235 490 240 470 Q 245 450 250 430 Q 255 410 260 390 Q 265 370 270 350 Q 275 330 280 310 Q 285 290 290 270 Q 295 250 300 230 Q 305 210 310 190 Q 315 170 315 150 Q 315 130 300 115 Q 280 95 250 95 Q 230 95 210 100 Q 190 95 170 95 Q 160 95 150 95 Z" fill="#f3f4f6" stroke="#d1d5db" stroke-width="2"/>
+                            
                             <!-- Head -->
-                            <circle class="body-part" data-category="Other" cx="150" cy="50" r="35" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
+                            <circle cx="150" cy="50" r="35" fill="#f9fafb" stroke="#d1d5db" stroke-width="2"/>
                             
                             <!-- Neck -->
-                            <rect class="body-part" data-category="Other" x="140" y="80" width="20" height="15" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
+                            <rect x="140" y="80" width="20" height="15" fill="#f9fafb" stroke="#d1d5db" stroke-width="2"/>
                             
-                            <!-- Chest -->
-                            <ellipse class="body-part clickable" data-category="Chest" cx="150" cy="140" rx="60" ry="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" opacity="0.7"/>
-                            <text x="150" y="145" text-anchor="middle" fill="#1e40af" font-size="14" font-weight="600">Chest</text>
+                            <!-- Chest (front) -->
+                            <ellipse class="body-part clickable" data-category="Chest" cx="150" cy="160" rx="55" ry="45" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" opacity="0.8"/>
+                            <text x="150" y="165" text-anchor="middle" fill="#1e40af" font-size="16" font-weight="700">Chest</text>
                             
                             <!-- Shoulders -->
-                            <ellipse class="body-part clickable" data-category="Shoulders" cx="100" cy="130" rx="25" ry="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" opacity="0.7"/>
-                            <ellipse class="body-part clickable" data-category="Shoulders" cx="200" cy="130" rx="25" ry="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" opacity="0.7"/>
-                            <text x="100" y="135" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Shoulders</text>
-                            <text x="200" y="135" text-anchor="middle" fill="#92400e" font-size="11" font-weight="600">Shoulders</text>
+                            <ellipse class="body-part clickable" data-category="Shoulders" cx="95" cy="140" rx="22" ry="28" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" opacity="0.8"/>
+                            <ellipse class="body-part clickable" data-category="Shoulders" cx="205" cy="140" rx="22" ry="28" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" opacity="0.8"/>
+                            <text x="95" y="145" text-anchor="middle" fill="#92400e" font-size="12" font-weight="700">Shoulders</text>
+                            <text x="205" y="145" text-anchor="middle" fill="#92400e" font-size="12" font-weight="700">Shoulders</text>
                             
                             <!-- Arms -->
-                            <ellipse class="body-part clickable" data-category="Arms" cx="80" cy="200" rx="20" ry="80" fill="#fce7f3" stroke="#ec4899" stroke-width="3" opacity="0.7"/>
-                            <ellipse class="body-part clickable" data-category="Arms" cx="220" cy="200" rx="20" ry="80" fill="#fce7f3" stroke="#ec4899" stroke-width="3" opacity="0.7"/>
-                            <text x="80" y="240" text-anchor="middle" fill="#9f1239" font-size="12" font-weight="600">Arms</text>
-                            <text x="220" y="240" text-anchor="middle" fill="#9f1239" font-size="12" font-weight="600">Arms</text>
+                            <ellipse class="body-part clickable" data-category="Arms" cx="75" cy="220" rx="18" ry="75" fill="#fce7f3" stroke="#ec4899" stroke-width="3" opacity="0.8"/>
+                            <ellipse class="body-part clickable" data-category="Arms" cx="225" cy="220" rx="18" ry="75" fill="#fce7f3" stroke="#ec4899" stroke-width="3" opacity="0.8"/>
+                            <text x="75" y="260" text-anchor="middle" fill="#9f1239" font-size="13" font-weight="700">Arms</text>
+                            <text x="225" y="260" text-anchor="middle" fill="#9f1239" font-size="13" font-weight="700">Arms</text>
                             
                             <!-- Core/Abdomen -->
-                            <rect class="body-part clickable" data-category="Core" x="120" y="180" width="60" height="80" rx="10" fill="#d1fae5" stroke="#10b981" stroke-width="3" opacity="0.7"/>
-                            <text x="150" y="220" text-anchor="middle" fill="#065f46" font-size="12" font-weight="600">Core</text>
+                            <rect class="body-part clickable" data-category="Core" x="115" y="200" width="70" height="70" rx="8" fill="#d1fae5" stroke="#10b981" stroke-width="3" opacity="0.8"/>
+                            <text x="150" y="235" text-anchor="middle" fill="#065f46" font-size="13" font-weight="700">Core</text>
                             
-                            <!-- Back (behind, shown with outline) -->
-                            <path class="body-part clickable" data-category="Back" d="M 90 140 Q 90 180 100 220 Q 110 260 120 300 Q 130 340 140 380 L 160 380 Q 170 340 180 300 Q 190 260 200 220 Q 210 180 210 140 Q 200 130 190 125 Q 180 120 150 120 Q 120 120 110 125 Q 100 130 90 140 Z" fill="#e0e7ff" stroke="#6366f1" stroke-width="3" opacity="0.7"/>
-                            <text x="150" y="200" text-anchor="middle" fill="#312e81" font-size="12" font-weight="600">Back</text>
+                            <!-- Back (overlay, clickable area) -->
+                            <path class="body-part clickable" data-category="Back" d="M 95 140 Q 95 180 105 220 Q 115 260 125 300 Q 135 340 145 380 L 155 380 Q 165 340 175 300 Q 185 260 195 220 Q 205 180 205 140 Q 195 130 185 125 Q 175 120 150 120 Q 125 120 115 125 Q 105 130 95 140 Z" fill="#e0e7ff" stroke="#6366f1" stroke-width="3" opacity="0.8"/>
+                            <text x="150" y="210" text-anchor="middle" fill="#312e81" font-size="13" font-weight="700">Back</text>
                             
                             <!-- Legs -->
-                            <ellipse class="body-part clickable" data-category="Legs" cx="120" cy="450" rx="25" ry="120" fill="#f3e8ff" stroke="#a855f7" stroke-width="3" opacity="0.7"/>
-                            <ellipse class="body-part clickable" data-category="Legs" cx="180" cy="450" rx="25" ry="120" fill="#f3e8ff" stroke="#a855f7" stroke-width="3" opacity="0.7"/>
-                            <text x="120" y="520" text-anchor="middle" fill="#6b21a8" font-size="12" font-weight="600">Legs</text>
-                            <text x="180" y="520" text-anchor="middle" fill="#6b21a8" font-size="12" font-weight="600">Legs</text>
-                            
-                            <!-- Hover effect overlay -->
-                            <rect class="body-overlay" x="0" y="0" width="300" height="600" fill="transparent" pointer-events="none"/>
+                            <ellipse class="body-part clickable" data-category="Legs" cx="120" cy="480" rx="22" ry="100" fill="#f3e8ff" stroke="#a855f7" stroke-width="3" opacity="0.8"/>
+                            <ellipse class="body-part clickable" data-category="Legs" cx="180" cy="480" rx="22" ry="100" fill="#f3e8ff" stroke="#a855f7" stroke-width="3" opacity="0.8"/>
+                            <text x="120" y="540" text-anchor="middle" fill="#6b21a8" font-size="13" font-weight="700">Legs</text>
+                            <text x="180" y="540" text-anchor="middle" fill="#6b21a8" font-size="13" font-weight="700">Legs</text>
                         </svg>
                     </div>
                     <div class="body-diagram-hint">
