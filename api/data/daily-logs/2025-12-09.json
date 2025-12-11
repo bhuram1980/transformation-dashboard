@@ -124,25 +124,30 @@
       },
       {
         "exercise": "Dual Pulley Seated Row",
+        "total_added_weight_kg": 22.5,
         "sets": [
           {
             "set": 1,
-            "reps": 12
+            "reps": 12,
+            "total_added_weight_kg": 22.5
           },
           {
             "set": 2,
-            "reps": 12
+            "reps": 12,
+            "total_added_weight_kg": 22.5
           },
           {
             "set": 3,
-            "reps": 10
+            "reps": 10,
+            "total_added_weight_kg": 22.5
           },
           {
             "set": 4,
-            "reps": 10
+            "reps": 10,
+            "total_added_weight_kg": 22.5
           }
         ],
-        "notes": "20–25 kg range"
+        "notes": "20–25 kg range (using 22.5 kg average)"
       },
       {
         "exercise": "MTS High Row",
