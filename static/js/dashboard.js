@@ -23,15 +23,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // View-only dashboard - no forms
     
-    // Initialize targets section as collapsed by default
-    const targetsContainer = document.getElementById('targetsContainer');
-    const targetsIcon = document.getElementById('targetsToggleIcon');
-    if (targetsContainer && targetsIcon) {
-        targetsContainer.classList.add('collapsed');
-        targetsIcon.textContent = '▶';
-        targetsIcon.classList.add('collapsed');
-    }
-    
     // Setup swipe gestures for mobile
     setupSwipeGestures();
     
@@ -77,12 +68,9 @@ async function loadData() {
         // Cache logs for navigation / highlights
         dailyLogsCache = data.daily_logs || [];
 
-        // Update long-term cards
-        updateGoalCards(data.baseline || {}, data.targets || {}, data.daily_logs || []);
-        
-        // Update goal description / baseline date
-        if (data.goal && data.baseline) {
-            updateGoalAndBaseline(data.goal, data.baseline);
+        // Update goal description
+        if (data.goal) {
+            updateGoalAndBaseline(data.goal, data.baseline || {});
         }
 
         // Update weight + hero highlights
@@ -1799,7 +1787,7 @@ async function loadBodyScanRings() {
                 ? ((ring.baseline - ring.current) / (ring.baseline - ring.target)) * 100
                 : ((ring.current - ring.baseline) / (ring.target - ring.baseline)) * 100;
             const clampedProgress = Math.max(0, Math.min(100, progress));
-            const radius = 32;
+            const radius = 45;
             const circumference = 2 * Math.PI * radius;
             const offset = circumference - (clampedProgress / 100) * circumference;
             
@@ -1808,7 +1796,7 @@ async function loadBodyScanRings() {
                     <h4>${ring.label}</h4>
                     <div class="dashboard-ring-container">
                         <svg class="dashboard-ring-svg" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="${radius}" stroke="#e5e7eb" stroke-width="5" fill="none"/>
+                            <circle cx="50" cy="50" r="${radius}" stroke="#e5e7eb" stroke-width="7" fill="none"/>
                             <circle class="dashboard-ring-progress ${ring.className}" cx="50" cy="50" r="${radius}" 
                                     stroke-dasharray="${circumference}" 
                                     stroke-dashoffset="${offset}"
