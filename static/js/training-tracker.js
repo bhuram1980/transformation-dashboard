@@ -181,21 +181,15 @@ function renderProgressionTable(exerciseName, sessions) {
         const date = new Date(session.date);
         const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         
-        // Format weight - show both kg and lbs if available
+        // Format weight - all weights are now in lbs
         let weightStr = '--';
         if (session.weight_lbs !== null && session.weight_lbs !== undefined) {
             const weightLbs = Math.round(session.weight_lbs);
-            if (session.weight_kg) {
-                weightStr = `${session.weight_kg} kg (${weightLbs} lbs)`;
-            } else {
-                weightStr = `${weightLbs} lbs`;
-            }
+            weightStr = `${weightLbs} lbs`;
             if (session.weight_each_side_lbs) {
                 const eachSide = Math.round(session.weight_each_side_lbs);
                 weightStr += ` (${eachSide} lbs each side)`;
             }
-        } else if (session.weight_kg) {
-            weightStr = `${session.weight_kg} kg`;
         }
         
         // Format sets/reps - handle flexible structures
@@ -342,8 +336,6 @@ function createProgressionChart(chartId, canvas) {
         let weight = null;
         if (session.weight_lbs !== null && session.weight_lbs !== undefined && session.weight_lbs > 0) {
             weight = session.weight_lbs;
-        } else if (session.weight_kg) {
-            weight = session.weight_kg * 2.20462; // Convert kg to lbs
         } else if (session.sets_reps && session.sets_reps.length > 0) {
             const workingSet = session.sets_reps.find(sr => sr.set === 'working' || sr.set === session.sets_reps.length);
             if (workingSet && workingSet.weight_each_side_lbs) {
