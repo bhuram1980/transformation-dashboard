@@ -1813,23 +1813,19 @@ def get_training_data():
                 return 'Arms'
             
             # Leg exercises - check for specific leg movements BEFORE checking "back" keyword
-            if any(x in name_lower for x in ['squat', 'leg curl', 'leg press', 'leg extension', 'leg curl', 'glute', 'hip', 'abductor', 'adductor', 'calf', 'hamstring', 'quad', 'lunge', 'deadlift']):
+            # Include deadlift and back squat here
+            if any(x in name_lower for x in ['squat', 'deadlift', 'leg curl', 'leg press', 'leg extension', 'glute', 'hip', 'abductor', 'adductor', 'calf', 'hamstring', 'quad', 'lunge']):
                 return 'Legs'
             
-            # Chest exercises - check for cable flies specifically
+            # Chest exercises - check for cable flies and other chest movements
             if any(x in name_lower for x in ['chest', 'bench', 'press', 'pec', 'fly', 'dip', 'cable']):
-                # Make sure cable flies go to chest
-                if 'cable' in name_lower and 'fly' in name_lower:
-                    return 'Chest'
-                # Regular chest exercises
-                if any(x in name_lower for x in ['chest', 'bench', 'press', 'pec', 'fly', 'dip']):
-                    return 'Chest'
+                return 'Chest'
             
             # Back exercises - but exclude deadlift and back squat (already handled above)
             if any(x in name_lower for x in ['row', 'pulldown', 'lat', 'pull-up', 'pullup', 'chin-up']):
                 return 'Back'
             # Back exercises that don't conflict with legs
-            if 'back' in name_lower and 'squat' not in name_lower:
+            if 'back' in name_lower and 'squat' not in name_lower and 'deadlift' not in name_lower:
                 return 'Back'
             
             # Shoulders
