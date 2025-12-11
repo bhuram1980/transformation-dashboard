@@ -206,6 +206,12 @@ function renderExerciseProgression() {
     
     container.innerHTML = html;
     
+    // Ensure all category sections are visible by default
+    const allCategorySections = container.querySelectorAll('.category-section');
+    allCategorySections.forEach(section => {
+        section.style.display = 'block';
+    });
+    
     // Initialize charts after rendering
     initializeCharts();
     
