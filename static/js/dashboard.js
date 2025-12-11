@@ -1765,7 +1765,7 @@ async function loadBodyScanRings() {
                 label: 'Muscle Mass',
                 current: latest.skeletal_muscle_mass_kg,
                 baseline: baseline.skeletal_muscle_mass_kg || 0,
-                target: (baseline.skeletal_muscle_mass_kg || 0) + 5,
+                target: 50,
                 unit: 'kg',
                 className: 'muscle-mass',
                 positiveDirection: 'up'
