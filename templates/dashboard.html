@@ -26,13 +26,19 @@
                     </div>
                 </div>
                 <div class="grid-12 hero-grid">
-                    <div class="card-surface hero-card hero-streak col-span-12">
+                    <div class="card-surface hero-card hero-streak col-span-12 md:col-span-6">
                         <div class="hero-card-label">Current streak</div>
                         <div class="streak-container">
                             <div class="streak-number" id="streakCount">0</div>
                             <div class="streak-label">Day Streak</div>
                         </div>
                         <div class="hero-card-meta" id="streakMeta">Logs arrive nightly</div>
+                    </div>
+                    <div class="card-surface hero-card body-scans-rings col-span-12 md:col-span-6" id="bodyScansRings">
+                        <div class="hero-card-label">Body Composition Progress</div>
+                        <div class="dashboard-rings-container" id="dashboardRingsContainer">
+                            <div class="loading-state">Loading scan data...</div>
+                        </div>
                     </div>
                     <div class="card-surface weight-highlight-card col-span-12">
                         <div class="weight-headline">

@@ -91,6 +91,9 @@ async function loadData() {
         updateTodayScore(data.daily_logs || []);
         updateHeroBadges(data.daily_logs || [], data.streak || 0);
         
+        // Load and render body scan progress rings
+        loadBodyScanRings();
+        
         // Don't render chart by default - wait for user to click button
         // Chart will be rendered when graph is toggled visible
 
