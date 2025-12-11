@@ -76,7 +76,6 @@ async function loadData() {
         // Update weight + hero highlights
         updateWeightHighlights(data.daily_logs || [], data.baseline || {});
         updateFishRing(data.daily_logs || []);
-        updateTodayScore(data.daily_logs || []);
         updateHeroBadges(data.daily_logs || [], data.streak || 0);
         
         // Load and render body scan progress rings
