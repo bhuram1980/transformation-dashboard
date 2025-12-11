@@ -160,16 +160,6 @@
     margin-top: 1rem;
 }
 
-.sticky-comparison {
-    position: sticky;
-    top: 20px;
-    z-index: 10;
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-}
 
 .scan-selector {
     display: flex;
