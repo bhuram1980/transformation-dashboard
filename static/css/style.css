@@ -1615,15 +1615,26 @@ body {
 }
 
 .meals-day-header {
-    margin-bottom: 12px;
-    padding-bottom: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.meals-day-header .section-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9ca3af;
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
 .meals-day-header h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #000;
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
     margin: 0;
+    letter-spacing: -0.5px;
 }
 
 /* Activity card styles removed */
@@ -1668,61 +1679,66 @@ body {
 
 .macro-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-top: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
 }
 
 .macro-card {
-    border: 1px solid #e7eaf2;
-    border-radius: 14px;
-    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    background: #fbfcff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    gap: 8px;
+    background: #fafbfc;
+    transition: all 0.2s ease;
 }
 
 .macro-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    background: #f5f7fa;
 }
 
 .macro-card .macro-label {
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #8690a2;
+    letter-spacing: 0.8px;
+    color: #9ca3af;
+    font-weight: 600;
 }
 
 .macro-card .macro-value {
-    font-size: 28px;
-    color: #0f172a;
+    font-size: 32px;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1;
+    letter-spacing: -0.5px;
 }
 
 .macro-target {
-    font-size: 12px;
-    color: #8f97a7;
+    font-size: 11px;
+    color: #9ca3af;
+    font-weight: 500;
 }
 
 .macro-progress-bar {
-    height: 6px;
-    background: #ebeef5;
+    height: 4px;
+    background: #e5e7eb;
     border-radius: 999px;
     overflow: hidden;
+    margin-top: 4px;
 }
 
 .macro-progress-fill {
     height: 100%;
     width: 0%;
     border-radius: inherit;
-    background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
-    transition: width 0.3s ease;
+    background: #0066ff;
+    transition: width 0.4s ease;
 }
 
 .macro-progress-fill.over {
-    background: linear-gradient(90deg, #ff5f6d 0%, #ffc371 100%);
+    background: #ef4444;
 }
 
 .meals-training,
@@ -1738,44 +1754,44 @@ body {
 
 .day-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
     margin-top: 20px;
 }
 
 .day-info-card {
-    border: 1px solid #e5e8f1;
+    border: none;
     border-radius: 12px;
-    padding: 16px;
-    background: #fbfcff;
+    padding: 18px;
+    background: #fafbfc;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .day-info-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+    background: #f5f7fa;
 }
 
 .day-info-title {
-    font-size: 13px;
-    letter-spacing: 0.7px;
+    font-size: 11px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: #7c8598;
+    color: #9ca3af;
     font-weight: 600;
 }
 
 .day-info-value {
     font-size: 16px;
-    color: #131b2f;
+    color: #111827;
+    font-weight: 600;
 }
 
 .day-info-note {
     font-size: 14px;
-    color: #5d6373;
-    line-height: 1.5;
+    color: #6b7280;
+    line-height: 1.6;
 }
 
 .notes-card {
@@ -1813,53 +1829,62 @@ body {
     }
 }
 
-.meal-card {
-    border: 1px solid #e3e8f3;
-    border-radius: 16px;
-    padding: 18px;
-    background: #fff;
+.meals-stack {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 20px;
+}
+
+.meal-card {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fafbfc;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.2s ease;
 }
 
 .meal-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+    background: #f5f7fa;
 }
 
 .meal-card-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .meal-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #0f172a;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    letter-spacing: -0.2px;
 }
 
 .meal-desc {
-    color: #4b5563;
-    line-height: 1.5;
+    color: #6b7280;
+    line-height: 1.6;
+    font-size: 14px;
 }
 
 .meal-macros {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+    margin-top: 4px;
 }
 
 .macro-chip {
     padding: 4px 10px;
-    border-radius: 999px;
-    background: #f2f4f9;
-    color: #4a5568;
-    font-size: 12px;
+    border-radius: 6px;
+    background: white;
+    color: #4b5563;
+    font-size: 11px;
     font-weight: 600;
+    border: 1px solid #e5e7eb;
 }
 
 .meal-bar {
@@ -1877,61 +1902,75 @@ body {
 }
 
 .supplements-card {
-    border: 1px solid #e6eaf3;
-    border-radius: 14px;
-    padding: 18px;
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
     margin-top: 24px;
+    background: #fafbfc;
 }
 
 .supplements-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+.supplements-header .section-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9ca3af;
+    font-weight: 600;
+    margin: 0;
 }
 
 .supplements-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
 }
 
 .supplement-tile {
-    border: 1px solid #e2e6f1;
-    border-radius: 12px;
-    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    background: #fff;
-    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    gap: 6px;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.supplement-tile:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .supplement-tile.taken {
-    border-color: #c7f0d7;
-    background: #f2fff7;
-    box-shadow: 0 10px 22px rgba(16, 185, 129, 0.18);
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
 }
 
 .supplement-name {
     font-weight: 600;
-    color: #151b31;
-    font-size: 14px;
+    color: #111827;
+    font-size: 13px;
+    letter-spacing: -0.1px;
 }
 
 .supplement-details {
-    font-size: 12px;
-    color: #647086;
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.4;
 }
 
 .supplement-status {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    color: #b21f1f;
+    color: #dc2626;
+    margin-top: 2px;
 }
 
 .supplement-tile.taken .supplement-status {
-    color: #0f7b3c;
+    color: #059669;
 }
 
 .training-label,

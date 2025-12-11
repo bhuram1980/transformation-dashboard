@@ -1496,10 +1496,8 @@ function renderDayDetailView(dayData, totals) {
     const dateLabel = dayData.date_display || dayData.date || '';
     const headerHtml = `
         <div class="meals-day-header">
-            <div>
-                <p class="section-eyebrow">Day ${dayData.day || '-'}</p>
-                <h3>${dateLabel}</h3>
-            </div>
+            <p class="section-eyebrow">Day ${dayData.day || '-'}</p>
+            <h3>${dateLabel}</h3>
         </div>
     `;
     
