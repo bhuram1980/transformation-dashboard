@@ -405,6 +405,30 @@
     height: 300px;
 }
 
+.loading-state,
+.error-state,
+.info-state {
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.95rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.error-state {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.info-state {
+    color: #059669;
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
 @media (max-width: 768px) {
     .comparison-grid {
         grid-template-columns: 1fr;

@@ -1983,38 +1983,72 @@ def get_body_scans():
         vercel_env = os.getenv('VERCEL')
         scans_dir = None
         
+        # Strategy: Try multiple possible paths
+        possible_paths = []
+        
+        # Get app root
+        try:
+            app_root = Path(__file__).parent
+        except Exception:
+            app_root = Path.cwd()
+        
+        # If we're in api/ directory, go up one level
+        if app_root.name == 'api':
+            app_root = app_root.parent
+        
+        cwd = Path.cwd()
+        
+        # Build list of possible paths
+        possible_paths.extend([
+            app_root / "api" / "data" / "body-scans",
+            app_root / "public" / "data" / "body-scans",
+            cwd / "api" / "data" / "body-scans",
+            cwd / "public" / "data" / "body-scans",
+            Path("api/data/body-scans"),
+            Path("public/data/body-scans"),
+        ])
+        
+        # On Vercel, also try relative to current working directory
         if vercel_env == '1':
-            # On Vercel, try api/data first
-            cwd = Path.cwd()
-            api_scans_from_cwd = cwd / "api" / "data" / "body-scans"
-            api_scans_from_file = Path(__file__).parent / "api" / "data" / "body-scans"
-            
-            if api_scans_from_cwd.exists():
-                scans_dir = api_scans_from_cwd
-            elif api_scans_from_file.exists():
-                scans_dir = api_scans_from_file
-        else:
-            # Local development
-            scans_dir = Path('api/data/body-scans')
-            if not scans_dir.exists():
-                scans_dir = Path('public/data/body-scans')
+            possible_paths.extend([
+                Path("/var/task/api/data/body-scans"),
+                Path("/var/task/public/data/body-scans"),
+            ])
+        
+        print(f"Looking for body-scans directory in:")
+        for path in possible_paths:
+            print(f"  {path} (exists: {path.exists()})")
+        
+        # Find first existing directory
+        for path in possible_paths:
+            if path.exists() and path.is_dir():
+                scans_dir = path
+                print(f"Using scans directory: {scans_dir}")
+                break
         
         scans = []
         
         if scans_dir and scans_dir.exists():
             json_files = sorted(scans_dir.glob("*.json"))
+            print(f"Found {len(json_files)} JSON files in {scans_dir}")
             for json_file in json_files:
                 try:
                     content = json_file.read_text(encoding='utf-8')
                     scan_data = json.loads(content)
                     scans.append(scan_data)
+                    print(f"Loaded scan: {json_file.name} - Date: {scan_data.get('date')}")
                 except Exception as e:
                     print(f"Error loading {json_file}: {e}")
+                    import traceback
+                    traceback.print_exc()
                     continue
+        else:
+            print(f"WARNING: Body scans directory not found. Tried: {possible_paths}")
         
         # Sort by date
         scans.sort(key=lambda x: x.get('date', ''))
         
+        print(f"Returning {len(scans)} scans")
         return jsonify({
             'scans': scans,
             'total': len(scans)

@@ -9,12 +9,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadScansData() {
     try {
+        console.log('Loading scans data from /api/body-scans...');
         const response = await fetch('/api/body-scans');
+        console.log('Response status:', response.status);
+        
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('API error response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
         }
+        
         const data = await response.json();
+        console.log('Received data:', data);
         scansData = data.scans || [];
+        console.log('Loaded scans:', scansData.length, scansData);
+        
+        if (scansData.length === 0) {
+            console.warn('No scans data found');
+            document.getElementById('comparisonContainer').innerHTML = 
+                '<div class="info-state">No scan data available. Please add scan data.</div>';
+            document.getElementById('scansContainer').innerHTML = 
+                '<div class="info-state">No scan data available. Please add scan data.</div>';
+            return;
+        }
         
         renderStats();
         renderAchievements();
@@ -24,10 +41,15 @@ async function loadScansData() {
         renderCharts();
     } catch (error) {
         console.error('Error loading scans data:', error);
+        const errorMsg = error.message || 'Unknown error';
         document.getElementById('comparisonContainer').innerHTML = 
-            '<div class="error-state">Error loading scan data. Please try again later.</div>';
+            `<div class="error-state">Error loading scan data: ${errorMsg}. Please check console for details.</div>`;
         document.getElementById('scansContainer').innerHTML = 
-            '<div class="error-state">Error loading scan data. Please try again later.</div>';
+            `<div class="error-state">Error loading scan data: ${errorMsg}. Please check console for details.</div>`;
+        document.getElementById('achievementsContainer').innerHTML = 
+            `<div class="error-state">Error loading scan data: ${errorMsg}</div>`;
+        document.getElementById('compositionContainer').innerHTML = 
+            `<div class="error-state">Error loading scan data: ${errorMsg}</div>`;
     }
 }
 
