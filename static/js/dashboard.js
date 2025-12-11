@@ -1764,8 +1764,8 @@ async function loadBodyScanRings() {
             {
                 label: 'Muscle Mass',
                 current: latest.skeletal_muscle_mass_kg,
-                baseline: baseline.skeletal_muscle_mass_kg,
-                target: baseline.skeletal_muscle_mass_kg + 5,
+                baseline: baseline.skeletal_muscle_mass_kg || 0,
+                target: (baseline.skeletal_muscle_mass_kg || 0) + 5,
                 unit: 'kg',
                 className: 'muscle-mass',
                 positiveDirection: 'up'
@@ -1773,7 +1773,7 @@ async function loadBodyScanRings() {
             {
                 label: 'Visceral Fat',
                 current: latest.visceral_fat_level,
-                baseline: baseline.visceral_fat_level,
+                baseline: baseline.visceral_fat_level || 10,
                 target: 5,
                 unit: '',
                 className: 'visceral-fat',
@@ -1783,9 +1783,50 @@ async function loadBodyScanRings() {
         
         let html = '';
         rings.forEach(ring => {
-            const progress = ring.positiveDirection === 'down' 
-                ? ((ring.baseline - ring.current) / (ring.baseline - ring.target)) * 100
-                : ((ring.current - ring.baseline) / (ring.target - ring.baseline)) * 100;
+            // Skip if current value is null/undefined
+            if (ring.current == null || ring.baseline == null) {
+                html += `
+                    <div class="dashboard-ring-card">
+                        <h4>${ring.label}</h4>
+                        <div class="dashboard-ring-container">
+                            <svg class="dashboard-ring-svg" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" stroke="#e5e7eb" stroke-width="7" fill="none"/>
+                            </svg>
+                            <div class="dashboard-ring-value">--</div>
+                        </div>
+                        <div class="dashboard-ring-label">Target: ${ring.target.toFixed(1)}${ring.unit ? ring.unit : ''}</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let progress;
+            if (ring.positiveDirection === 'down') {
+                // For "down" metrics (body fat, visceral fat): progress = how much we've reduced from baseline toward target
+                // If current <= target, we're at 100%
+                // If current >= baseline, we're at 0%
+                if (ring.current <= ring.target) {
+                    progress = 100;
+                } else if (ring.current >= ring.baseline) {
+                    progress = 0;
+                } else {
+                    // Calculate progress: (baseline - current) / (baseline - target) * 100
+                    progress = ((ring.baseline - ring.current) / (ring.baseline - ring.target)) * 100;
+                }
+            } else {
+                // For "up" metrics (lean mass, muscle mass): progress = how much we've gained from baseline toward target
+                // If current >= target, we're at 100%
+                // If current <= baseline, we're at 0%
+                if (ring.current >= ring.target) {
+                    progress = 100;
+                } else if (ring.current <= ring.baseline) {
+                    progress = 0;
+                } else {
+                    // Calculate progress: (current - baseline) / (target - baseline) * 100
+                    progress = ((ring.current - ring.baseline) / (ring.target - ring.baseline)) * 100;
+                }
+            }
+            
             const clampedProgress = Math.max(0, Math.min(100, progress));
             const radius = 45;
             const circumference = 2 * Math.PI * radius;
