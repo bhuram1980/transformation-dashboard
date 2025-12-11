@@ -1799,7 +1799,7 @@ async function loadBodyScanRings() {
                 ? ((ring.baseline - ring.current) / (ring.baseline - ring.target)) * 100
                 : ((ring.current - ring.baseline) / (ring.target - ring.baseline)) * 100;
             const clampedProgress = Math.max(0, Math.min(100, progress));
-            const radius = 40;
+            const radius = 32;
             const circumference = 2 * Math.PI * radius;
             const offset = circumference - (clampedProgress / 100) * circumference;
             
@@ -1808,7 +1808,7 @@ async function loadBodyScanRings() {
                     <h4>${ring.label}</h4>
                     <div class="dashboard-ring-container">
                         <svg class="dashboard-ring-svg" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="${radius}" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                            <circle cx="50" cy="50" r="${radius}" stroke="#e5e7eb" stroke-width="5" fill="none"/>
                             <circle class="dashboard-ring-progress ${ring.className}" cx="50" cy="50" r="${radius}" 
                                     stroke-dasharray="${circumference}" 
                                     stroke-dashoffset="${offset}"
