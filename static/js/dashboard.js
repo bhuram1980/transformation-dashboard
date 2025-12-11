@@ -825,7 +825,20 @@ function updateTodayScore(dailyLogs = []) {
     const today = dailyLogs[dailyLogs.length - 1];
     const totals = getDailyTotals(today);
     const supplements = today.supplements || {};
-    const training = (today.training || '').trim();
+    
+    // Handle training - can be string or object
+    let training = '';
+    if (today.training) {
+        if (typeof today.training === 'string') {
+            training = today.training.trim();
+        } else if (typeof today.training === 'object' && today.training !== null) {
+            // Structured training data - check if it has content
+            const hasWorkout = today.training.workout && Array.isArray(today.training.workout) && today.training.workout.length > 0;
+            const hasSession = today.training.session && today.training.session.trim();
+            training = hasWorkout || hasSession ? 'Training logged' : '';
+        }
+    }
+    
     const feeling = parseNumber(today.feeling);
     
     const allSuppTaken = Object.values(supplements).every(val => {
