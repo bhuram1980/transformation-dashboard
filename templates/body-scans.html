@@ -26,29 +26,62 @@
                 </div>
             </section>
 
-            <!-- Summary Stats -->
+            <!-- Key Achievements -->
+            <section class="layout-section scans-achievements" id="scansAchievements">
+                <div class="section-heading">
+                    <h2 class="section-title">🏆 Key Achievements</h2>
+                    <p class="section-subtitle">Major wins from your transformation</p>
+                </div>
+                <div id="achievementsContainer">
+                    <div class="loading-state">Loading achievements...</div>
+                </div>
+            </section>
+
+            <!-- Summary Stats with Progress Rings -->
             <section class="layout-section scans-stats" id="scansStats">
                 <div class="grid-12">
-                    <div class="card-surface stat-card col-span-12 md:col-span-4">
+                    <div class="card-surface stat-card col-span-12 md:col-span-3">
                         <div class="stat-label">Total Scans</div>
                         <div class="stat-value" id="totalScans">0</div>
                     </div>
-                    <div class="card-surface stat-card col-span-12 md:col-span-4">
+                    <div class="card-surface stat-card col-span-12 md:col-span-3">
+                        <div class="stat-label">Days Tracked</div>
+                        <div class="stat-value" id="daysTracked">--</div>
+                    </div>
+                    <div class="card-surface stat-card col-span-12 md:col-span-3">
                         <div class="stat-label">Latest Body Fat</div>
                         <div class="stat-value" id="latestBodyFat">--</div>
                     </div>
-                    <div class="card-surface stat-card col-span-12 md:col-span-4">
+                    <div class="card-surface stat-card col-span-12 md:col-span-3">
                         <div class="stat-label">Latest Scan Date</div>
                         <div class="stat-value" id="latestScanDate">--</div>
                     </div>
                 </div>
+                <div class="progress-rings-container" id="progressRingsContainer"></div>
+            </section>
+
+            <!-- Body Composition Breakdown -->
+            <section class="layout-section scans-composition" id="scansComposition">
+                <div class="section-heading">
+                    <h2 class="section-title">Body Composition Breakdown</h2>
+                    <p class="section-subtitle">Visual breakdown of your latest scan</p>
+                </div>
+                <div id="compositionContainer">
+                    <div class="loading-state">Loading composition data...</div>
+                </div>
             </section>
 
             <!-- Comparison View -->
-            <section class="layout-section scans-comparison" id="scansComparison">
+            <section class="layout-section scans-comparison sticky-comparison" id="scansComparison">
                 <div class="section-heading">
                     <h2 class="section-title">Progress Comparison</h2>
-                    <p class="section-subtitle">Compare your latest scan with baseline</p>
+                    <p class="section-subtitle">Compare scans side by side</p>
+                    <div class="scan-selector" id="scanSelector" style="margin-top: 1rem; display: none;">
+                        <label style="font-size: 0.875rem; color: #6b7280; margin-right: 0.5rem;">Compare:</label>
+                        <select id="baselineSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #e5e7eb; margin-right: 0.5rem;"></select>
+                        <span style="margin: 0 0.5rem;">vs</span>
+                        <select id="latestSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #e5e7eb;"></select>
+                    </div>
                 </div>
                 <div id="comparisonContainer">
                     <div class="loading-state">Loading scan data...</div>
