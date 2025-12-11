@@ -1718,3 +1718,100 @@ function toggleWeightGraph() {
         }
     }
 }
+
+async function loadBodyScanRings() {
+    try {
+        const response = await fetch('/api/body-scans');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const scans = data.scans || [];
+        
+        if (scans.length < 2) {
+            document.getElementById('dashboardRingsContainer').innerHTML = 
+                '<div class="info-state" style="grid-column: 1 / -1; padding: 1rem; text-align: center; color: #6b7280; font-size: 0.85rem;">Need at least 2 scans to show progress</div>';
+            return;
+        }
+        
+        const baseline = scans[0];
+        const latest = scans[scans.length - 1];
+        
+        if (!baseline || !latest) {
+            return;
+        }
+        
+        const rings = [
+            {
+                label: 'Body Fat %',
+                current: latest.body_fat_percent,
+                baseline: baseline.body_fat_percent,
+                target: 13,
+                unit: '%',
+                className: 'body-fat',
+                positiveDirection: 'down'
+            },
+            {
+                label: 'Lean Mass',
+                current: latest.lean_mass_kg,
+                baseline: baseline.lean_mass_kg,
+                target: baseline.lean_mass_kg + 8,
+                unit: 'kg',
+                className: 'lean-mass',
+                positiveDirection: 'up'
+            },
+            {
+                label: 'Muscle Mass',
+                current: latest.skeletal_muscle_mass_kg,
+                baseline: baseline.skeletal_muscle_mass_kg,
+                target: baseline.skeletal_muscle_mass_kg + 5,
+                unit: 'kg',
+                className: 'muscle-mass',
+                positiveDirection: 'up'
+            },
+            {
+                label: 'Visceral Fat',
+                current: latest.visceral_fat_level,
+                baseline: baseline.visceral_fat_level,
+                target: 5,
+                unit: '',
+                className: 'visceral-fat',
+                positiveDirection: 'down'
+            }
+        ];
+        
+        let html = '';
+        rings.forEach(ring => {
+            const progress = ring.positiveDirection === 'down' 
+                ? ((ring.baseline - ring.current) / (ring.baseline - ring.target)) * 100
+                : ((ring.current - ring.baseline) / (ring.target - ring.baseline)) * 100;
+            const clampedProgress = Math.max(0, Math.min(100, progress));
+            const radius = 40;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (clampedProgress / 100) * circumference;
+            
+            html += `
+                <div class="dashboard-ring-card">
+                    <h4>${ring.label}</h4>
+                    <div class="dashboard-ring-container">
+                        <svg class="dashboard-ring-svg" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="${radius}" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                            <circle class="dashboard-ring-progress ${ring.className}" cx="50" cy="50" r="${radius}" 
+                                    stroke-dasharray="${circumference}" 
+                                    stroke-dashoffset="${offset}"
+                                    fill="none"/>
+                        </svg>
+                        <div class="dashboard-ring-value">${ring.current.toFixed(1)}${ring.unit ? ring.unit : ''}</div>
+                    </div>
+                    <div class="dashboard-ring-label">Target: ${ring.target.toFixed(1)}${ring.unit ? ring.unit : ''}</div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('dashboardRingsContainer').innerHTML = html;
+    } catch (error) {
+        console.error('Error loading body scan rings:', error);
+        document.getElementById('dashboardRingsContainer').innerHTML = 
+            '<div class="info-state" style="grid-column: 1 / -1; padding: 1rem; text-align: center; color: #6b7280; font-size: 0.85rem;">Unable to load scan data</div>';
+    }
+}
