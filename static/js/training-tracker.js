@@ -3,6 +3,7 @@
 let trainingData = [];
 let exerciseGroups = {};
 let exercisesByCategory = {};
+let currentFilterCategory = null;
 
 // Load training data on page load
 document.addEventListener('DOMContentLoaded', async () => {
@@ -13,13 +14,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function setupBodyDiagram() {
-    const bodyParts = document.querySelectorAll('.body-part.clickable');
+    const bodyRegions = document.querySelectorAll('.body-region.clickable');
     
-    bodyParts.forEach(part => {
-        part.addEventListener('click', function() {
+    bodyRegions.forEach(region => {
+        region.addEventListener('click', function() {
             const category = this.getAttribute('data-category');
             if (category && category !== 'Other') {
-                scrollToCategory(category);
+                currentFilterCategory = category;
+                
+                // Update active state on body regions
+                document.querySelectorAll('.body-region').forEach(r => {
+                    r.classList.remove('active');
+                });
+                this.classList.add('active');
                 
                 // Update active state on category nav buttons
                 document.querySelectorAll('.category-nav-btn').forEach(btn => {
@@ -29,21 +36,67 @@ function setupBodyDiagram() {
                     }
                 });
                 
-                // Add visual feedback
-                this.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 200);
+                // Filter and show exercises
+                filterExercisesByCategory(category);
+                
+                // Show "Show All" button
+                document.getElementById('showAllBtn').style.display = 'inline-block';
+                
+                // Scroll to exercises section
+                document.getElementById('trainingExercises').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
             }
         });
-        
-        // Add hover tooltip
-        part.addEventListener('mouseenter', function() {
-            const category = this.getAttribute('data-category');
-            if (category && category !== 'Other') {
-                this.style.cursor = 'pointer';
-            }
-        });
+    });
+}
+
+function filterExercisesByCategory(category) {
+    const container = document.getElementById('exerciseContainer');
+    const allCategorySections = container.querySelectorAll('.category-section');
+    
+    allCategorySections.forEach(section => {
+        const sectionCategory = section.getAttribute('data-category');
+        if (sectionCategory === category) {
+            section.style.display = 'block';
+            // Scroll to this section
+            setTimeout(() => {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+function showAllExercises() {
+    currentFilterCategory = null;
+    
+    // Remove active state from body regions
+    document.querySelectorAll('.body-region').forEach(r => {
+        r.classList.remove('active');
+    });
+    
+    // Remove active state from category nav buttons
+    document.querySelectorAll('.category-nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show all exercises
+    const container = document.getElementById('exerciseContainer');
+    const allCategorySections = container.querySelectorAll('.category-section');
+    allCategorySections.forEach(section => {
+        section.style.display = 'block';
+    });
+    
+    // Hide "Show All" button
+    document.getElementById('showAllBtn').style.display = 'none';
+    
+    // Scroll to top of exercises
+    document.getElementById('trainingExercises').scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
     });
 }
 
@@ -135,7 +188,7 @@ function renderExerciseProgression() {
         }
         
         html += `
-            <div class="category-section" id="category-${category}">
+            <div class="category-section" id="category-${category}" data-category="${category}">
                 <div class="category-header">
                     <h2 class="category-title">
                         <span class="category-icon">${categoryIcons[category] || '⚙️'}</span>
