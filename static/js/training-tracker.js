@@ -8,7 +8,6 @@ let currentFilterCategory = null;
 // Load training data on page load
 document.addEventListener('DOMContentLoaded', async () => {
     await loadTrainingData();
-    renderTrainingStats();
     renderExerciseProgression();
     setupBodyDiagram();
 });
@@ -127,29 +126,9 @@ async function loadTrainingData() {
 }
 
 function renderTrainingStats() {
-    const totalSessions = trainingData.length;
-    
-    // Count total exercises from categories
-    let totalExercises = 0;
-    if (exercisesByCategory) {
-        for (const category in exercisesByCategory) {
-            totalExercises += (exercisesByCategory[category] || []).length;
-        }
-    } else {
-        totalExercises = Object.keys(exerciseGroups).length;
-    }
-    
-    // Get last session date
-    let lastSession = '--';
-    if (trainingData.length > 0) {
-        const last = trainingData[trainingData.length - 1];
-        const date = new Date(last.date);
-        lastSession = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-    
-    document.getElementById('totalSessions').textContent = totalSessions;
-    document.getElementById('totalExercises').textContent = totalExercises;
-    document.getElementById('lastSession').textContent = lastSession;
+    // Stats cards removed - function kept for compatibility but does nothing
+    // Stats are now shown via the interactive body diagram
+    return;
 }
 
 function renderExerciseProgression() {
