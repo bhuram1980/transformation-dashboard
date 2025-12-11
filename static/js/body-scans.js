@@ -526,7 +526,6 @@ function updateComparison() {
     });
     
     html += '</div>';
-    html += '</div>';
     
     // Add days between scans
     html += `<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f3f4f6; text-align: center; color: #6b7280; font-size: 0.875rem;">
