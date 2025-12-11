@@ -180,51 +180,75 @@ function renderProgressionTable(exerciseName, sessions) {
     for (const session of sessions) {
         const date = new Date(session.date);
         const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const notes = session.notes || '';
         
-        // Format weight - all weights are now in lbs
-        let weightStr = '--';
-        if (session.weight_lbs !== null && session.weight_lbs !== undefined) {
-            const weightLbs = Math.round(session.weight_lbs);
-            weightStr = `${weightLbs} lbs`;
-            if (session.weight_each_side_lbs) {
-                const eachSide = Math.round(session.weight_each_side_lbs);
-                weightStr += ` (${eachSide} lbs each side)`;
-            }
-        }
-        
-        // Format sets/reps - handle flexible structures
-        let setsRepsStr = '--';
+        // Show each set individually as a separate row
         if (session.sets_reps && session.sets_reps.length > 0) {
-            const setsReps = session.sets_reps.map(sr => {
+            session.sets_reps.forEach((sr, index) => {
+                // Format set label
                 let setStr = '';
                 if (typeof sr.set === 'string') {
-                    setStr = sr.set;
+                    setStr = sr.set.charAt(0).toUpperCase() + sr.set.slice(1);
                 } else {
                     setStr = `Set ${sr.set}`;
                 }
                 
-                if (sr.reps !== null && sr.reps !== undefined) {
-                    return `${setStr}: ${sr.reps} reps`;
-                } else if (sr.distance) {
-                    return `${setStr}: ${sr.distance}`;
-                } else {
-                    return setStr;
+                // Format weight for this set
+                let weightStr = '--';
+                if (sr.weight_each_side_lbs !== null && sr.weight_each_side_lbs !== undefined) {
+                    const eachSide = Math.round(sr.weight_each_side_lbs);
+                    weightStr = `${eachSide} lbs each side`;
+                } else if (session.weight_each_side_lbs && index === 0) {
+                    // Fallback to session-level weight if set doesn't have individual weight
+                    const eachSide = Math.round(session.weight_each_side_lbs);
+                    weightStr = `${eachSide} lbs each side`;
                 }
-            }).join(', ');
-            setsRepsStr = setsReps;
+                
+                // Format reps for this set
+                let repsStr = '--';
+                if (sr.reps !== null && sr.reps !== undefined) {
+                    repsStr = `${sr.reps} reps`;
+                } else if (sr.distance) {
+                    repsStr = sr.distance;
+                }
+                
+                // Show date and notes only on first row of each session
+                const dateCell = index === 0 ? `<td class="date-col" rowspan="${session.sets_reps.length}">${dateStr}</td>` : '';
+                const dayCell = index === 0 ? `<td class="day-col" rowspan="${session.sets_reps.length}">Day ${session.day}</td>` : '';
+                const notesCell = index === 0 ? `<td class="notes-col" rowspan="${session.sets_reps.length}">${escapeHtml(notes)}</td>` : '';
+                
+                tableHtml += `
+                    <tr>
+                        ${dateCell}
+                        ${dayCell}
+                        <td class="weight-col">${weightStr}</td>
+                        <td class="sets-reps-col">${setStr}: ${repsStr}</td>
+                        ${notesCell}
+                    </tr>
+                `;
+            });
+        } else {
+            // Fallback: if no sets_reps, show session-level info
+            let weightStr = '--';
+            if (session.weight_lbs !== null && session.weight_lbs !== undefined) {
+                const weightLbs = Math.round(session.weight_lbs);
+                weightStr = `${weightLbs} lbs`;
+                if (session.weight_each_side_lbs) {
+                    const eachSide = Math.round(session.weight_each_side_lbs);
+                    weightStr = `${eachSide} lbs each side`;
+                }
+            }
+            
+            tableHtml += `
+                <tr>
+                    <td class="date-col">${dateStr}</td>
+                    <td class="day-col">Day ${session.day}</td>
+                    <td class="weight-col">${weightStr}</td>
+                    <td class="sets-reps-col">--</td>
+                    <td class="notes-col">${escapeHtml(notes)}</td>
+                </tr>
+            `;
         }
-        
-        const notes = session.notes || '';
-        
-        tableHtml += `
-            <tr>
-                <td class="date-col">${dateStr}</td>
-                <td class="day-col">Day ${session.day}</td>
-                <td class="weight-col">${weightStr}</td>
-                <td class="sets-reps-col">${setsRepsStr}</td>
-                <td class="notes-col">${escapeHtml(notes)}</td>
-            </tr>
-        `;
     }
     
     tableHtml += `
