@@ -51,19 +51,19 @@
   "supplements": {
     "omega3": {
       "taken": true,
-      "dose": "4 caps (2 morning + 2 lunch) \u2013 locked"
+      "dose": "4 caps (2 morning + 2 lunch) – locked"
     },
     "nac": {
       "taken": true,
-      "dose": "2 \u00d7 600 mg (morning + night) \u2013 locked"
+      "dose": "2 × 600 mg (morning + night) – locked"
     },
     "d3k2": {
       "taken": true,
-      "dose": "5 tabs pre-breakfast \u2013 locked"
+      "dose": "5 tabs pre-breakfast – locked"
     },
     "zmb": {
       "taken": true,
-      "dose": "3 caps before bed \u2013 locked"
+      "dose": "3 caps before bed – locked"
     },
     "whey": {
       "taken": true,
@@ -93,7 +93,7 @@
             "reps": 2
           }
         ],
-        "total_added_weight_kg": 20.0
+        "total_added_weight_lbs": 44
       },
       {
         "exercise": "Kneeling Leg Curl unilateral",
@@ -146,5 +146,5 @@
     ]
   },
   "feeling": 10,
-  "notes": "DAY 13 LEGENDARY \u2013 Fasted 86.2 kg (-3.8 kg from Day 1). 518 g protein, 1.40 kg edible seafood demolished. Evening shake 2 scoops without creatine as requested. Streak = 13."
+  "notes": "DAY 13 LEGENDARY – Fasted 86.2 kg (-3.8 kg from Day 1). 518 g protein, 1.40 kg edible seafood demolished. Evening shake 2 scoops without creatine as requested. Streak = 13."
 }

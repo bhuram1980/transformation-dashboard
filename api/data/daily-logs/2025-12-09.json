@@ -7,7 +7,7 @@
     "carbs": 68,
     "fat": 48,
     "kcal": 1980,
-    "seafoodKg": 0.80
+    "seafoodKg": 0.8
   },
   "meals": {
     "breakfast": {
@@ -30,7 +30,7 @@
       "carbs": 12,
       "fat": 14,
       "kcal": 560,
-      "seafoodKg": 0.40
+      "seafoodKg": 0.4
     },
     "snack": {
       "description": "4 roasted singhada + 1 roasted lotus root (gegu) + ¼ guava",
@@ -45,51 +45,102 @@
       "carbs": 0,
       "fat": 0,
       "kcal": 200,
-      "seafoodKg": 0.40
+      "seafoodKg": 0.4
     }
   },
   "supplements": {
-    "omega3": { "taken": true, "dose": "4 caps – locked" },
-    "nac": { "taken": true, "dose": "2 × 600 mg – locked" },
-    "d3k2": { "taken": true, "dose": "Morning dose – locked" },
-    "zmb": { "taken": true, "dose": "3 caps ON Zinc Magnesium Aspartate before bed – locked" },
-    "whey": { "taken": true, "scoops": 2 },
-    "creatine": { "taken": true, "dose": "5 g with Isopure – locked" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps – locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 × 600 mg – locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "Morning dose – locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "3 caps ON Zinc Magnesium Aspartate before bed – locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 2
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g with Isopure – locked"
+    }
   },
   "training": {
     "session": "Heavy Back Day",
     "workout": [
       {
         "exercise": "Deadlift (conventional)",
-        "weight_each_side_kg": 80,
-        "total_added_weight_kg": 160,
         "sets": [
-          { "set": "warm-up", "weight_each_side_kg": 40, "reps": 6 },
-          { "set": "warm-up", "weight_each_side_kg": 60, "reps": 4 },
-          { "set": "working", "weight_each_side_kg": 80, "reps": 6 }
+          {
+            "set": "warm-up",
+            "reps": 6,
+            "weight_each_side_lbs": 88
+          },
+          {
+            "set": "warm-up",
+            "reps": 4,
+            "weight_each_side_lbs": 132
+          },
+          {
+            "set": "working",
+            "reps": 6,
+            "weight_each_side_lbs": 176
+          }
         ],
-        "notes": "Felt strong & explosive"
+        "notes": "Felt strong & explosive",
+        "weight_each_side_lbs": 176,
+        "total_added_weight_lbs": 353
       },
       {
         "exercise": "Lat Pulldown (wide grip)",
-        "weight_each_side_kg": null,
-        "total_added_weight_kg": 30,
         "sets": [
-          { "set": 1, "reps": 12 },
-          { "set": 2, "reps": 12 },
-          { "set": 3, "reps": 10 },
-          { "set": 4, "reps": 10 }
-        ]
+          {
+            "set": 1,
+            "reps": 12
+          },
+          {
+            "set": 2,
+            "reps": 12
+          },
+          {
+            "set": 3,
+            "reps": 10
+          },
+          {
+            "set": 4,
+            "reps": 10
+          }
+        ],
+        "total_added_weight_lbs": 66
       },
       {
         "exercise": "Dual Pulley Seated Row",
-        "weight_each_side_kg": null,
-        "total_added_weight_kg": null,
         "sets": [
-          { "set": 1, "reps": 12 },
-          { "set": 2, "reps": 12 },
-          { "set": 3, "reps": 10 },
-          { "set": 4, "reps": 10 }
+          {
+            "set": 1,
+            "reps": 12
+          },
+          {
+            "set": 2,
+            "reps": 12
+          },
+          {
+            "set": 3,
+            "reps": 10
+          },
+          {
+            "set": 4,
+            "reps": 10
+          }
         ],
         "notes": "20–25 kg range"
       },
@@ -98,20 +149,34 @@
         "weight_each_side_lbs": 30,
         "total_added_weight_lbs": 60,
         "sets": [
-          { "set": 1, "reps": 12 },
-          { "set": 2, "reps": 12 },
-          { "set": 3, "reps": 10 },
-          { "set": 4, "reps": 10 }
+          {
+            "set": 1,
+            "reps": 12
+          },
+          {
+            "set": 2,
+            "reps": 12
+          },
+          {
+            "set": 3,
+            "reps": 10
+          },
+          {
+            "set": 4,
+            "reps": 10
+          }
         ]
       },
       {
         "exercise": "Sled Pull (backward)",
-        "weight_each_side_kg": null,
-        "total_added_weight_kg": 70,
         "sets": [
-          { "set": 1, "distance": "1 full round @ 60 kg + ½ round @ 80 kg" }
+          {
+            "set": 1,
+            "distance": "1 full round @ 60 kg + ½ round @ 80 kg"
+          }
         ],
-        "notes": "Finisher – back & grip on fire"
+        "notes": "Finisher – back & grip on fire",
+        "total_added_weight_lbs": 154
       }
     ]
   },

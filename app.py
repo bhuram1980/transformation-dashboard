@@ -1846,7 +1846,7 @@ def get_training_data():
                         continue
                     
                     # Check if it's dumbbells (has weight_each_side)
-                    has_weight_each_side = bool(ex.get('weight_each_side_kg') or ex.get('weight_each_side_lbs'))
+                    has_weight_each_side = bool(ex.get('weight_each_side_lbs') or ex.get('weight_each_side_kg'))
                     
                     # Normalize exercise name
                     normalized_name = normalize_exercise_name(ex_name, has_weight_each_side)
@@ -1858,23 +1858,23 @@ def get_training_data():
                         exercise_groups[normalized_name] = []
                         exercise_categories[normalized_name] = category
                     
-                    # Extract weight info - handle both kg and lbs
+                    # Extract weight info - all weights are now in lbs
                     weight = None
                     weight_each_side = None
                     
-                    # Try lbs first
+                    # Use lbs values (all kg values have been converted)
                     if ex.get('total_added_weight_lbs'):
                         weight = ex['total_added_weight_lbs']
                     elif ex.get('weight_each_side_lbs'):
                         weight_each_side = ex['weight_each_side_lbs']
                         weight = ex['weight_each_side_lbs'] * 2  # Approximate total
                     
-                    # Try kg and convert to lbs (1 kg = 2.20462 lbs)
+                    # Legacy support: if kg values still exist, convert to lbs (shouldn't happen after conversion)
                     if weight is None:
                         if ex.get('total_added_weight_kg'):
-                            weight = ex['total_added_weight_kg'] * 2.20462
+                            weight = round(ex['total_added_weight_kg'] * 2.20462)
                         elif ex.get('weight_each_side_kg'):
-                            weight_each_side = ex['weight_each_side_kg'] * 2.20462
+                            weight_each_side = round(ex['weight_each_side_kg'] * 2.20462)
                             weight = weight_each_side * 2
                     
                     # Extract sets/reps - handle flexible structures
@@ -1901,12 +1901,11 @@ def get_training_data():
                                     'set': s.get('set', 0),
                                     'reps': s.get('reps'),
                                     'distance': s.get('distance'),
-                                    'weight_each_side_kg': s.get('weight_each_side_kg'),
                                     'weight_each_side_lbs': s.get('weight_each_side_lbs')
                                 }
-                                # If set has weight info, use it for this set
-                                if set_info['weight_each_side_kg']:
-                                    set_info['weight_each_side_lbs'] = set_info['weight_each_side_kg'] * 2.20462
+                                # Legacy support: if kg value exists, convert to lbs
+                                if s.get('weight_each_side_kg'):
+                                    set_info['weight_each_side_lbs'] = round(s['weight_each_side_kg'] * 2.20462)
                                 sets_reps.append(set_info)
                             else:
                                 # Fallback: treat as simple value
@@ -1923,7 +1922,6 @@ def get_training_data():
                         'day': entry['day'],
                         'weight_lbs': weight,
                         'weight_each_side_lbs': weight_each_side or ex.get('weight_each_side_lbs'),
-                        'weight_kg': ex.get('total_added_weight_kg') or (ex.get('weight_each_side_kg') * 2 if ex.get('weight_each_side_kg') else None),
                         'sets_reps': sets_reps,
                         'notes': ex.get('notes', ''),
                         'original_name': ex_name  # Keep original for reference

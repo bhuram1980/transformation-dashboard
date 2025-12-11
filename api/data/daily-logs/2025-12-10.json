@@ -7,7 +7,7 @@
     "carbs": 42,
     "fat": 54,
     "kcal": 2020,
-    "seafoodKg": 0.90
+    "seafoodKg": 0.9
   },
   "meals": {
     "preWorkoutShake": {
@@ -37,7 +37,7 @@
       "carbs": 12,
       "fat": 15,
       "kcal": 560,
-      "seafoodKg": 0.40
+      "seafoodKg": 0.4
     },
     "dinner": {
       "description": "1 whole lobster (~300 g edible) + tiger prawns (~200 g edible) – zero oil/butter",
@@ -45,53 +45,117 @@
       "carbs": 0,
       "fat": 0,
       "kcal": 510,
-      "seafoodKg": 0.50
+      "seafoodKg": 0.5
     }
   },
   "supplements": {
-    "omega3":   { "taken": true, "dose": "4 caps – locked" },
-    "nac":      { "taken": true, "dose": "2 × 600 mg – locked" },
-    "d3k2":     { "taken": true, "dose": "Morning dose – locked" },
-    "zmb":      { "taken": true, "dose": "2 caps ON Zinc Magnesium Aspartate before bed – locked" },
-    "whey":     { "taken": true, "scoops": 4 },
-    "creatine": { "taken": true, "dose": "5 g with Isopure – locked" }
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps – locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 × 600 mg – locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "Morning dose – locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "2 caps ON Zinc Magnesium Aspartate before bed – locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 4
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g with Isopure – locked"
+    }
   },
   "training": {
     "session": "Heavy Chest Day",
     "workout": [
       {
         "exercise": "Bench Chest Press",
-        "weight_each_side_kg": 22.5,
-        "total_added_weight_kg": 45,
         "sets": [
-          { "set": "warm-up", "weight_each_side_kg": 10,   "reps": 6 },
-          { "set": "warm-up", "weight_each_side_kg": 12.5, "reps": 4 },
-          { "set": "warm-up", "weight_each_side_kg": 15,   "reps": 4 },
-          { "set": "working", "weight_each_side_kg": 20,   "reps": 12 },
-          { "set": "working", "weight_each_side_kg": 20,   "reps": 12 },
-          { "set": "working", "weight_each_side_kg": 22.5, "reps": 10 },
-          { "set": "working", "weight_each_side_kg": 22.5, "reps": 10 }
+          {
+            "set": "warm-up",
+            "reps": 6,
+            "weight_each_side_lbs": 22
+          },
+          {
+            "set": "warm-up",
+            "reps": 4,
+            "weight_each_side_lbs": 28
+          },
+          {
+            "set": "warm-up",
+            "reps": 4,
+            "weight_each_side_lbs": 33
+          },
+          {
+            "set": "working",
+            "reps": 12,
+            "weight_each_side_lbs": 44
+          },
+          {
+            "set": "working",
+            "reps": 12,
+            "weight_each_side_lbs": 44
+          },
+          {
+            "set": "working",
+            "reps": 10,
+            "weight_each_side_lbs": 50
+          },
+          {
+            "set": "working",
+            "reps": 10,
+            "weight_each_side_lbs": 50
+          }
         ],
-        "notes": "Chest full, stretch perfect"
+        "notes": "Chest full, stretch perfect",
+        "weight_each_side_lbs": 50,
+        "total_added_weight_lbs": 99
       },
       {
         "exercise": "Incline Chest Press",
-        "weight_each_side_kg": 22.5,
-        "total_added_weight_kg": 45,
         "sets": [
-          { "set": 1, "reps": 12 },
-          { "set": 2, "reps": 12 },
-          { "set": 3, "reps": 12 }
-        ]
+          {
+            "set": 1,
+            "reps": 12
+          },
+          {
+            "set": 2,
+            "reps": 12
+          },
+          {
+            "set": 3,
+            "reps": 12
+          }
+        ],
+        "weight_each_side_lbs": 50,
+        "total_added_weight_lbs": 99
       },
       {
         "exercise": "MTS Chest Press Machine",
         "weight_each_side_lbs": 30,
         "total_added_weight_lbs": 60,
         "sets": [
-          { "set": 1, "reps": null },
-          { "set": 2, "reps": null },
-          { "set": 3, "reps": null }
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          }
         ]
       },
       {
@@ -99,19 +163,40 @@
         "weight_each_side_lbs": 15,
         "total_added_weight_lbs": 30,
         "sets": [
-          { "set": 1, "reps": null },
-          { "set": 2, "reps": null },
-          { "set": 3, "reps": null }
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          }
         ]
       },
       {
         "exercise": "Pectoral Fly Machine",
         "total_added_weight_lbs": 40,
         "sets": [
-          { "set": 1, "reps": null },
-          { "set": 2, "reps": null },
-          { "set": 3, "reps": null },
-          { "set": 4, "reps": null }
+          {
+            "set": 1,
+            "reps": null
+          },
+          {
+            "set": 2,
+            "reps": null
+          },
+          {
+            "set": 3,
+            "reps": null
+          },
+          {
+            "set": 4,
+            "reps": null
+          }
         ]
       }
     ]
@@ -119,4 +204,3 @@
   "feeling": 10,
   "notes": "Down to 85.5 kg fasted (–0.7 kg overnight). 335 g protein, 900 g+ seafood demolished, chest absolutely torched. All supplements 100% locked. Carbs back under 45 g = fat melting again. Streak = disgusting."
 }
-
