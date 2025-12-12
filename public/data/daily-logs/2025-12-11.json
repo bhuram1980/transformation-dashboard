@@ -1,0 +1,169 @@
+{
+  "date": "2025-12-11",
+  "fastedWeight": 85.5,
+  "waist": null,
+  "total": {
+    "protein": 342,
+    "carbs": 28,
+    "fat": 58,
+    "kcal": 2100,
+    "seafoodKg": 0.85
+  },
+  "meals": {
+    "preWorkout": {
+      "description": "2 scoops chocolate whey protein shake + little Indian pickle",
+      "protein": 50,
+      "carbs": 6,
+      "fat": 3,
+      "kcal": 230
+    },
+    "postWorkout": {
+      "description": "6-egg omelette + 2 scoops chocolate protein shake",
+      "protein": 92,
+      "carbs": 8,
+      "fat": 38,
+      "kcal": 780
+    },
+    "lunch": {
+      "description": "Salmon steak (~400 g) + grilled veggies",
+      "protein": 92,
+      "carbs": 12,
+      "fat": 15,
+      "kcal": 560,
+      "seafoodKg": 0.40
+    },
+    "dinner": {
+      "description": "2 small whole crabs + grilled Pomfret (~450 g total edible seafood)",
+      "protein": 108,
+      "carbs": 2,
+      "fat": 2,
+      "kcal": 530,
+      "seafoodKg": 0.45
+    }
+  },
+  "supplements": {
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps California Gold 1200 mg – locked"
+    },
+    "nac": {
+      "taken": true,
+      "dose": "2 × 600 mg – locked"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "Morning dose – locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "2 tablets Tata 1mg Magnesium Glycinate before bed – locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 4
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g assumed with shakes – locked"
+    }
+  },
+  "training": {
+    "session": "Heavy Legs Day",
+    "workout": [
+      {
+        "exercise": "Conventional Deadlift",
+        "weight_each_side_kg": 30,
+        "total_added_weight_kg": 60,
+        "sets": [
+          {
+            "set": 1,
+            "reps": 10
+          },
+          {
+            "set": 2,
+            "reps": 10
+          },
+          {
+            "set": 3,
+            "reps": 10
+          },
+          {
+            "set": 4,
+            "reps": 10
+          }
+        ],
+        "notes": "Barbell + 30 kg each side. Strong pulls, form locked."
+      },
+      {
+        "exercise": "Back Squats",
+        "weight_each_side_kg": 15,
+        "total_added_weight_kg": 30,
+        "sets": [
+          {
+            "set": 1,
+            "reps": 10
+          },
+          {
+            "set": 2,
+            "reps": 10
+          }
+        ],
+        "notes": "10 kg + barbell for warm-up, then 15 kg each side working."
+      },
+      {
+        "exercise": "Glute-Ham Raise (GHR)",
+        "weight_each_side_kg": null,
+        "total_added_weight_kg": null,
+        "sets": [
+          {
+            "set": 1,
+            "reps": 10
+          },
+          {
+            "set": 2,
+            "reps": 10
+          },
+          {
+            "set": 3,
+            "reps": 10
+          },
+          {
+            "set": 4,
+            "reps": 10
+          }
+        ],
+        "notes": "Bodyweight + 10 kg each hand variation."
+      },
+      {
+        "exercise": "Preacher Curl Superset",
+        "weight_each_side_kg": null,
+        "total_added_weight_kg": null,
+        "sets": [
+          {
+            "set": 1,
+            "reps": null
+          }
+        ],
+        "notes": "Superset with hamstring work, 8.5 kg noted."
+      },
+      {
+        "exercise": "Hamstring Curl Machine",
+        "weight_each_side_kg": null,
+        "total_added_weight_kg": null,
+        "sets": [
+          {
+            "set": 1,
+            "reps": 15
+          },
+          {
+            "set": 2,
+            "reps": 15
+          }
+        ],
+        "notes": "Finisher burn."
+      }
+    ]
+  },
+  "feeling": 10,
+  "notes": "Replaced ZMA with Tata 1mg Magnesium Glycinate (2 tablets). Legs absolutely torched – deadlifts felt explosive. 342 g protein, <30 g carbs, 850 g seafood demolished. Fasted weight holding strong at 85.5 kg. Streak = disgusting."
+}
