@@ -425,10 +425,12 @@ function escapeHtml(text) {
 function updateDashboardStreak() {
     const streakEl = document.getElementById('dashboardStreakCount');
     const streakMetaEl = document.getElementById('dashboardStreakMeta');
+    const streakCircle = document.querySelector('.streak-circle-progress');
     
     if (!streakEl) return;
     
     const streak = dashboardData?.streak || 0;
+    const maxStreak = 60; // Maximum for 100% circle (60-day goal)
     
     // Animate streak number
     const current = parseInt(streakEl.textContent) || 0;
@@ -436,6 +438,17 @@ function updateDashboardStreak() {
         animateStreakNumber(streakEl, current, streak);
     } else {
         streakEl.textContent = streak;
+    }
+    
+    // Update circle progress
+    if (streakCircle) {
+        const progress = Math.min(100, (streak / maxStreak) * 100);
+        const circumference = 2 * Math.PI * 50;
+        const offset = circumference - (progress / 100) * circumference;
+        streakCircle.style.strokeDashoffset = offset;
+        
+        // Animate the circle
+        streakCircle.style.transition = 'stroke-dashoffset 0.8s ease';
     }
     
     // Update meta

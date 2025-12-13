@@ -30,15 +30,52 @@
             <!-- Goal & Progress Section -->
             <section class="layout-section dashboard-progress-section">
                 <div class="progress-grid">
-                    <!-- Streak Card -->
-                    <div class="streak-card">
-                        <div class="streak-card-header">
-                            <h3 class="streak-card-title">🔥 Current Streak</h3>
+                    <!-- Combined Streak & Weight Card -->
+                    <div class="streak-weight-card">
+                        <div class="streak-weight-header">
+                            <h3 class="streak-weight-title">🔥 Current Streak & ⚖️ Fasted Weight</h3>
                         </div>
-                        <div class="streak-card-content">
-                            <div class="streak-number" id="dashboardStreakCount">0</div>
-                            <div class="streak-label">Day Streak</div>
-                            <div class="streak-meta" id="dashboardStreakMeta">Logs arrive nightly</div>
+                        <div class="streak-weight-content">
+                            <div class="streak-circle-section">
+                                <div class="streak-circle-wrapper">
+                                    <svg class="streak-circle-svg" viewBox="0 0 120 120" id="streakCircleSvg">
+                                        <circle cx="60" cy="60" r="50" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                                        <circle class="streak-circle-progress" cx="60" cy="60" r="50" 
+                                                stroke="#ff6b00" stroke-width="8" fill="none"
+                                                stroke-dasharray="314" stroke-dashoffset="314"/>
+                                    </svg>
+                                    <div class="streak-circle-value" id="dashboardStreakCount">0</div>
+                                </div>
+                                <div class="streak-circle-label">Day Streak</div>
+                                <div class="streak-circle-meta" id="dashboardStreakMeta">Start your streak</div>
+                            </div>
+                            <div class="weight-section">
+                                <div class="weight-value" id="dashboardWeightValue">-- kg</div>
+                                <div class="weight-delta" id="dashboardWeightDelta">
+                                    <span class="delta-arrow">—</span>
+                                    <span class="delta-text">Loading...</span>
+                                </div>
+                                <button class="weight-chart-toggle" id="weightChartToggle" onclick="toggleDashboardWeightChart()">
+                                    <span class="chart-toggle-icon">📊</span>
+                                    <span class="chart-toggle-text">View Weight Trend</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="weight-chart-container" id="dashboardWeightChartContainer" style="display: none;">
+                            <div class="weight-chart-header">
+                                <div class="chart-controls">
+                                    <div class="graph-timeframe-buttons">
+                                        <button class="timeframe-btn active" data-timeframe="7" onclick="setDashboardTimeframe(7)">7d</button>
+                                        <button class="timeframe-btn" data-timeframe="30" onclick="setDashboardTimeframe(30)">30d</button>
+                                        <button class="timeframe-btn" data-timeframe="90" onclick="setDashboardTimeframe(90)">90d</button>
+                                        <button class="timeframe-btn" data-timeframe="all" onclick="setDashboardTimeframe('all')">All</button>
+                                    </div>
+                                    <button class="chart-close-btn" onclick="toggleDashboardWeightChart()" title="Close chart">✕</button>
+                                </div>
+                            </div>
+                            <div class="weight-chart-wrapper">
+                                <canvas id="dashboardWeightChart"></canvas>
+                            </div>
                         </div>
                     </div>
 
@@ -59,42 +96,6 @@
                         </div>
                         <div class="rings-container" id="dashboardRingsContainer">
                             <div class="rings-loading">Loading scan data...</div>
-                        </div>
-                    </div>
-
-                    <!-- Weight Card -->
-                    <div class="weight-card">
-                        <div class="weight-card-header">
-                            <h3 class="weight-card-title">⚖️ Fasted Weight</h3>
-                        </div>
-                        <div class="weight-card-content">
-                            <div class="weight-display">
-                                <div class="weight-value" id="dashboardWeightValue">-- kg</div>
-                                <div class="weight-delta" id="dashboardWeightDelta">
-                                    <span class="delta-arrow">—</span>
-                                    <span class="delta-text">Loading...</span>
-                                </div>
-                            </div>
-                            <button class="weight-chart-toggle" id="weightChartToggle" onclick="toggleDashboardWeightChart()">
-                                <span class="chart-toggle-icon">📊</span>
-                                <span class="chart-toggle-text">View Weight Trend</span>
-                            </button>
-                        </div>
-                        <div class="weight-chart-container" id="dashboardWeightChartContainer" style="display: none;">
-                            <div class="weight-chart-header">
-                                <div class="chart-controls">
-                                    <div class="graph-timeframe-buttons">
-                                        <button class="timeframe-btn active" data-timeframe="7" onclick="setDashboardTimeframe(7)">7d</button>
-                                        <button class="timeframe-btn" data-timeframe="30" onclick="setDashboardTimeframe(30)">30d</button>
-                                        <button class="timeframe-btn" data-timeframe="90" onclick="setDashboardTimeframe(90)">90d</button>
-                                        <button class="timeframe-btn" data-timeframe="all" onclick="setDashboardTimeframe('all')">All</button>
-                                    </div>
-                                    <button class="chart-close-btn" onclick="toggleDashboardWeightChart()" title="Close chart">✕</button>
-                                </div>
-                            </div>
-                            <div class="weight-chart-wrapper">
-                                <canvas id="dashboardWeightChart"></canvas>
-                            </div>
                         </div>
                     </div>
                 </div>
