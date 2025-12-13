@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadData();
     extractAvailableDates();
     setupDashboardDatePicker();
-    loadDashboardGoal();
+    updateDashboardStreak();
     loadDashboardBodyScanRings();
     updateDashboardWeight();
     await loadDashboardDay(); // Load most recent day by default
@@ -422,18 +422,51 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function loadDashboardGoal() {
-    if (!dashboardData || !dashboardData.goal) {
-        document.getElementById('goalContent').innerHTML = '<div class="goal-empty">No goal set</div>';
-        return;
+function updateDashboardStreak() {
+    const streakEl = document.getElementById('dashboardStreakCount');
+    const streakMetaEl = document.getElementById('dashboardStreakMeta');
+    
+    if (!streakEl) return;
+    
+    const streak = dashboardData?.streak || 0;
+    
+    // Animate streak number
+    const current = parseInt(streakEl.textContent) || 0;
+    if (current !== streak && streak > 0) {
+        animateStreakNumber(streakEl, current, streak);
+    } else {
+        streakEl.textContent = streak;
     }
     
-    const goal = dashboardData.goal;
-    const goalText = goal.description || goal.text || 'No goal description available';
+    // Update meta
+    if (streakMetaEl) {
+        if (streak > 0) {
+            streakMetaEl.textContent = `${streak} day${streak !== 1 ? 's' : ''} strong`;
+        } else {
+            streakMetaEl.textContent = 'Start your streak today';
+        }
+    }
+}
+
+function animateStreakNumber(element, start, end) {
+    element.classList.add('animate');
+    let current = start;
+    const increment = end > start ? 1 : -1;
+    const duration = 500;
+    const stepTime = duration / Math.abs(end - start);
     
-    document.getElementById('goalContent').innerHTML = `
-        <div class="goal-text">${escapeHtml(goalText)}</div>
-    `;
+    const timer = setInterval(() => {
+        current += increment;
+        element.textContent = current;
+        
+        if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+            element.textContent = end;
+            clearInterval(timer);
+            setTimeout(() => {
+                element.classList.remove('animate');
+            }, 200);
+        }
+    }, stepTime);
 }
 
 async function loadDashboardBodyScanRings() {
