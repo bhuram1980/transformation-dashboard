@@ -55,13 +55,16 @@
                                     <span class="date-icon">📆</span>
                                     Date:
                                 </label>
-                                <input type="date" id="workoutDatePicker" class="date-picker-input" onchange="loadDayView()">
+                                <input type="date" id="workoutDatePicker" class="date-picker-input" onchange="handleDateChange()">
                             </div>
                             <button class="date-nav-btn" onclick="navigateDate(1)" title="Next day">
                                 <span>→</span>
                             </button>
                             <button class="today-btn" onclick="selectToday()" title="Go to today">
                                 <span>Today</span>
+                            </button>
+                            <button class="clear-filter-btn" onclick="clearDateFilter()" title="Show all exercises" id="clearFilterBtn" style="display: none;">
+                                <span>Show All</span>
                             </button>
                         </div>
                         <div class="quick-dates-container">
@@ -74,8 +77,8 @@
                 </div>
             </section>
 
-            <!-- Interactive Body Diagram -->
-            <section class="layout-section training-stats" id="trainingStats">
+            <!-- Interactive Body Diagram - Hidden for now -->
+            <section class="layout-section training-stats" id="trainingStats" style="display: none;">
                 <div class="body-diagram-container">
                     <div class="body-diagram-wrapper">
                         <img src="/static/images/body-diagram.png" alt="Human Body Diagram" class="body-diagram-image" id="bodyDiagramImage" />

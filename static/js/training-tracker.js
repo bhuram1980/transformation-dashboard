@@ -14,6 +14,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupDatePicker();
     renderExerciseProgression();
     setupBodyDiagram();
+    // Apply date filter if date is selected
+    const datePicker = document.getElementById('workoutDatePicker');
+    if (datePicker && datePicker.value) {
+        handleDateChange();
+    }
 });
 
 function setupBodyDiagram() {
@@ -186,7 +191,7 @@ function selectQuickDate(date) {
     const datePicker = document.getElementById('workoutDatePicker');
     if (datePicker) {
         datePicker.value = date;
-        loadDayView();
+        handleDateChange();
     }
     
     // Update active state
@@ -196,6 +201,148 @@ function selectQuickDate(date) {
             btn.classList.add('active');
         }
     });
+}
+
+function handleDateChange() {
+    if (currentView === 'day') {
+        loadDayView();
+    } else {
+        // In progression view, filter exercises by selected date
+        filterExercisesByDate();
+    }
+}
+
+function clearDateFilter() {
+    const datePicker = document.getElementById('workoutDatePicker');
+    if (datePicker) {
+        datePicker.value = '';
+    }
+    const clearBtn = document.getElementById('clearFilterBtn');
+    if (clearBtn) {
+        clearBtn.style.display = 'none';
+    }
+    showAllExercises();
+}
+
+function filterExercisesByDate() {
+    const datePicker = document.getElementById('workoutDatePicker');
+    const selectedDate = datePicker ? datePicker.value : null;
+    const clearBtn = document.getElementById('clearFilterBtn');
+    
+    if (!selectedDate) {
+        // No date selected, show all exercises
+        if (clearBtn) clearBtn.style.display = 'none';
+        showAllExercises();
+        return;
+    }
+    
+    // Show clear filter button
+    if (clearBtn) clearBtn.style.display = 'inline-block';
+    
+    // Find training data for selected date
+    const dayData = trainingData.find(entry => entry.date === selectedDate);
+    
+    if (!dayData || dayData.type !== 'structured' || !dayData.exercises || dayData.exercises.length === 0) {
+        // No workout for this date, show message
+        const container = document.getElementById('exerciseContainer');
+        container.innerHTML = `
+            <div class="no-data">
+                <div class="no-data-icon">📅</div>
+                <p>No workout recorded for ${new Date(selectedDate).toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })}</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: #999;">Try selecting a different date or switch to Day View</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Get exercise names from this day - use original names
+    const dayExerciseNames = new Set();
+    dayData.exercises.forEach(ex => {
+        const name = ex.name || '';
+        if (name) {
+            dayExerciseNames.add(name.toLowerCase().trim());
+            // Also add normalized versions for matching
+            dayExerciseNames.add(normalizeExerciseNameForFilter(name));
+        }
+    });
+    
+    // Filter and render exercises
+    const container = document.getElementById('exerciseContainer');
+    const allCategorySections = container.querySelectorAll('.category-section');
+    
+    let hasVisibleExercises = false;
+    
+    allCategorySections.forEach(section => {
+        const exerciseCards = section.querySelectorAll('.exercise-card');
+        let sectionHasVisible = false;
+        
+        exerciseCards.forEach(card => {
+            const exerciseName = card.querySelector('.exercise-name')?.textContent || '';
+            const normalizedName = normalizeExerciseNameForFilter(exerciseName);
+            const lowerName = exerciseName.toLowerCase().trim();
+            
+            // Check if this exercise was done on the selected date
+            // Match by checking if any day exercise name matches this exercise name
+            let isVisible = false;
+            for (const dayName of dayExerciseNames) {
+                if (lowerName.includes(dayName) || dayName.includes(lowerName) ||
+                    normalizedName.includes(dayName) || dayName.includes(normalizedName)) {
+                    isVisible = true;
+                    break;
+                }
+            }
+            
+            // Also check exercise groups to see if this exercise has a session on this date
+            if (!isVisible && exerciseGroups[exerciseName]) {
+                const hasSessionOnDate = exerciseGroups[exerciseName].some(session => session.date === selectedDate);
+                if (hasSessionOnDate) {
+                    isVisible = true;
+                }
+            }
+            
+            if (isVisible) {
+                card.style.display = 'block';
+                sectionHasVisible = true;
+                hasVisibleExercises = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Show/hide category section based on visible exercises
+        section.style.display = sectionHasVisible ? 'block' : 'none';
+    });
+    
+    if (!hasVisibleExercises) {
+        container.innerHTML = `
+            <div class="no-data">
+                <div class="no-data-icon">💪</div>
+                <p>No exercises found for ${new Date(selectedDate).toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })}</p>
+            </div>
+        `;
+    }
+}
+
+function normalizeExerciseNameForFilter(name) {
+    if (!name) return '';
+    // Remove common variations and normalize for matching
+    return name.toLowerCase()
+        .replace(/with dumbbells/gi, '')
+        .replace(/machine/gi, '')
+        .replace(/mts/gi, '')
+        .replace(/\(.*?\)/g, '') // Remove parentheses content
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
 function switchView(view) {
@@ -222,6 +369,8 @@ function switchView(view) {
         categoryNav.style.display = 'flex';
         sectionHeading.style.display = 'block';
         dayViewContainer.style.display = 'none';
+        // Apply date filter if a date is selected
+        handleDateChange();
     }
 }
 
@@ -234,7 +383,7 @@ function selectToday() {
     // If today has a workout, use it; otherwise use most recent
     const targetDate = availableDates.includes(today) ? today : availableDates[0];
     datePicker.value = targetDate;
-    loadDayView();
+    handleDateChange();
 }
 
 function navigateDate(direction) {
@@ -260,7 +409,7 @@ function navigateDate(direction) {
         }
     }
     
-    loadDayView();
+    handleDateChange();
 }
 
 async function loadDayView() {
