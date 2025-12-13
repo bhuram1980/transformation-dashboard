@@ -15,29 +15,409 @@ const DAILY_MACRO_TARGETS = {
     seafoodKg: 1
 };
 
+let availableDates = [];
+
 // Load data on page load
 document.addEventListener('DOMContentLoaded', async function() {
     await loadData();
-    await loadStats();
-    populateDaySelector();
-    
-    // View-only dashboard - no forms
-    
-    // Setup swipe gestures for mobile
-    setupSwipeGestures();
-    
-    // Setup keyboard navigation
-    setupKeyboardNavigation();
+    extractAvailableDates();
+    setupDashboardDatePicker();
+    await loadDashboardDay(); // Load most recent day by default
 });
 
-document.addEventListener('click', function(event) {
-    const pill = event.target.closest('.day-pill');
-    if (!pill || !pill.dataset.day) return;
-    const selector = document.getElementById('daySelect');
-    if (!selector || selector.value === pill.dataset.day) return;
-    selector.value = pill.dataset.day;
-    loadDayMeals();
-});
+function extractAvailableDates() {
+    if (!dashboardData || !dashboardData.daily_logs) return;
+    const dates = new Set();
+    dashboardData.daily_logs.forEach(log => {
+        if (log.date) {
+            dates.add(log.date);
+        }
+    });
+    availableDates = Array.from(dates).sort().reverse(); // Most recent first
+}
+
+function setupDashboardDatePicker() {
+    const datePicker = document.getElementById('dashboardDatePicker');
+    if (!datePicker || availableDates.length === 0) return;
+    
+    // Set min and max dates
+    const minDate = availableDates[availableDates.length - 1];
+    const maxDate = availableDates[0];
+    
+    datePicker.setAttribute('min', minDate);
+    datePicker.setAttribute('max', maxDate);
+    
+    // Set default to most recent date
+    datePicker.value = maxDate;
+    
+    // Populate quick dates list
+    renderDashboardQuickDates();
+}
+
+function renderDashboardQuickDates() {
+    const container = document.getElementById('dashboardQuickDatesList');
+    if (!container || availableDates.length === 0) return;
+    
+    // Show last 7 dates (or all if less than 7)
+    const datesToShow = availableDates.slice(0, 7);
+    
+    container.innerHTML = datesToShow.map(date => {
+        const dateObj = new Date(date);
+        const dateStr = dateObj.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric',
+            year: dateObj.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+        });
+        const isToday = date === new Date().toISOString().split('T')[0];
+        
+        return `
+            <button class="quick-date-btn" onclick="selectDashboardQuickDate('${date}')" data-date="${date}">
+                ${isToday ? '⭐ ' : ''}${dateStr}
+            </button>
+        `;
+    }).join('');
+}
+
+function selectDashboardQuickDate(date) {
+    const datePicker = document.getElementById('dashboardDatePicker');
+    if (datePicker) {
+        datePicker.value = date;
+        loadDashboardDay();
+    }
+    
+    // Update active state
+    document.querySelectorAll('#dashboardQuickDatesList .quick-date-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-date') === date) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+function navigateDashboardDate(direction) {
+    const datePicker = document.getElementById('dashboardDatePicker');
+    if (!datePicker || availableDates.length === 0) return;
+    
+    const currentDate = datePicker.value || availableDates[0];
+    const currentIndex = availableDates.indexOf(currentDate);
+    
+    if (currentIndex === -1) {
+        const newIndex = direction > 0 ? 0 : availableDates.length - 1;
+        datePicker.value = availableDates[newIndex];
+    } else {
+        const newIndex = currentIndex + direction;
+        if (newIndex >= 0 && newIndex < availableDates.length) {
+            datePicker.value = availableDates[newIndex];
+        } else {
+            datePicker.value = direction > 0 
+                ? availableDates[0] 
+                : availableDates[availableDates.length - 1];
+        }
+    }
+    
+    loadDashboardDay();
+}
+
+function selectDashboardToday() {
+    const datePicker = document.getElementById('dashboardDatePicker');
+    if (!datePicker || availableDates.length === 0) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const targetDate = availableDates.includes(today) ? today : availableDates[0];
+    datePicker.value = targetDate;
+    loadDashboardDay();
+}
+
+async function loadDashboardDay() {
+    const datePicker = document.getElementById('dashboardDatePicker');
+    if (!datePicker) return;
+    
+    const selectedDate = datePicker.value;
+    if (!selectedDate) {
+        renderDashboardPlaceholder();
+        return;
+    }
+    
+    // Update quick date active state
+    document.querySelectorAll('#dashboardQuickDatesList .quick-date-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-date') === selectedDate) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Try to load full day data from API
+    try {
+        const response = await fetch(`/api/day/${selectedDate}`);
+        if (response.ok) {
+            const fullDayData = await response.json();
+            renderDashboardFullDayView(fullDayData);
+            return;
+        }
+    } catch (error) {
+        console.log('Full day API not available, using cached data');
+    }
+    
+    // Fallback to cached data
+    if (dashboardData && dashboardData.daily_logs) {
+        const dayData = dashboardData.daily_logs.find(log => log.date === selectedDate);
+        if (dayData) {
+            renderDashboardFullDayView(dayData);
+            return;
+        }
+    }
+    
+    renderDashboardNoData(selectedDate);
+}
+
+function renderDashboardPlaceholder() {
+    const container = document.getElementById('dashboardDayContent');
+    container.innerHTML = `
+        <div class="day-view-placeholder">
+            <div class="placeholder-icon">📅</div>
+            <p>Select a date to view your complete day</p>
+        </div>
+    `;
+}
+
+function renderDashboardNoData(date) {
+    const container = document.getElementById('dashboardDayContent');
+    const dateObj = new Date(date);
+    const dateStr = dateObj.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    container.innerHTML = `
+        <div class="no-workout-message">
+            <div class="no-workout-icon">📅</div>
+            <h3>No Data Found</h3>
+            <p>No data found for ${dateStr}</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #999;">Try selecting a different date</p>
+        </div>
+    `;
+}
+
+function renderDashboardFullDayView(dayData) {
+    const container = document.getElementById('dashboardDayContent');
+    const dateObj = new Date(dayData.date);
+    const dateStr = dateObj.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    const training = dayData.training || {};
+    const session = training.session || 'Training Session';
+    const exercises = training.workout || [];
+    const meals = dayData.meals || {};
+    const supplements = dayData.supplements || {};
+    const total = dayData.total || {};
+    const fastedWeight = dayData.fastedWeight;
+    
+    // Calculate training stats
+    const totalExercises = exercises.length;
+    const totalSets = exercises.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0);
+    
+    let html = `
+        <div class="day-view-header">
+            <div class="day-view-date">${dateStr}</div>
+            ${fastedWeight ? `<div class="day-view-weight">Fasted Weight: <strong>${fastedWeight} kg</strong></div>` : ''}
+        </div>
+        
+        <div class="day-sections-grid">
+            <!-- Training Section -->
+            <div class="day-section-card">
+                <div class="day-section-header">
+                    <h3 class="day-section-title">💪 Training</h3>
+                    <div class="day-section-session">${escapeHtml(session)}</div>
+                </div>
+                <div class="day-section-stats">
+                    <div class="day-stat-mini">
+                        <span class="day-stat-mini-label">Exercises</span>
+                        <span class="day-stat-mini-value">${totalExercises}</span>
+                    </div>
+                    <div class="day-stat-mini">
+                        <span class="day-stat-mini-label">Total Sets</span>
+                        <span class="day-stat-mini-value">${totalSets}</span>
+                    </div>
+                </div>
+                <div class="day-exercises-list">
+    `;
+    
+    exercises.forEach((exercise) => {
+        const exerciseName = exercise.exercise || 'Unknown Exercise';
+        const sets = exercise.sets || [];
+        const notes = exercise.notes || '';
+        
+        // Format weight display
+        let weightDisplay = '--';
+        if (exercise.weight_each_side_kg !== null && exercise.weight_each_side_kg !== undefined) {
+            weightDisplay = `${exercise.weight_each_side_kg} kg each side`;
+        } else if (exercise.weight_each_side_lbs !== null && exercise.weight_each_side_lbs !== undefined) {
+            weightDisplay = `${Math.round(exercise.weight_each_side_lbs)} lbs each side`;
+        } else if (exercise.total_added_weight_kg !== null && exercise.total_added_weight_kg !== undefined) {
+            weightDisplay = `${exercise.total_added_weight_kg} kg`;
+        } else if (exercise.total_added_weight_lbs !== null && exercise.total_added_weight_lbs !== undefined) {
+            weightDisplay = `${Math.round(exercise.total_added_weight_lbs)} lbs`;
+        }
+        
+        html += `
+            <div class="day-exercise-item">
+                <div class="day-exercise-item-header">
+                    <h4 class="day-exercise-item-name">${escapeHtml(exerciseName)}</h4>
+                    ${weightDisplay !== '--' ? `<span class="day-exercise-item-weight">${weightDisplay}</span>` : ''}
+                </div>
+                <div class="day-exercise-item-sets">
+        `;
+        
+        sets.forEach((set, setIndex) => {
+            const setNum = typeof set.set === 'string' 
+                ? set.set.charAt(0).toUpperCase() + set.set.slice(1)
+                : `Set ${set.set || setIndex + 1}`;
+            
+            let setWeight = '--';
+            if (set.weight_each_side_kg !== null && set.weight_each_side_kg !== undefined) {
+                setWeight = `${set.weight_each_side_kg} kg each side`;
+            } else if (set.weight_each_side_lbs !== null && set.weight_each_side_lbs !== undefined) {
+                setWeight = `${Math.round(set.weight_each_side_lbs)} lbs each side`;
+            } else if (set.total_added_weight_kg !== null && set.total_added_weight_kg !== undefined) {
+                setWeight = `${set.total_added_weight_kg} kg`;
+            } else if (set.total_added_weight_lbs !== null && set.total_added_weight_lbs !== undefined) {
+                setWeight = `${Math.round(set.total_added_weight_lbs)} lbs`;
+            } else if (weightDisplay !== '--') {
+                setWeight = weightDisplay;
+            }
+            
+            const reps = set.reps !== null && set.reps !== undefined 
+                ? `${set.reps} reps`
+                : set.distance || '--';
+            
+            html += `
+                <div class="day-set-mini">
+                    <span class="day-set-mini-number">${setNum}</span>
+                    <span class="day-set-mini-details">${setWeight} × ${reps}</span>
+                </div>
+            `;
+        });
+        
+        html += `</div>`;
+        
+        if (notes) {
+            html += `<div class="day-exercise-item-notes">${escapeHtml(notes)}</div>`;
+        }
+        
+        html += `</div>`;
+    });
+    
+    html += `
+                </div>
+            </div>
+            
+            <!-- Nutrition Section -->
+            <div class="day-section-card">
+                <div class="day-section-header">
+                    <h3 class="day-section-title">🍽️ Nutrition</h3>
+                </div>
+                <div class="day-nutrition-totals">
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Protein</span>
+                        <span class="nutrition-total-value">${total.protein || 0}g</span>
+                    </div>
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Carbs</span>
+                        <span class="nutrition-total-value">${total.carbs || 0}g</span>
+                    </div>
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Fat</span>
+                        <span class="nutrition-total-value">${total.fat || 0}g</span>
+                    </div>
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Calories</span>
+                        <span class="nutrition-total-value">${total.kcal || 0}</span>
+                    </div>
+                    ${total.seafoodKg ? `
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Seafood</span>
+                        <span class="nutrition-total-value">${total.seafoodKg} kg</span>
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="day-meals-list">
+    `;
+    
+    Object.entries(meals).forEach(([mealName, meal]) => {
+        html += `
+            <div class="day-meal-item">
+                <div class="day-meal-header">
+                    <h4 class="day-meal-name">${escapeHtml(mealName)}</h4>
+                    <span class="day-meal-kcal">${meal.kcal || 0} kcal</span>
+                </div>
+                <div class="day-meal-description">${escapeHtml(meal.description || '')}</div>
+                <div class="day-meal-macros">
+                    <span>P: ${meal.protein || 0}g</span>
+                    <span>C: ${meal.carbs || 0}g</span>
+                    <span>F: ${meal.fat || 0}g</span>
+                    ${meal.seafoodKg ? `<span>🐟 ${meal.seafoodKg} kg</span>` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `
+                </div>
+            </div>
+            
+            <!-- Supplements Section -->
+            <div class="day-section-card">
+                <div class="day-section-header">
+                    <h3 class="day-section-title">💊 Supplements</h3>
+                </div>
+                <div class="day-supplements-list">
+    `;
+    
+    Object.entries(supplements).forEach(([suppName, supp]) => {
+        const taken = supp.taken;
+        const dose = supp.dose || (supp.scoops ? `${supp.scoops} scoops` : '');
+        
+        html += `
+            <div class="day-supplement-item ${taken ? 'taken' : 'missed'}">
+                <div class="day-supplement-name">
+                    <span class="day-supplement-icon">${taken ? '✅' : '❌'}</span>
+                    ${escapeHtml(suppName.toUpperCase())}
+                </div>
+                ${dose ? `<div class="day-supplement-dose">${escapeHtml(dose)}</div>` : ''}
+            </div>
+        `;
+    });
+    
+    html += `
+                </div>
+            </div>
+        </div>
+    `;
+    
+    if (dayData.notes) {
+        html += `
+            <div class="day-notes-section">
+                <h3 class="day-notes-title">📝 Notes</h3>
+                <p class="day-notes-content">${escapeHtml(dayData.notes)}</p>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 async function loadData() {
     try {

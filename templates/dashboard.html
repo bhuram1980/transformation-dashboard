@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transformation Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
     <link rel="stylesheet" href="/static/css/style.css?v=20251127a">
+    <link rel="stylesheet" href="/static/css/training-tracker.css?v=20251212a">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="alternate icon" type="image/png" href="/static/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,180 +16,61 @@
 <body>
     <div class="page-surface">
         <div class="dashboard-container">
-            <!-- Section 1: Today Hero -->
-            <section class="layout-section today-hero" id="todayHero">
+            <!-- Header -->
+            <section class="layout-section dashboard-header">
                 <div class="section-heading">
-                    <h1 class="dashboard-title">Mindset: If I'm Not Shredded I'm Dead (No Third Option)</h1>
-                    <div style="margin-top: 0.5rem; display: flex; gap: 1rem;">
-                        <a href="/training" class="training-link" style="color: #0066ff; text-decoration: none; font-weight: 500; font-size: 0.9rem;">💪 Training Tracker →</a>
-                        <a href="/body-scans" class="body-scans-link" style="color: #0066ff; text-decoration: none; font-weight: 500; font-size: 0.9rem;">📊 Body Scans →</a>
-                    </div>
-                </div>
-                <div class="grid-12 hero-grid">
-                    <div class="card-surface hero-card hero-streak col-span-12 md:col-span-6">
-                        <div class="hero-card-label">Current streak</div>
-                        <div class="streak-container">
-                            <div class="streak-number" id="streakCount">0</div>
-                            <div class="streak-label">Day Streak</div>
-                        </div>
-                        <div class="hero-card-meta" id="streakMeta">Logs arrive nightly</div>
-                    </div>
-                    <div class="card-surface hero-card body-scans-rings col-span-12 md:col-span-6" id="bodyScansRings">
-                        <div class="hero-card-label">Body Composition Progress</div>
-                        <div class="dashboard-rings-container" id="dashboardRingsContainer">
-                            <div class="loading-state">Loading scan data...</div>
-                        </div>
-                    </div>
-                    <div class="card-surface weight-highlight-card col-span-12">
-                        <div class="weight-headline">
-                            <span class="weight-headline-label">Fasted Weight Today:</span>
-                            <span class="weight-highlight-value" id="weightValue">-- kg</span>
-                        </div>
-                        <div class="weight-highlight-delta" id="weightDelta">
-                            <span class="delta-arrow" id="weightDeltaArrow">—</span>
-                            <span class="delta-text" id="weightDeltaText">Need Day 1 + latest weight to compare</span>
-                        </div>
-                        <p class="weight-highlight-meta" id="weightMeta"></p>
-                        <button class="weight-graph-toggle-btn" id="weightGraphToggle" onclick="toggleWeightGraph()">
-                            <span class="toggle-btn-icon">📊</span>
-                            <span class="toggle-btn-text">View Weight Trend Graph</span>
-                        </button>
-                    </div>
-                    <div class="card-surface weight-graph-card col-span-12" id="weightGraphCard" style="display: none;">
-                        <div class="weight-graph-header">
-                            <div>
-                                <p class="hero-card-label">Progress Analytics</p>
-                                <p class="weight-graph-subtitle">Interactive chart with drag & zoom</p>
-                            </div>
-                            <button class="weight-graph-close-btn" onclick="toggleWeightGraph()" aria-label="Close graph">
-                                ✕
-                            </button>
-                        </div>
-                        <div class="weight-graph-controls">
-                            <div class="graph-timeframe-buttons">
-                                <button class="timeframe-btn active" data-timeframe="7" onclick="setTimeframe(7)">7d</button>
-                                <button class="timeframe-btn" data-timeframe="30" onclick="setTimeframe(30)">30d</button>
-                                <button class="timeframe-btn" data-timeframe="90" onclick="setTimeframe(90)">90d</button>
-                                <button class="timeframe-btn" data-timeframe="all" onclick="setTimeframe('all')">All</button>
-                            </div>
-                            <div class="graph-metric-toggles">
-                                <label class="metric-toggle">
-                                    <input type="checkbox" checked data-metric="weight" onchange="toggleMetric('weight', this.checked)">
-                                    <span>Weight</span>
-                                </label>
-                                <label class="metric-toggle">
-                                    <input type="checkbox" data-metric="waist" onchange="toggleMetric('waist', this.checked)">
-                                    <span>Waist</span>
-                                </label>
-                                <label class="metric-toggle">
-                                    <input type="checkbox" data-metric="protein" onchange="toggleMetric('protein', this.checked)">
-                                    <span>Protein</span>
-                                </label>
-                            </div>
-                            <button class="graph-reset-btn" onclick="resetChartZoom()" title="Reset zoom">
-                                🔍 Reset
-                            </button>
-                        </div>
-                        <div class="weight-graph-container">
-                            <canvas id="weightChart"></canvas>
-                        </div>
-                        <div class="graph-legend">
-                            <p class="graph-hint">💡 Drag to pan • Scroll to zoom • Click points for details</p>
-                        </div>
-                    </div>
-                    <div class="card-surface fish-total-card col-span-12">
-                        <div class="fish-total-header">
-                            <span class="fish-total-label">Total fish demolished</span>
-                            <span class="fish-total-emoji">🐟</span>
-                        </div>
-                        <div class="fish-total-value-row">
-                            <span class="fish-total-value" id="fishTotal">0.00 kg</span>
-                        </div>
-                        <p class="fish-total-meta" id="fishLifetimeMeta">Lifetime edible weight</p>
-                        <p class="fish-total-weekly" id="fishWeeklyMeta">0.0 / 7.0 kg this week</p>
-                    </div>
-                </div>
-                <div class="hero-badges" id="heroBadges"></div>
-            </section>
-
-            <!-- Section 2: Long-term transformation -->
-            <section class="layout-section long-term-section" id="longTermSection">
-                <div class="section-heading">
-                    <p class="section-eyebrow">Long-term transformation</p>
-                    <h2 class="section-title">Mission progress</h2>
-                </div>
-                <div class="grid-12 long-term-grid">
-                    <div class="goal-baseline-section card-surface col-span-12">
-                        <h3 class="section-subtitle">Main Goal</h3>
-                        <div class="goal-description" id="goalDescription">Loading...</div>
+                    <h1 class="dashboard-title">Transformation Dashboard</h1>
+                    <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="/training" class="nav-link" style="color: #0066ff; text-decoration: none; font-weight: 500; font-size: 0.9rem;">💪 Training Tracker →</a>
+                        <a href="/body-scans" class="nav-link" style="color: #0066ff; text-decoration: none; font-weight: 500; font-size: 0.9rem;">📊 Body Scans →</a>
                     </div>
                 </div>
             </section>
 
-            <!-- Section 3: Today Log -->
-            <section class="layout-section todays-log-section" id="todaysLogSection">
-                <div class="section-heading">
-                    <p class="section-eyebrow">Today’s log</p>
-                    <h2 class="section-title">What I Ate Today</h2>
-                </div>
-                <div class="meals-section card-surface">
-                    <div class="day-selector-sticky" id="daySelectorSticky">
-                        <div class="day-selector">
-                            <div class="day-nav-desktop">
-                                <button class="day-nav-btn day-nav-prev" id="prevDayBtnDesktop" onclick="navigateDay(-1)" aria-label="Previous day" title="Previous day (←)">
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                        <path d="M12 15L7 10L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    <span>Previous</span>
-                                </button>
-                                <div class="day-selector-center">
-                                    <label class="day-select-label">Select Day:</label>
-                                    <div class="day-pill-wrapper">
-                                        <div class="day-pill-scroll" id="dayPillScrollContainer">
-                                            <div class="day-pill-track" id="dayPillContainer"></div>
-                                        </div>
-                                    </div>
-                                    <select id="daySelect" class="day-select-dropdown" onchange="loadDayMeals()" aria-label="Select day">
-                                        <option value="">Loading...</option>
-                                    </select>
-                                </div>
-                                <button class="day-nav-btn day-nav-next" id="nextDayBtnDesktop" onclick="navigateDay(1)" aria-label="Next day" title="Next day (→)">
-                                    <span>Next</span>
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                        <path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </button>
+            <!-- Quick Date Selection -->
+            <section class="layout-section date-picker-section">
+                <div class="date-picker-wrapper">
+                    <div class="date-picker-main">
+                        <div class="date-picker-controls">
+                            <button class="date-nav-btn" onclick="navigateDashboardDate(-1)" title="Previous day">
+                                <span>←</span>
+                            </button>
+                            <div class="date-input-wrapper">
+                                <label for="dashboardDatePicker" class="date-picker-label">
+                                    <span class="date-icon">📆</span>
+                                    Date:
+                                </label>
+                                <input type="date" id="dashboardDatePicker" class="date-picker-input" onchange="loadDashboardDay()">
                             </div>
-                            <div class="day-nav-mobile">
-                                <button class="day-nav-btn-mobile" id="prevDayBtnMobile" onclick="navigateDay(-1)" aria-label="Previous day">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </button>
-                                <div class="day-current-display" id="dayCurrentDisplay">
-                                    <div class="day-current-label">Day</div>
-                                    <div class="day-current-value" id="dayCurrentValue">--</div>
-                                    <div class="day-current-date" id="dayCurrentDate">--</div>
-                                </div>
-                                <button class="day-nav-btn-mobile" id="nextDayBtnMobile" onclick="navigateDay(1)" aria-label="Next day">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </button>
+                            <button class="date-nav-btn" onclick="navigateDashboardDate(1)" title="Next day">
+                                <span>→</span>
+                            </button>
+                            <button class="today-btn" onclick="selectDashboardToday()" title="Go to today">
+                                <span>Today</span>
+                            </button>
+                        </div>
+                        <div class="quick-dates-container">
+                            <div class="quick-dates-label">Quick Select:</div>
+                            <div class="quick-dates-list" id="dashboardQuickDatesList">
+                                <!-- Populated by JavaScript -->
                             </div>
-                            <div class="day-swipe-hint" id="daySwipeHint">← Swipe to change day →</div>
                         </div>
                     </div>
-                    <div id="dayMeals" class="meals-content">
-                        <div class="meals-placeholder-card">
-                            <p>Select a day to view meals, macros, supplements, and notes.</p>
-                        </div>
+                </div>
+            </section>
+
+            <!-- Main Day View -->
+            <section class="layout-section dashboard-day-view" id="dashboardDayView">
+                <div class="day-view-content" id="dashboardDayContent">
+                    <div class="day-view-placeholder">
+                        <div class="placeholder-icon">📅</div>
+                        <p>Loading day data...</p>
                     </div>
                 </div>
             </section>
         </div>
     </div>
 
-    <script src="/static/js/dashboard.js?v=20251129c"></script>
+    <script src="/static/js/dashboard.js?v=20251213a"></script>
 </body>
 </html>
