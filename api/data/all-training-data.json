@@ -1,0 +1,1691 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-13T14:31:26.531169",
+    "total_sessions": 21,
+    "date_range": {
+      "earliest": "2025-11-21",
+      "latest": "2025-12-12"
+    },
+    "total_exercises": 38,
+    "total_sets": 115
+  },
+  "sessions": [
+    {
+      "date": "2025-11-21",
+      "day": null,
+      "fasted_weight": 90.3,
+      "waist": null,
+      "feeling": 10,
+      "notes": "Legendary start – 1.35 kg fish massacred",
+      "session_type": "structured",
+      "session_name": "Surfing",
+      "training_description": null,
+      "exercises": []
+    },
+    {
+      "date": "2025-11-22",
+      "day": null,
+      "fasted_weight": 89.0,
+      "waist": null,
+      "feeling": 10,
+      "notes": "Full stack locked, lobster annihilated",
+      "session_type": "structured",
+      "session_name": "Surfing + Gym",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "chest press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 178.0,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "date": "2025-11-23",
+      "day": null,
+      "fasted_weight": 88.0,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 3 LEGENDARY – 536 g protein, 1.45 kg premium seafood demolished, full stack locked. New personal record.",
+      "session_type": "structured",
+      "session_name": "Surfing",
+      "training_description": null,
+      "exercises": []
+    },
+    {
+      "date": "2025-11-24",
+      "day": null,
+      "fasted_weight": 86.7,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 4 LEGENDARY – Fasted 86.7 kg (-3.3 kg from Day 1). 472 g protein, 1.25 kg edible seafood demolished (lobster + 3 sea crabs). Full stack 100 %. Streak = 4.",
+      "session_type": "structured",
+      "session_name": "Surfing",
+      "training_description": null,
+      "exercises": []
+    },
+    {
+      "date": "2025-11-25",
+      "day": null,
+      "fasted_weight": 86.7,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 5 LEGENDARY – 518 g protein, 1.35 kg edible seafood demolished (salmon + lobster + crab). New protein record. Streak = 5.",
+      "session_type": "structured",
+      "session_name": "Surfing",
+      "training_description": null,
+      "exercises": []
+    },
+    {
+      "date": "2025-11-26",
+      "day": null,
+      "fasted_weight": 86.9,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 6 LEGENDARY – Fasted 86.9 kg (-3.1 kg from Day 1). 513 g protein, 1.20 kg edible seafood demolished (salmon + lobster + crab). Streak = 6.",
+      "session_type": "structured",
+      "session_name": "Surfing",
+      "training_description": null,
+      "exercises": []
+    },
+    {
+      "date": "2025-11-27",
+      "day": null,
+      "fasted_weight": 86.4,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 7 WORLD RECORD – Fasted 86.4 kg (-3.6 kg from Day 1). 633 g protein, 1.45 kg edible seafood demolished. New all-time high. Streak = 7.",
+      "session_type": "structured",
+      "session_name": "Push Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "chest press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 195.0,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "date": "2025-11-28",
+      "day": null,
+      "fasted_weight": 86.4,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 8 LEGENDARY – Fasted 86.4 kg (-3.6 kg from Day 1). 535 g protein, 1.22 kg edible seafood. Gut reset complete. Streak = 8.",
+      "session_type": "structured",
+      "session_name": "Gym Session",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "biceps)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [],
+          "notes": "biceps)"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-29",
+      "day": null,
+      "fasted_weight": 86.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 9 WORLD RECORD – Fasted 86.2 kg (-3.8 kg from Day 1). 638 g protein, 1.62 kg edible seafood demolished. New all-time protein record beaten again. Chest press +49 lbs in 7 days. Streak = 9.",
+      "session_type": "structured",
+      "session_name": "Surfing + Gym",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Chest Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 227.0,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "day": null,
+      "fasted_weight": 86.3,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 10 LEGENDARY – Fasted 86.3 kg (+0.1 kg water from lobster feast & PR). 559 g protein, 1.40 kg edible seafood demolished. Sleep: only ~3–4 hrs (bed 4 am). Recovery slightly reduced today but streak intact.",
+      "session_type": "structured",
+      "session_name": "Surfing",
+      "training_description": null,
+      "exercises": []
+    },
+    {
+      "date": "2025-12-01",
+      "day": null,
+      "fasted_weight": 86.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 11 LEGENDARY – Fasted 86.2 kg (-3.8 kg from Day 1). 369 g protein, 1.15 kg salmon demolished (double salmon day). Full stack 100 %. Streak = 11.",
+      "session_type": "structured",
+      "session_name": "Surfing",
+      "training_description": null,
+      "exercises": []
+    },
+    {
+      "date": "2025-12-02",
+      "day": null,
+      "fasted_weight": 86.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 12 LEGENDARY – 544 g protein, 1.35 kg seafood demolished (lobster + jumbo prawns). Sleep 6.8 hrs (still elite). Streak = 12.",
+      "session_type": "structured",
+      "session_name": "Leg Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "biceps curls",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [],
+          "notes": "biceps curls"
+        },
+        {
+          "exercise": "full body",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [],
+          "notes": "full body"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-03",
+      "day": null,
+      "fasted_weight": 86.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 13 LEGENDARY – Fasted 86.2 kg (-3.8 kg from Day 1). 518 g protein, 1.40 kg edible seafood demolished. Evening shake 2 scoops without creatine as requested. Streak = 13.",
+      "session_type": "structured",
+      "session_name": "Leg Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Belt Squat Machine",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 44,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 3,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 3,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 2,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Kneeling Leg Curl unilateral",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 6,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 7,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Glute Machine",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 7,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Hip Abductor Machine",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 30.0,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "date": "2025-12-04",
+      "day": null,
+      "fasted_weight": 86.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 14 LEGENDARY – Fasted 86.2 kg. Lunch salmon in butter (still under 50 g carbs). 532 g protein, 1.10 kg salmon demolished. Missed Omega-3 once in 14 days = zero damage. New pre-workout stack (Citrulline + Beta-Alanine + Fadogia/Tongkat) starts tomorrow. Streak = 14.",
+      "session_type": "structured",
+      "session_name": "Morning Push",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Decline Plate-Loaded Chest Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": 60,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 120,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Weighted Dips + Triceps finishers",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Heavy bodyweight + extra weight"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-05",
+      "day": null,
+      "fasted_weight": 85.9,
+      "waist": null,
+      "feeling": 10,
+      "notes": "DAY 15 ABSOLUTE CARNAGE – Fasted 85.9 kg (-4.4 kg from Day 1). 618 g protein world record smashed again, 1.62 kg premium seafood executed (salmon + sea bass + jumbo prawns + lobster). New pre-workout stack (Citrulline + Beta-Alanine + Tongkat + Fadogia) deployed – pumps demonic. Streak = 15 and still accelerating.",
+      "session_type": "structured",
+      "session_name": "Gym Session",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Weighted Dips PR incoming)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [],
+          "notes": "Weighted Dips PR incoming)"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-07",
+      "day": null,
+      "fasted_weight": 84.1,
+      "waist": null,
+      "feeling": 10,
+      "notes": "Peak Dixit shredded mode. 240 g protein on <15 g carbs and only 37 g fat. Zero junk, zero added oil anywhere. Missed whey isolate and creatine today. Fasted weight dropping fast while strength is flying. Seafood demolished: 630 g edible portion at dinner alone. Streak continues.",
+      "session_type": "structured",
+      "session_name": "Gym Session",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Bench Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Incline Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Cable Flies",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Cable Work",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "date": "2025-12-08",
+      "day": null,
+      "fasted_weight": 86.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "Another shredded day – 298 g protein on <25 g carbs. Crabs grilled clean with just masala (no oil bath = still basically zero fat). Weight stable at 86.2 kg fasted. Deadlifts felt strong even on deload weight. Streak unstoppable.",
+      "session_type": "structured",
+      "session_name": "Leg Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Deadlift (conventional)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 88,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 5,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 6,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "40 kg + bar (5-6 working sets)"
+        },
+        {
+          "exercise": "Back Squat",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 22,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "10 kg + bar (light technique day)"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-09",
+      "day": null,
+      "fasted_weight": 86.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "318 g protein, 800 g seafood demolished. All supplements locked (switched to ON ZMA tonight). Natural carbs slightly higher today → tomorrow <30 g and scale drops hard again. Strength keeps climbing. Streak alive.",
+      "session_type": "structured",
+      "session_name": "Heavy Back Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Deadlift (conventional)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": 176,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 353,
+          "sets": [
+            {
+              "set_number": "warm-up",
+              "reps": 6,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 88,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "warm-up",
+              "reps": 4,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 132,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "warm-up",
+              "reps": 6,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 176,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Prep / Warm-up Deadlift Sets - Felt strong & explosive"
+        },
+        {
+          "exercise": "Lat Pulldown (wide grip)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": 30,
+          "total_added_weight_lbs": 66,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 30,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 30,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 30,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 30,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Dual Pulley Seated Row",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": 22.5,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 22.5,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 22.5,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 22.5,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": 22.5,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "20–25 kg range (using 22.5 kg average)"
+        },
+        {
+          "exercise": "MTS High Row",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": 30,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 60,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Sled Pull (backward)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 154,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": "1 full round @ 60 kg + ½ round @ 80 kg",
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Finisher – back & grip on fire"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-10",
+      "day": null,
+      "fasted_weight": 85.5,
+      "waist": null,
+      "feeling": 10,
+      "notes": "Down to 85.5 kg fasted (–0.7 kg overnight). 335 g protein, 900 g+ seafood demolished, chest absolutely torched. All supplements 100% locked. Carbs back under 45 g = fat melting again. Streak = disgusting.",
+      "session_type": "structured",
+      "session_name": "Heavy Chest Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Bench Chest Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": 50,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 99,
+          "sets": [
+            {
+              "set_number": "warm-up",
+              "reps": 6,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 22,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "warm-up",
+              "reps": 4,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 28,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "warm-up",
+              "reps": 4,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 33,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "working",
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 44,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "working",
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 44,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "working",
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 50,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": "working",
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": 50,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Chest full, stretch perfect"
+        },
+        {
+          "exercise": "Incline Chest Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": 50,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 99,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "MTS Chest Press Machine",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": 30,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 60,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "MTS Incline Press Machine",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": 15,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 30,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Pectoral Fly Machine",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": 40,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "date": "2025-12-11",
+      "day": null,
+      "fasted_weight": 85.5,
+      "waist": null,
+      "feeling": 10,
+      "notes": "Replaced ZMA with Tata 1mg Magnesium Glycinate (2 tablets). Legs absolutely torched – deadlifts felt explosive. 342 g protein, <30 g carbs, 850 g seafood demolished. Fasted weight holding strong at 85.5 kg. Streak = disgusting.",
+      "session_type": "structured",
+      "session_name": "Heavy Legs Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Conventional Deadlift",
+          "weight_each_side_kg": 30,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": 60,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Barbell + 30 kg each side. Strong pulls, form locked."
+        },
+        {
+          "exercise": "Back Squats",
+          "weight_each_side_kg": 15,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": 30,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "10 kg + barbell for warm-up, then 15 kg each side working."
+        },
+        {
+          "exercise": "Glute-Ham Raise (GHR)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Bodyweight + 10 kg each hand variation."
+        },
+        {
+          "exercise": "Preacher Curl Superset",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": null,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Superset with hamstring work, 8.5 kg noted."
+        },
+        {
+          "exercise": "Hamstring Curl Machine",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 15,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 15,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": "Finisher burn."
+        }
+      ]
+    },
+    {
+      "date": "2025-12-12",
+      "day": null,
+      "fasted_weight": 85.2,
+      "waist": null,
+      "feeling": 10,
+      "notes": "Giant set day – volume high, pump insane. Chicken 65 was the only minor off-plan item (breading trace carbs/oil) but negligible. Missed night NAC – take double tomorrow if needed. Protein 328 g, carbs low, 650 g seafood. Fasted weight estimate 85.2 kg. Streak alive.",
+      "session_type": "structured",
+      "session_name": "Giant Set Upper Body Day",
+      "training_description": null,
+      "exercises": [
+        {
+          "exercise": "Dumbbell Incline Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 12,
+              "distance": null,
+              "weight_each_side_kg": 15,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 20,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 25,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": 20,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Conventional Deadlift",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 40,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 40,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 60,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 60,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Glute-Ham Raise (GHR)",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 16,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": null,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "exercise": "Seated Smith Machine Overhead Press",
+          "weight_each_side_kg": null,
+          "weight_each_side_lbs": null,
+          "total_added_weight_kg": null,
+          "total_added_weight_lbs": null,
+          "sets": [
+            {
+              "set_number": 1,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 20,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 2,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 40,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 3,
+              "reps": 8,
+              "distance": null,
+              "weight_each_side_kg": 40,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            },
+            {
+              "set_number": 4,
+              "reps": 10,
+              "distance": null,
+              "weight_each_side_kg": 60,
+              "weight_each_side_lbs": null,
+              "total_added_weight_kg": null,
+              "total_added_weight_lbs": null
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}
