@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadData();
     extractAvailableDates();
     setupDashboardDatePicker();
+    loadDashboardGoal();
+    loadDashboardBodyScanRings();
+    updateDashboardWeight();
     await loadDashboardDay(); // Load most recent day by default
 });
 
@@ -417,6 +420,334 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function loadDashboardGoal() {
+    if (!dashboardData || !dashboardData.goal) {
+        document.getElementById('goalContent').innerHTML = '<div class="goal-empty">No goal set</div>';
+        return;
+    }
+    
+    const goal = dashboardData.goal;
+    const goalText = goal.description || goal.text || 'No goal description available';
+    
+    document.getElementById('goalContent').innerHTML = `
+        <div class="goal-text">${escapeHtml(goalText)}</div>
+    `;
+}
+
+async function loadDashboardBodyScanRings() {
+    try {
+        const response = await fetch('/api/body-scans');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const scans = data.scans || [];
+        
+        if (scans.length < 2) {
+            document.getElementById('dashboardRingsContainer').innerHTML = 
+                '<div class="rings-empty">Need at least 2 scans to show progress</div>';
+            return;
+        }
+        
+        const baseline = scans[0];
+        const latest = scans[scans.length - 1];
+        
+        if (!baseline || !latest) {
+            document.getElementById('dashboardRingsContainer').innerHTML = 
+                '<div class="rings-empty">Insufficient scan data</div>';
+            return;
+        }
+        
+        const rings = [
+            {
+                label: 'Body Fat %',
+                current: latest.body_fat_percent,
+                baseline: baseline.body_fat_percent,
+                target: 13,
+                unit: '%',
+                className: 'body-fat',
+                positiveDirection: 'down'
+            },
+            {
+                label: 'Lean Mass',
+                current: latest.lean_mass_kg,
+                baseline: baseline.lean_mass_kg,
+                target: baseline.lean_mass_kg + 8,
+                unit: 'kg',
+                className: 'lean-mass',
+                positiveDirection: 'up'
+            },
+            {
+                label: 'Muscle Mass',
+                current: latest.skeletal_muscle_mass_kg,
+                baseline: baseline.skeletal_muscle_mass_kg || 0,
+                target: 50,
+                unit: 'kg',
+                className: 'muscle-mass',
+                positiveDirection: 'up'
+            },
+            {
+                label: 'Visceral Fat',
+                current: latest.visceral_fat_level,
+                baseline: baseline.visceral_fat_level || 10,
+                target: 5,
+                unit: '',
+                className: 'visceral-fat',
+                positiveDirection: 'down'
+            }
+        ];
+        
+        let html = '';
+        rings.forEach(ring => {
+            if (ring.current == null || ring.baseline == null) {
+                html += `
+                    <div class="dashboard-ring-mini">
+                        <div class="ring-mini-label">${ring.label}</div>
+                        <div class="ring-mini-value">--</div>
+                        <div class="ring-mini-target">Target: ${ring.target.toFixed(1)}${ring.unit || ''}</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let progress;
+            if (ring.positiveDirection === 'down') {
+                if (ring.current <= ring.target) {
+                    progress = 100;
+                } else if (ring.current >= ring.baseline) {
+                    progress = 0;
+                } else {
+                    progress = ((ring.baseline - ring.current) / (ring.baseline - ring.target)) * 100;
+                }
+            } else {
+                if (ring.current >= ring.target) {
+                    progress = 100;
+                } else if (ring.current <= ring.baseline) {
+                    progress = 0;
+                } else {
+                    progress = ((ring.current - ring.baseline) / (ring.target - ring.baseline)) * 100;
+                }
+            }
+            
+            const clampedProgress = Math.max(0, Math.min(100, progress));
+            const radius = 30;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (clampedProgress / 100) * circumference;
+            
+            html += `
+                <div class="dashboard-ring-mini">
+                    <div class="ring-mini-label">${ring.label}</div>
+                    <div class="ring-mini-ring-wrapper">
+                        <svg class="ring-mini-svg" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r="${radius}" stroke="#e5e7eb" stroke-width="5" fill="none"/>
+                            <circle class="ring-mini-progress ${ring.className}" cx="40" cy="40" r="${radius}" 
+                                    stroke-dasharray="${circumference}" 
+                                    stroke-dashoffset="${offset}"
+                                    stroke-width="5"
+                                    fill="none"/>
+                        </svg>
+                        <div class="ring-mini-value">${ring.current.toFixed(1)}${ring.unit || ''}</div>
+                    </div>
+                    <div class="ring-mini-target">Target: ${ring.target.toFixed(1)}${ring.unit || ''}</div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('dashboardRingsContainer').innerHTML = html;
+    } catch (error) {
+        console.error('Error loading body scan rings:', error);
+        document.getElementById('dashboardRingsContainer').innerHTML = 
+            '<div class="rings-empty">Unable to load scan data</div>';
+    }
+}
+
+function updateDashboardWeight() {
+    if (!dashboardData || !dashboardData.daily_logs || dashboardData.daily_logs.length === 0) {
+        document.getElementById('dashboardWeightValue').textContent = '-- kg';
+        document.getElementById('dashboardWeightDelta').innerHTML = '<span class="delta-arrow">—</span><span class="delta-text">No data</span>';
+        return;
+    }
+    
+    const logs = dashboardData.daily_logs;
+    const latest = logs[logs.length - 1];
+    const first = logs[0];
+    
+    const latestWeight = latest.fastedWeight || latest.fasted_weight;
+    const firstWeight = first.fastedWeight || first.fasted_weight;
+    
+    if (latestWeight) {
+        document.getElementById('dashboardWeightValue').textContent = `${latestWeight} kg`;
+    }
+    
+    if (latestWeight && firstWeight && latestWeight !== firstWeight) {
+        const diff = latestWeight - firstWeight;
+        const diffAbs = Math.abs(diff);
+        const isPositive = diff < 0; // Weight loss is positive
+        const deltaArrow = document.querySelector('#dashboardWeightDelta .delta-arrow');
+        const deltaText = document.querySelector('#dashboardWeightDelta .delta-text');
+        
+        if (deltaArrow && deltaText) {
+            deltaArrow.textContent = isPositive ? '↓' : '↑';
+            deltaArrow.className = `delta-arrow ${isPositive ? 'delta-positive' : 'delta-negative'}`;
+            deltaText.textContent = `${diffAbs.toFixed(1)} kg ${isPositive ? 'down' : 'up'} from start`;
+            deltaText.className = `delta-text ${isPositive ? 'delta-positive' : 'delta-negative'}`;
+        }
+    }
+}
+
+function toggleDashboardWeightChart() {
+    const container = document.getElementById('dashboardWeightChartContainer');
+    const toggle = document.getElementById('weightChartToggle');
+    
+    if (!container || !toggle) return;
+    
+    const isVisible = container.style.display !== 'none';
+    
+    if (isVisible) {
+        container.style.display = 'none';
+        toggle.querySelector('.chart-toggle-text').textContent = 'View Weight Trend';
+    } else {
+        container.style.display = 'block';
+        toggle.querySelector('.chart-toggle-text').textContent = 'Hide Chart';
+        renderDashboardWeightChart();
+    }
+}
+
+function setDashboardTimeframe(days) {
+    window.chartState = window.chartState || { timeframe: 7, enabledMetrics: { weight: true } };
+    window.chartState.timeframe = days;
+    
+    // Update button states
+    document.querySelectorAll('#dashboardWeightChartContainer .timeframe-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.timeframe === String(days)) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Re-render chart
+    if (dashboardData && dashboardData.daily_logs) {
+        renderDashboardWeightChart();
+    }
+}
+
+function renderDashboardWeightChart() {
+    const canvas = document.getElementById('dashboardWeightChart');
+    if (!canvas || !dashboardData || !dashboardData.daily_logs) return;
+    
+    // Destroy existing chart
+    if (window.dashboardWeightChartInstance) {
+        window.dashboardWeightChartInstance.destroy();
+    }
+    
+    const dailyLogs = dashboardData.daily_logs || [];
+    const baseline = dashboardData.baseline || {};
+    
+    // Filter logs based on timeframe
+    const timeframe = (window.chartState && window.chartState.timeframe) || 7;
+    let logsForChart = dailyLogs;
+    if (timeframe !== 'all') {
+        const numDays = parseInt(timeframe);
+        if (!isNaN(numDays) && numDays > 0) {
+            logsForChart = dailyLogs.slice(-numDays);
+        }
+    }
+    
+    if (logsForChart.length === 0) {
+        canvas.parentElement.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Add data to see trend</p>';
+        return;
+    }
+    
+    const labels = logsForChart.map(log => {
+        if (log.date) {
+            try {
+                const date = new Date(log.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            } catch (e) {
+                return log.date;
+            }
+        }
+        return '';
+    });
+    
+    const weightData = logsForChart.map(log => {
+        const weight = log.fastedWeight || log.fasted_weight;
+        return weight ? parseFloat(weight) : null;
+    });
+    
+    window.dashboardWeightChartInstance = new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Weight (kg)',
+                data: weightData,
+                borderColor: '#0066ff',
+                backgroundColor: 'rgba(0, 102, 255, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#0066ff',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2.5,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 10,
+                    titleFont: { size: 12, weight: 'bold' },
+                    bodyFont: { size: 11 },
+                    callbacks: {
+                        label: function(context) {
+                            return `Weight: ${context.parsed.y.toFixed(2)} kg`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Weight (kg)',
+                        font: { size: 11, weight: '600' }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: { size: 10 },
+                        maxRotation: 45,
+                        minRotation: 0
+                    }
+                }
+            }
+        }
+    });
+}
+
+function parseWeight(weight) {
+    if (!weight) return null;
+    if (typeof weight === 'number') return weight;
+    const parsed = parseFloat(String(weight).replace(/[^0-9.]/g, ''));
+    return isNaN(parsed) ? null : parsed;
 }
 
 async function loadData() {
