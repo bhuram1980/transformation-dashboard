@@ -440,14 +440,12 @@ function updateDashboardStreak() {
         streakEl.textContent = streak;
     }
     
-    // Update circle progress
+    // Update circle progress - always show complete (100%) in blue
     if (streakCircle) {
-        const progress = Math.min(100, (streak / maxStreak) * 100);
         const circumference = 2 * Math.PI * 50;
-        const offset = circumference - (progress / 100) * circumference;
+        const offset = 0; // Always complete (100%)
         streakCircle.style.strokeDashoffset = offset;
-        
-        // Animate the circle
+        streakCircle.style.stroke = '#0066ff'; // Blue color
         streakCircle.style.transition = 'stroke-dashoffset 0.8s ease';
     }
     
@@ -578,7 +576,7 @@ async function loadDashboardBodyScanRings() {
             }
             
             const clampedProgress = Math.max(0, Math.min(100, progress));
-            const radius = 30;
+            const radius = 40;
             const circumference = 2 * Math.PI * radius;
             const offset = circumference - (clampedProgress / 100) * circumference;
             
@@ -586,12 +584,12 @@ async function loadDashboardBodyScanRings() {
                 <div class="dashboard-ring-mini">
                     <div class="ring-mini-label">${ring.label}</div>
                     <div class="ring-mini-ring-wrapper">
-                        <svg class="ring-mini-svg" viewBox="0 0 80 80">
-                            <circle cx="40" cy="40" r="${radius}" stroke="#e5e7eb" stroke-width="5" fill="none"/>
-                            <circle class="ring-mini-progress ${ring.className}" cx="40" cy="40" r="${radius}" 
+                        <svg class="ring-mini-svg" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="${radius}" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                            <circle class="ring-mini-progress ${ring.className}" cx="50" cy="50" r="${radius}" 
                                     stroke-dasharray="${circumference}" 
                                     stroke-dashoffset="${offset}"
-                                    stroke-width="5"
+                                    stroke-width="6"
                                     fill="none"/>
                         </svg>
                         <div class="ring-mini-value">${ring.current.toFixed(1)}${ring.unit || ''}</div>
