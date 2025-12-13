@@ -260,15 +260,29 @@ function filterExercisesByDate() {
         return;
     }
     
-    // Get exercise names from this day - use original names
-    const dayExerciseNames = new Set();
-    dayData.exercises.forEach(ex => {
-        const name = ex.name || '';
-        if (name) {
-            dayExerciseNames.add(name.toLowerCase().trim());
-            // Also add normalized versions for matching
-            dayExerciseNames.add(normalizeExerciseNameForFilter(name));
+    // Get all exercise names that have sessions on this date from exerciseGroups
+    // This is the most reliable way since exerciseGroups already has normalized names and dates
+    const exercisesOnDate = new Set();
+    
+    // First, check exerciseGroups directly
+    Object.keys(exerciseGroups).forEach(exerciseName => {
+        const sessions = exerciseGroups[exerciseName];
+        if (sessions && sessions.some(session => session.date === selectedDate)) {
+            exercisesOnDate.add(exerciseName);
         }
+    });
+    
+    // Also get original exercise names from the day and try to match them
+    const originalExerciseNames = dayData.exercises.map(ex => ex.name || '').filter(name => name);
+    
+    // For each original name, find matching normalized exercises
+    originalExerciseNames.forEach(originalName => {
+        // Check if any exercise group name matches this original name
+        Object.keys(exerciseGroups).forEach(normalizedName => {
+            if (exercisesMatch(originalName, normalizedName)) {
+                exercisesOnDate.add(normalizedName);
+            }
+        });
     });
     
     // Filter and render exercises
@@ -283,27 +297,9 @@ function filterExercisesByDate() {
         
         exerciseCards.forEach(card => {
             const exerciseName = card.querySelector('.exercise-name')?.textContent || '';
-            const normalizedName = normalizeExerciseNameForFilter(exerciseName);
-            const lowerName = exerciseName.toLowerCase().trim();
             
-            // Check if this exercise was done on the selected date
-            // Match by checking if any day exercise name matches this exercise name
-            let isVisible = false;
-            for (const dayName of dayExerciseNames) {
-                if (lowerName.includes(dayName) || dayName.includes(lowerName) ||
-                    normalizedName.includes(dayName) || dayName.includes(normalizedName)) {
-                    isVisible = true;
-                    break;
-                }
-            }
-            
-            // Also check exercise groups to see if this exercise has a session on this date
-            if (!isVisible && exerciseGroups[exerciseName]) {
-                const hasSessionOnDate = exerciseGroups[exerciseName].some(session => session.date === selectedDate);
-                if (hasSessionOnDate) {
-                    isVisible = true;
-                }
-            }
+            // Check if this exercise is in our set of exercises for this date
+            const isVisible = exercisesOnDate.has(exerciseName);
             
             if (isVisible) {
                 card.style.display = 'block';
@@ -333,17 +329,40 @@ function filterExercisesByDate() {
     }
 }
 
-function normalizeExerciseNameForFilter(name) {
-    if (!name) return '';
-    // Remove common variations and normalize for matching
-    return name.toLowerCase()
-        .replace(/with dumbbells/gi, '')
-        .replace(/machine/gi, '')
-        .replace(/mts/gi, '')
-        .replace(/\(.*?\)/g, '') // Remove parentheses content
-        .replace(/\s+/g, ' ')
-        .trim();
+function exercisesMatch(originalName, normalizedName) {
+    if (!originalName || !normalizedName) return false;
+    
+    const orig = originalName.toLowerCase().trim();
+    const norm = normalizedName.toLowerCase().trim();
+    
+    // Exact match
+    if (orig === norm) return true;
+    
+    // Check if normalized name contains key words from original
+    const origWords = orig.split(/\s+/).filter(w => w.length > 3);
+    const normWords = norm.split(/\s+/).filter(w => w.length > 3);
+    
+    // If they share significant words, consider it a match
+    const commonWords = origWords.filter(w => normWords.includes(w));
+    if (commonWords.length >= 2) return true;
+    
+    // Check for key exercise terms
+    const keyTerms = ['deadlift', 'squat', 'press', 'curl', 'row', 'pulldown', 'fly', 'raise', 'extension'];
+    const origHasKeyTerm = keyTerms.some(term => orig.includes(term));
+    const normHasKeyTerm = keyTerms.some(term => norm.includes(term));
+    
+    if (origHasKeyTerm && normHasKeyTerm) {
+        // Check if they share the same key term
+        for (const term of keyTerms) {
+            if (orig.includes(term) && norm.includes(term)) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }
+
 
 function switchView(view) {
     currentView = view;
