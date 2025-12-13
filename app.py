@@ -2037,6 +2037,36 @@ def get_training_data():
             'total_sessions': 0
         }), 500
 
+@app.route('/api/day/<date>')
+def get_day_data(date):
+    """API endpoint to get full day data for a specific date - public access"""
+    try:
+        loader = TransformationDataLoader()
+        daily_logs = loader.get_daily_logs()
+        
+        # Find the day by date
+        day_data = None
+        for log in daily_logs:
+            if log.get('date') == date:
+                day_data = log
+                break
+        
+        if not day_data:
+            return jsonify({
+                'error': f'No data found for date {date}',
+                'date': date
+            }), 404
+        
+        return jsonify(day_data)
+    except Exception as e:
+        print(f"Error in /api/day/{date}: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': str(e),
+            'date': date
+        }), 500
+
 @app.route('/api/body-scans')
 def get_body_scans():
     """API endpoint to get all body scan data - public access"""

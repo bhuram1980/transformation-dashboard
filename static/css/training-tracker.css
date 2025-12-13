@@ -6,6 +6,245 @@
 
 .header-actions {
     margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.view-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: #f5f7fa;
+    padding: 0.25rem;
+    border-radius: 10px;
+}
+
+.view-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+    background: rgba(0, 102, 255, 0.1);
+    color: #0066ff;
+}
+
+.view-btn.active {
+    background: #0066ff;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+}
+
+.view-icon {
+    font-size: 1.1rem;
+}
+
+/* Date Picker Section */
+.date-picker-section {
+    margin-bottom: 2rem;
+}
+
+.date-picker-wrapper {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.date-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.date-picker-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0066ff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.date-icon-large {
+    font-size: 1.5rem;
+}
+
+.date-picker-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.date-picker-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.date-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 200px;
+}
+
+.quick-dates-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.quick-dates-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.quick-dates-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.quick-date-btn {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quick-date-btn:hover {
+    background: #0066ff;
+    color: white;
+    border-color: #0066ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+}
+
+.quick-date-btn.active {
+    background: #0066ff;
+    color: white;
+    border-color: #0066ff;
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+}
+
+.date-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.date-nav-btn {
+    padding: 0.5rem 0.75rem;
+    background: #f5f7fa;
+    color: #333;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 40px;
+}
+
+.date-nav-btn:hover {
+    background: #0066ff;
+    color: white;
+    border-color: #0066ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+}
+
+.date-picker-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.date-icon {
+    font-size: 1.1rem;
+}
+
+.date-picker-input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.date-picker-input:hover {
+    border-color: #0066ff;
+}
+
+.date-picker-input:focus {
+    outline: none;
+    border-color: #0066ff;
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.today-btn {
+    padding: 0.5rem 1rem;
+    background: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.today-btn:hover {
+    background: #0052cc;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
 }
 
 .back-link {
@@ -448,8 +687,539 @@
     max-height: 300px;
 }
 
+/* Day View Styles */
+.day-view-content {
+    padding: 1rem 0;
+}
+
+.day-view-placeholder {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.placeholder-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.day-view-header {
+    background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 102, 255, 0.2);
+}
+
+.day-view-date {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.day-view-session {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    font-weight: 500;
+}
+
+.day-view-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.day-stat-card {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.day-stat-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-bottom: 0.25rem;
+}
+
+.day-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.day-exercises-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.day-exercise-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.day-exercise-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 102, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.day-exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f5f7fa;
+}
+
+.day-exercise-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0066ff;
+    margin: 0;
+}
+
+.day-exercise-weight {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    background: #f5f7fa;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+}
+
+.day-exercise-sets {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.day-set-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #0066ff;
+}
+
+.day-set-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.day-set-number {
+    font-weight: 700;
+    color: #0066ff;
+    min-width: 60px;
+}
+
+.day-set-details {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.day-set-weight {
+    font-weight: 600;
+    color: #333;
+}
+
+.day-exercise-notes {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #f0f7ff;
+    border-left: 3px solid #0066ff;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #555;
+    font-style: italic;
+}
+
+.no-workout-message {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.no-workout-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-workout-message h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.no-workout-message p {
+    font-size: 1rem;
+    color: #666;
+}
+
+.placeholder-hint {
+    font-size: 0.9rem;
+    color: #999;
+    margin-top: 0.5rem;
+}
+
+/* Full Day View Styles */
+.day-sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.day-section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.day-section-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f5f7fa;
+}
+
+.day-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0066ff;
+    margin: 0 0 0.25rem 0;
+}
+
+.day-section-session {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.day-section-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.day-stat-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.day-stat-mini-label {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.day-stat-mini-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+.day-exercises-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.day-exercise-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #0066ff;
+}
+
+.day-exercise-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.day-exercise-item-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.day-exercise-item-weight {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #666;
+    background: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+}
+
+.day-exercise-item-sets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.day-set-mini {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.day-set-mini-number {
+    font-weight: 700;
+    color: #0066ff;
+    min-width: 60px;
+}
+
+.day-set-mini-details {
+    flex: 1;
+}
+
+.day-exercise-item-notes {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background: #f0f7ff;
+    border-left: 2px solid #0066ff;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #555;
+    font-style: italic;
+}
+
+/* Nutrition Section */
+.day-nutrition-totals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.nutrition-total-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.nutrition-total-label {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nutrition-total-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+.day-meals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.day-meal-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #10b981;
+}
+
+.day-meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.day-meal-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.day-meal-kcal {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #10b981;
+}
+
+.day-meal-description {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.day-meal-macros {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Supplements Section */
+.day-supplements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.day-supplement-item {
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #e5e7eb;
+    transition: all 0.2s;
+}
+
+.day-supplement-item.taken {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.day-supplement-item.missed {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.day-supplement-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.day-supplement-icon {
+    font-size: 1rem;
+}
+
+.day-supplement-dose {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.25rem;
+    margin-left: 1.75rem;
+}
+
+/* Notes Section */
+.day-notes-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f0f7ff;
+    border-radius: 12px;
+    border-left: 4px solid #0066ff;
+}
+
+.day-notes-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0066ff;
+    margin: 0 0 0.75rem 0;
+}
+
+.day-notes-content {
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.day-view-weight {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .view-controls {
+        width: 100%;
+    }
+
+    .date-picker-wrapper {
+        padding: 1rem;
+    }
+
+    .date-picker-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .date-picker-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .date-input-wrapper {
+        width: 100%;
+    }
+
+    .date-picker-input {
+        flex: 1;
+        width: 100%;
+    }
+
+    .quick-dates-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .quick-dates-list {
+        width: 100%;
+    }
+
+    .quick-date-btn {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .date-picker-container {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .day-sections-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .day-nutrition-totals {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .exercise-header {
         flex-direction: column;
         align-items: flex-start;
@@ -467,6 +1237,21 @@
 
     .stat-value {
         font-size: 1.5rem;
+    }
+
+    .day-view-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .day-set-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .day-set-info {
+        width: 100%;
+        justify-content: space-between;
     }
 }
 

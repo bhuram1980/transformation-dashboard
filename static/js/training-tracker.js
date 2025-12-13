@@ -4,10 +4,14 @@ let trainingData = [];
 let exerciseGroups = {};
 let exercisesByCategory = {};
 let currentFilterCategory = null;
+let currentView = 'progression'; // 'progression' or 'day'
+let availableDates = [];
 
 // Load training data on page load
 document.addEventListener('DOMContentLoaded', async () => {
     await loadTrainingData();
+    extractAvailableDates();
+    setupDatePicker();
     renderExerciseProgression();
     setupBodyDiagram();
 });
@@ -123,6 +127,547 @@ async function loadTrainingData() {
         console.error('Error fetching training data:', error);
         showError('Failed to fetch training data');
     }
+}
+
+function extractAvailableDates() {
+    // Extract unique dates from training data
+    const dates = new Set();
+    trainingData.forEach(entry => {
+        if (entry.date) {
+            dates.add(entry.date);
+        }
+    });
+    availableDates = Array.from(dates).sort().reverse(); // Most recent first
+}
+
+function setupDatePicker() {
+    const datePicker = document.getElementById('workoutDatePicker');
+    if (!datePicker || availableDates.length === 0) return;
+    
+    // Set min and max dates
+    const minDate = availableDates[availableDates.length - 1];
+    const maxDate = availableDates[0];
+    
+    datePicker.setAttribute('min', minDate);
+    datePicker.setAttribute('max', maxDate);
+    
+    // Set default to most recent date
+    datePicker.value = maxDate;
+    
+    // Populate quick dates list
+    renderQuickDates();
+}
+
+function renderQuickDates() {
+    const container = document.getElementById('quickDatesList');
+    if (!container || availableDates.length === 0) return;
+    
+    // Show last 7 dates (or all if less than 7)
+    const datesToShow = availableDates.slice(0, 7);
+    
+    container.innerHTML = datesToShow.map(date => {
+        const dateObj = new Date(date);
+        const dateStr = dateObj.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric',
+            year: dateObj.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+        });
+        const isToday = date === new Date().toISOString().split('T')[0];
+        
+        return `
+            <button class="quick-date-btn" onclick="selectQuickDate('${date}')" data-date="${date}">
+                ${isToday ? '⭐ ' : ''}${dateStr}
+            </button>
+        `;
+    }).join('');
+}
+
+function selectQuickDate(date) {
+    const datePicker = document.getElementById('workoutDatePicker');
+    if (datePicker) {
+        datePicker.value = date;
+        loadDayView();
+    }
+    
+    // Update active state
+    document.querySelectorAll('.quick-date-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-date') === date) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+function switchView(view) {
+    currentView = view;
+    
+    // Update button states
+    document.getElementById('progressionViewBtn').classList.toggle('active', view === 'progression');
+    document.getElementById('dayViewBtn').classList.toggle('active', view === 'day');
+    
+    // Show/hide containers
+    const exerciseContainer = document.getElementById('exerciseContainer');
+    const dayViewContainer = document.getElementById('dayViewContainer');
+    const categoryNav = document.getElementById('categoryNav');
+    const sectionHeading = document.getElementById('sectionHeading');
+    
+    if (view === 'day') {
+        exerciseContainer.style.display = 'none';
+        categoryNav.style.display = 'none';
+        sectionHeading.style.display = 'none';
+        dayViewContainer.style.display = 'block';
+        loadDayView();
+    } else {
+        exerciseContainer.style.display = 'block';
+        categoryNav.style.display = 'flex';
+        sectionHeading.style.display = 'block';
+        dayViewContainer.style.display = 'none';
+    }
+}
+
+function selectToday() {
+    const datePicker = document.getElementById('workoutDatePicker');
+    if (!datePicker || availableDates.length === 0) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    
+    // If today has a workout, use it; otherwise use most recent
+    const targetDate = availableDates.includes(today) ? today : availableDates[0];
+    datePicker.value = targetDate;
+    loadDayView();
+}
+
+function navigateDate(direction) {
+    const datePicker = document.getElementById('workoutDatePicker');
+    if (!datePicker || availableDates.length === 0) return;
+    
+    const currentDate = datePicker.value || availableDates[0];
+    const currentIndex = availableDates.indexOf(currentDate);
+    
+    if (currentIndex === -1) {
+        // Current date not in list, find closest
+        const newIndex = direction > 0 ? 0 : availableDates.length - 1;
+        datePicker.value = availableDates[newIndex];
+    } else {
+        const newIndex = currentIndex + direction;
+        if (newIndex >= 0 && newIndex < availableDates.length) {
+            datePicker.value = availableDates[newIndex];
+        } else {
+            // Wrap around
+            datePicker.value = direction > 0 
+                ? availableDates[0] 
+                : availableDates[availableDates.length - 1];
+        }
+    }
+    
+    loadDayView();
+}
+
+async function loadDayView() {
+    const datePicker = document.getElementById('workoutDatePicker');
+    if (!datePicker) return;
+    
+    const selectedDate = datePicker.value;
+    if (!selectedDate) {
+        renderDayViewPlaceholder();
+        return;
+    }
+    
+    // Update quick date active state
+    document.querySelectorAll('.quick-date-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-date') === selectedDate) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Try to load full day data from API
+    try {
+        const response = await fetch(`/api/day/${selectedDate}`);
+        if (response.ok) {
+            const fullDayData = await response.json();
+            renderFullDayView(fullDayData);
+            return;
+        }
+    } catch (error) {
+        console.log('Full day API not available, using training data only');
+    }
+    
+    // Fallback to training data only
+    const dayData = trainingData.find(entry => entry.date === selectedDate);
+    
+    if (!dayData || dayData.type !== 'structured') {
+        renderNoWorkoutMessage(selectedDate);
+        return;
+    }
+    
+    renderDayView(dayData);
+}
+
+function renderDayViewPlaceholder() {
+    const container = document.getElementById('dayViewContent');
+    container.innerHTML = `
+        <div class="day-view-placeholder">
+            <div class="placeholder-icon">📅</div>
+            <p>Select a date to view your workout</p>
+        </div>
+    `;
+}
+
+function renderNoWorkoutMessage(date) {
+    const container = document.getElementById('dayViewContent');
+    const dateObj = new Date(date);
+    const dateStr = dateObj.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    container.innerHTML = `
+        <div class="no-workout-message">
+            <div class="no-workout-icon">💪</div>
+            <h3>No Workout Recorded</h3>
+            <p>No training data found for ${dateStr}</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #999;">Try selecting a different date</p>
+        </div>
+    `;
+}
+
+function renderFullDayView(dayData) {
+    const container = document.getElementById('dayViewContent');
+    const dateObj = new Date(dayData.date);
+    const dateStr = dateObj.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    const training = dayData.training || {};
+    const session = training.session || 'Training Session';
+    const exercises = training.workout || [];
+    const meals = dayData.meals || {};
+    const supplements = dayData.supplements || {};
+    const total = dayData.total || {};
+    const fastedWeight = dayData.fastedWeight;
+    
+    // Calculate training stats
+    const totalExercises = exercises.length;
+    const totalSets = exercises.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0);
+    
+    let html = `
+        <div class="day-view-header">
+            <div class="day-view-date">${dateStr}</div>
+            ${fastedWeight ? `<div class="day-view-weight">Fasted Weight: <strong>${fastedWeight} kg</strong></div>` : ''}
+        </div>
+        
+        <div class="day-sections-grid">
+            <!-- Training Section -->
+            <div class="day-section-card">
+                <div class="day-section-header">
+                    <h3 class="day-section-title">💪 Training</h3>
+                    <div class="day-section-session">${escapeHtml(session)}</div>
+                </div>
+                <div class="day-section-stats">
+                    <div class="day-stat-mini">
+                        <span class="day-stat-mini-label">Exercises</span>
+                        <span class="day-stat-mini-value">${totalExercises}</span>
+                    </div>
+                    <div class="day-stat-mini">
+                        <span class="day-stat-mini-label">Total Sets</span>
+                        <span class="day-stat-mini-value">${totalSets}</span>
+                    </div>
+                </div>
+                <div class="day-exercises-list">
+    `;
+    
+    exercises.forEach((exercise) => {
+        const exerciseName = exercise.exercise || 'Unknown Exercise';
+        const sets = exercise.sets || [];
+        const notes = exercise.notes || '';
+        
+        // Format weight display
+        let weightDisplay = '--';
+        if (exercise.weight_each_side_kg !== null && exercise.weight_each_side_kg !== undefined) {
+            weightDisplay = `${exercise.weight_each_side_kg} kg each side`;
+        } else if (exercise.weight_each_side_lbs !== null && exercise.weight_each_side_lbs !== undefined) {
+            weightDisplay = `${Math.round(exercise.weight_each_side_lbs)} lbs each side`;
+        } else if (exercise.total_added_weight_kg !== null && exercise.total_added_weight_kg !== undefined) {
+            weightDisplay = `${exercise.total_added_weight_kg} kg`;
+        } else if (exercise.total_added_weight_lbs !== null && exercise.total_added_weight_lbs !== undefined) {
+            weightDisplay = `${Math.round(exercise.total_added_weight_lbs)} lbs`;
+        }
+        
+        html += `
+            <div class="day-exercise-item">
+                <div class="day-exercise-item-header">
+                    <h4 class="day-exercise-item-name">${escapeHtml(exerciseName)}</h4>
+                    ${weightDisplay !== '--' ? `<span class="day-exercise-item-weight">${weightDisplay}</span>` : ''}
+                </div>
+                <div class="day-exercise-item-sets">
+        `;
+        
+        sets.forEach((set, setIndex) => {
+            const setNum = typeof set.set === 'string' 
+                ? set.set.charAt(0).toUpperCase() + set.set.slice(1)
+                : `Set ${set.set || setIndex + 1}`;
+            
+            let setWeight = '--';
+            if (set.weight_each_side_kg !== null && set.weight_each_side_kg !== undefined) {
+                setWeight = `${set.weight_each_side_kg} kg each side`;
+            } else if (set.weight_each_side_lbs !== null && set.weight_each_side_lbs !== undefined) {
+                setWeight = `${Math.round(set.weight_each_side_lbs)} lbs each side`;
+            } else if (set.total_added_weight_kg !== null && set.total_added_weight_kg !== undefined) {
+                setWeight = `${set.total_added_weight_kg} kg`;
+            } else if (set.total_added_weight_lbs !== null && set.total_added_weight_lbs !== undefined) {
+                setWeight = `${Math.round(set.total_added_weight_lbs)} lbs`;
+            } else if (weightDisplay !== '--') {
+                setWeight = weightDisplay;
+            }
+            
+            const reps = set.reps !== null && set.reps !== undefined 
+                ? `${set.reps} reps`
+                : set.distance || '--';
+            
+            html += `
+                <div class="day-set-mini">
+                    <span class="day-set-mini-number">${setNum}</span>
+                    <span class="day-set-mini-details">${setWeight} × ${reps}</span>
+                </div>
+            `;
+        });
+        
+        html += `</div>`;
+        
+        if (notes) {
+            html += `<div class="day-exercise-item-notes">${escapeHtml(notes)}</div>`;
+        }
+        
+        html += `</div>`;
+    });
+    
+    html += `
+                </div>
+            </div>
+            
+            <!-- Nutrition Section -->
+            <div class="day-section-card">
+                <div class="day-section-header">
+                    <h3 class="day-section-title">🍽️ Nutrition</h3>
+                </div>
+                <div class="day-nutrition-totals">
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Protein</span>
+                        <span class="nutrition-total-value">${total.protein || 0}g</span>
+                    </div>
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Carbs</span>
+                        <span class="nutrition-total-value">${total.carbs || 0}g</span>
+                    </div>
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Fat</span>
+                        <span class="nutrition-total-value">${total.fat || 0}g</span>
+                    </div>
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Calories</span>
+                        <span class="nutrition-total-value">${total.kcal || 0}</span>
+                    </div>
+                    ${total.seafoodKg ? `
+                    <div class="nutrition-total-item">
+                        <span class="nutrition-total-label">Seafood</span>
+                        <span class="nutrition-total-value">${total.seafoodKg} kg</span>
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="day-meals-list">
+    `;
+    
+    Object.entries(meals).forEach(([mealName, meal]) => {
+        html += `
+            <div class="day-meal-item">
+                <div class="day-meal-header">
+                    <h4 class="day-meal-name">${escapeHtml(mealName)}</h4>
+                    <span class="day-meal-kcal">${meal.kcal || 0} kcal</span>
+                </div>
+                <div class="day-meal-description">${escapeHtml(meal.description || '')}</div>
+                <div class="day-meal-macros">
+                    <span>P: ${meal.protein || 0}g</span>
+                    <span>C: ${meal.carbs || 0}g</span>
+                    <span>F: ${meal.fat || 0}g</span>
+                    ${meal.seafoodKg ? `<span>🐟 ${meal.seafoodKg} kg</span>` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `
+                </div>
+            </div>
+            
+            <!-- Supplements Section -->
+            <div class="day-section-card">
+                <div class="day-section-header">
+                    <h3 class="day-section-title">💊 Supplements</h3>
+                </div>
+                <div class="day-supplements-list">
+    `;
+    
+    Object.entries(supplements).forEach(([suppName, supp]) => {
+        const taken = supp.taken;
+        const dose = supp.dose || supp.scoops ? `${supp.scoops} scoops` : '';
+        
+        html += `
+            <div class="day-supplement-item ${taken ? 'taken' : 'missed'}">
+                <div class="day-supplement-name">
+                    <span class="day-supplement-icon">${taken ? '✅' : '❌'}</span>
+                    ${escapeHtml(suppName.toUpperCase())}
+                </div>
+                ${dose ? `<div class="day-supplement-dose">${escapeHtml(dose)}</div>` : ''}
+            </div>
+        `;
+    });
+    
+    html += `
+                </div>
+            </div>
+        </div>
+    `;
+    
+    if (dayData.notes) {
+        html += `
+            <div class="day-notes-section">
+                <h3 class="day-notes-title">📝 Notes</h3>
+                <p class="day-notes-content">${escapeHtml(dayData.notes)}</p>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function renderDayView(dayData) {
+    // Fallback to original renderDayView for training-only data
+    const container = document.getElementById('dayViewContent');
+    const dateObj = new Date(dayData.date);
+    const dateStr = dateObj.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    const session = dayData.session || 'Training Session';
+    const exercises = dayData.exercises || [];
+    
+    // Calculate stats
+    const totalExercises = exercises.length;
+    const totalSets = exercises.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0);
+    
+    let html = `
+        <div class="day-view-header">
+            <div class="day-view-date">${dateStr}</div>
+            <div class="day-view-session">${escapeHtml(session)}</div>
+            <div class="day-view-stats">
+                <div class="day-stat-card">
+                    <div class="day-stat-label">Exercises</div>
+                    <div class="day-stat-value">${totalExercises}</div>
+                </div>
+                <div class="day-stat-card">
+                    <div class="day-stat-label">Total Sets</div>
+                    <div class="day-stat-value">${totalSets}</div>
+                </div>
+                <div class="day-stat-card">
+                    <div class="day-stat-label">Day</div>
+                    <div class="day-stat-value">${dayData.day || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+        <div class="day-exercises-grid">
+    `;
+    
+    exercises.forEach((exercise, index) => {
+        const exerciseName = exercise.name || 'Unknown Exercise';
+        const sets = exercise.sets || [];
+        const notes = exercise.notes || '';
+        
+        // Format weight display
+        let weightDisplay = '--';
+        if (exercise.weight_each_side_kg !== null && exercise.weight_each_side_kg !== undefined) {
+            weightDisplay = `${exercise.weight_each_side_kg} kg each side`;
+        } else if (exercise.weight_each_side_lbs !== null && exercise.weight_each_side_lbs !== undefined) {
+            weightDisplay = `${Math.round(exercise.weight_each_side_lbs)} lbs each side`;
+        } else if (exercise.total_added_weight_kg !== null && exercise.total_added_weight_kg !== undefined) {
+            weightDisplay = `${exercise.total_added_weight_kg} kg`;
+        } else if (exercise.total_added_weight_lbs !== null && exercise.total_added_weight_lbs !== undefined) {
+            weightDisplay = `${Math.round(exercise.total_added_weight_lbs)} lbs`;
+        }
+        
+        html += `
+            <div class="day-exercise-card">
+                <div class="day-exercise-header">
+                    <h3 class="day-exercise-name">${escapeHtml(exerciseName)}</h3>
+                    <span class="day-exercise-weight">${weightDisplay}</span>
+                </div>
+                <div class="day-exercise-sets">
+        `;
+        
+        sets.forEach((set, setIndex) => {
+            const setNum = typeof set.set === 'string' 
+                ? set.set.charAt(0).toUpperCase() + set.set.slice(1)
+                : `Set ${set.set || setIndex + 1}`;
+            
+            let setWeight = '--';
+            if (set.weight_each_side_kg !== null && set.weight_each_side_kg !== undefined) {
+                setWeight = `${set.weight_each_side_kg} kg each side`;
+            } else if (set.weight_each_side_lbs !== null && set.weight_each_side_lbs !== undefined) {
+                setWeight = `${Math.round(set.weight_each_side_lbs)} lbs each side`;
+            } else if (set.total_added_weight_kg !== null && set.total_added_weight_kg !== undefined) {
+                setWeight = `${set.total_added_weight_kg} kg`;
+            } else if (set.total_added_weight_lbs !== null && set.total_added_weight_lbs !== undefined) {
+                setWeight = `${Math.round(set.total_added_weight_lbs)} lbs`;
+            } else if (weightDisplay !== '--') {
+                setWeight = weightDisplay; // Use exercise-level weight
+            }
+            
+            const reps = set.reps !== null && set.reps !== undefined 
+                ? `${set.reps} reps`
+                : set.distance || '--';
+            
+            html += `
+                <div class="day-set-item">
+                    <div class="day-set-info">
+                        <span class="day-set-number">${setNum}</span>
+                        <div class="day-set-details">
+                            <span class="day-set-weight">${setWeight}</span>
+                            <span>×</span>
+                            <span>${reps}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+        `;
+        
+        if (notes) {
+            html += `
+                <div class="day-exercise-notes">${escapeHtml(notes)}</div>
+            `;
+        }
+        
+        html += `
+            </div>
+        `;
+    });
+    
+    html += `
+        </div>
+    `;
+    
+    container.innerHTML = html;
 }
 
 function renderTrainingStats() {

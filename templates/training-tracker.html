@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training Tracker - Exercise Progression</title>
     <link rel="stylesheet" href="/static/css/style.css?v=20251127a">
-    <link rel="stylesheet" href="/static/css/training-tracker.css?v=20251209a">
+    <link rel="stylesheet" href="/static/css/training-tracker.css?v=20251212a">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="alternate icon" type="image/png" href="/static/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,10 +19,58 @@
             <section class="layout-section training-header">
                 <div class="section-heading">
                     <h1 class="dashboard-title">Training Tracker</h1>
-                    <p class="section-subtitle">Exercise Progression & Next Weight Suggestions</p>
+                    <p class="section-subtitle">Exercise Progression & Daily Workout History</p>
                 </div>
                 <div class="header-actions">
                     <a href="/" class="back-link">← Back to Dashboard</a>
+                </div>
+            </section>
+
+            <!-- Prominent Date Picker Section -->
+            <section class="layout-section date-picker-section">
+                <div class="date-picker-wrapper">
+                    <div class="date-picker-header">
+                        <h3 class="date-picker-title">
+                            <span class="date-icon-large">📅</span>
+                            View Workout by Date
+                        </h3>
+                        <div class="view-toggle">
+                            <button class="view-btn active" id="progressionViewBtn" onclick="switchView('progression')">
+                                <span class="view-icon">📈</span>
+                                <span>Progression</span>
+                            </button>
+                            <button class="view-btn" id="dayViewBtn" onclick="switchView('day')">
+                                <span class="view-icon">📅</span>
+                                <span>Day View</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="date-picker-main">
+                        <div class="date-picker-controls">
+                            <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous day">
+                                <span>←</span>
+                            </button>
+                            <div class="date-input-wrapper">
+                                <label for="workoutDatePicker" class="date-picker-label">
+                                    <span class="date-icon">📆</span>
+                                    Date:
+                                </label>
+                                <input type="date" id="workoutDatePicker" class="date-picker-input" onchange="loadDayView()">
+                            </div>
+                            <button class="date-nav-btn" onclick="navigateDate(1)" title="Next day">
+                                <span>→</span>
+                            </button>
+                            <button class="today-btn" onclick="selectToday()" title="Go to today">
+                                <span>Today</span>
+                            </button>
+                        </div>
+                        <div class="quick-dates-container">
+                            <div class="quick-dates-label">Quick Select:</div>
+                            <div class="quick-dates-list" id="quickDatesList">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -59,7 +107,7 @@
 
             <!-- Exercise Progression Tables -->
             <section class="layout-section training-exercises" id="trainingExercises">
-                <div class="section-heading">
+                <div class="section-heading" id="sectionHeading">
                     <h2 class="section-title">Exercise Progression</h2>
                     <p class="section-subtitle">Track your weights and see suggested progression</p>
                 </div>
@@ -88,12 +136,22 @@
                 <div id="exerciseContainer">
                     <div class="loading-state">Loading training data...</div>
                 </div>
+                <!-- Day View Container -->
+                <div id="dayViewContainer" style="display: none;">
+                    <div class="day-view-content" id="dayViewContent">
+                        <div class="day-view-placeholder">
+                            <div class="placeholder-icon">📅</div>
+                            <p>Select a date above to view your complete day</p>
+                            <p class="placeholder-hint">See your training, meals, supplements, and stats for any day</p>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="/static/js/training-tracker.js?v=20251210a"></script>
+    <script src="/static/js/training-tracker.js?v=20251212a"></script>
 </body>
 </html>
 
