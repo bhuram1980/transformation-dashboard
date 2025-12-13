@@ -1,0 +1,173 @@
+{
+  "date": "2025-12-12",
+  "fastedWeight": 85.2,
+  "waist": null,
+  "total": {
+    "protein": 328,
+    "carbs": 38,
+    "fat": 68,
+    "kcal": 2180,
+    "seafoodKg": 0.65
+  },
+  "meals": {
+    "morning": {
+      "description": "Full morning supplements + 2 scoops Isopure unflavoured + 5 g creatine + pre-workout shake",
+      "protein": 50,
+      "carbs": 8,
+      "fat": 0,
+      "kcal": 220
+    },
+    "postWorkout": {
+      "description": "Chicken omelette wrap (4 eggs + ~180 g chicken breast) + sauerkraut + 2 scoops chocolate whey protein shake (with water)",
+      "protein": 102,
+      "carbs": 12,
+      "fat": 38,
+      "kcal": 820
+    },
+    "lunch": {
+      "description": "Salmon steak (~350 g) + grilled veggies",
+      "protein": 80,
+      "carbs": 10,
+      "fat": 18,
+      "kcal": 520,
+      "seafoodKg": 0.35
+    },
+    "dinner": {
+      "description": "5 pieces Chicken 65 (~200 g chicken) + 35 roasted peanuts + bit of spring onion + 1 portion Salmon Carpaccio (raw salmon ~100 g) + Tiger Prawns grilled (~150 g, no potato) + 4 whole eggs",
+      "protein": 96,
+      "carbs": 8,
+      "fat": 12,
+      "kcal": 620,
+      "seafoodKg": 0.30
+    }
+  },
+  "supplements": {
+    "omega3": {
+      "taken": true,
+      "dose": "4 caps – locked"
+    },
+    "nac": {
+      "taken": false,
+      "dose": "Missed night 600 mg (only morning taken)"
+    },
+    "d3k2": {
+      "taken": true,
+      "dose": "Morning dose – locked"
+    },
+    "zmb": {
+      "taken": true,
+      "dose": "2 tablets Tata 1mg Magnesium Glycinate before bed – locked"
+    },
+    "whey": {
+      "taken": true,
+      "scoops": 4
+    },
+    "creatine": {
+      "taken": true,
+      "dose": "5 g with Isopure – locked"
+    }
+  },
+  "training": {
+    "session": "Giant Set Upper Body Day",
+    "workout": [
+      {
+        "exercise": "Dumbbell Incline Press",
+        "sets": [
+          {
+            "set": 1,
+            "weight_each_side_kg": 15,
+            "reps": 12
+          },
+          {
+            "set": 2,
+            "weight_each_side_kg": 20,
+            "reps": 10
+          },
+          {
+            "set": 3,
+            "weight_each_side_kg": 25,
+            "reps": 10
+          },
+          {
+            "set": 4,
+            "weight_each_side_kg": 20,
+            "reps": 8
+          }
+        ]
+      },
+      {
+        "exercise": "Conventional Deadlift",
+        "sets": [
+          {
+            "set": 1,
+            "weight_each_side_kg": 40,
+            "reps": 10
+          },
+          {
+            "set": 2,
+            "weight_each_side_kg": 40,
+            "reps": 10
+          },
+          {
+            "set": 3,
+            "weight_each_side_kg": 60,
+            "reps": 10
+          },
+          {
+            "set": 4,
+            "weight_each_side_kg": 60,
+            "reps": 10
+          }
+        ]
+      },
+      {
+        "exercise": "Glute-Ham Raise (GHR)",
+        "sets": [
+          {
+            "set": 1,
+            "reps": 10
+          },
+          {
+            "set": 2,
+            "reps": 16
+          },
+          {
+            "set": 3,
+            "reps": 8
+          },
+          {
+            "set": 4,
+            "reps": 8
+          }
+        ]
+      },
+      {
+        "exercise": "Seated Smith Machine Overhead Press",
+        "sets": [
+          {
+            "set": 1,
+            "weight_each_side_kg": 20,
+            "reps": 10
+          },
+          {
+            "set": 2,
+            "weight_each_side_kg": 40,
+            "reps": 10
+          },
+          {
+            "set": 3,
+            "weight_each_side_kg": 40,
+            "reps": 8
+          },
+          {
+            "set": 4,
+            "weight_each_side_kg": 60,
+            "reps": 10
+          }
+        ]
+      }
+    ]
+  },
+  "feeling": 10,
+  "notes": "Giant set day – volume high, pump insane. Chicken 65 was the only minor off-plan item (breading trace carbs/oil) but negligible. Missed night NAC – take double tomorrow if needed. Protein 328 g, carbs low, 650 g seafood. Fasted weight estimate 85.2 kg. Streak alive."
+}
